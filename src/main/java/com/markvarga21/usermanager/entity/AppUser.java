@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer Id;
+    private Long Id;
 
     @NotBlank(message = "First name cannot be null or empty!")
     private String firstName;

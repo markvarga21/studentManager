@@ -18,7 +18,7 @@ import javax.validation.constraints.Positive;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @NotEmpty(message = "Country cannot be empty!")
     private String country;
