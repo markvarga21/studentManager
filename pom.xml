@@ -12,7 +12,7 @@
 	<artifactId>usermanager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>usermanager</name>
-	<description>This project let&apos;s authorized users to manipulate (add, remove) users from/to the database which includes ID and face veridication services.</description>
+	<description>This project lets authorized users to manipulate (add, remove) users from/to the database which includes ID and face verification services.</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
