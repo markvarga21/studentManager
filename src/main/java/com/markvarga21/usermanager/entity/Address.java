@@ -8,9 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Positive;
-
 @Entity
 @Data
 @AllArgsConstructor
@@ -19,13 +16,7 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @NotEmpty(message = "Country cannot be empty!")
     private String country;
-
-    @NotEmpty(message = "Street cannot be empty!")
     private String street;
-
-    @Positive(message = "Number has to be positive!")
     private Integer number;
 }

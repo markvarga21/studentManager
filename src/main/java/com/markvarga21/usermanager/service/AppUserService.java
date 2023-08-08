@@ -1,7 +1,11 @@
 package com.markvarga21.usermanager.service;
 
-import org.springframework.stereotype.Service;
+import com.markvarga21.usermanager.dto.AppUserDto;
 
-@Service
+import java.util.List;
+
 public interface AppUserService {
+    List<AppUserDto> getAllUsers();
+    AppUserDto createUser(AppUserDto appUserDto);
+    AppUserDto getUserById(Long id);
 }
