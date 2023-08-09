@@ -2,9 +2,11 @@ package com.markvarga21.usermanager.service.impl;
 
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.entity.AppUser;
+import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.UserNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
 import com.markvarga21.usermanager.service.AppUserService;
+import com.markvarga21.usermanager.util.mapping.AddressMapper;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class AppUserServiceImpl implements AppUserService {
     private final AppUserRepository userRepository;
     private final AppUserMapper userMapper;
+    private final AddressMapper addressMapper;
 
     @Override
     public List<AppUserDto> getAllUsers() {
@@ -51,7 +54,7 @@ public class AppUserServiceImpl implements AppUserService {
         if (userOptional.isEmpty()) {
             String message = String.format("User cant be retrieved! Cause: user not found with id: %d", id);
             log.error(message);
-            throw new UserNotFoundException(message);
+            throw new UserNotFoundException(message, OperationType.READ);
         }
         log.info(String.format("User with id %d retrieved successfully!", id));
 
@@ -64,17 +67,17 @@ public class AppUserServiceImpl implements AppUserService {
         if (userOptional.isEmpty()) {
             String message = String.format("User cant be modified! Cause: User not found with id: %d", id);
             log.error(message);
-            throw new UserNotFoundException(message);
+            throw new UserNotFoundException(message, OperationType.UPDATE);
         }
         AppUser userToUpdate = userOptional.get();
-        userToUpdate.setAddress(appUserDto.getAddress());
+        userToUpdate.setAddress(this.addressMapper.mapAddressDtoToEntity(appUserDto.getAddress()));
         userToUpdate.setEmail(appUserDto.getEmail());
         userToUpdate.setGender(appUserDto.getGender());
         userToUpdate.setFirstName(appUserDto.getFirstName());
         userToUpdate.setLastName(appUserDto.getLastName());
         userToUpdate.setNationality(appUserDto.getNationality());
         userToUpdate.setPhoneNumber(appUserDto.getPhoneNumber());
-        userToUpdate.setPlaceOfBirth(appUserDto.getPlaceOfBirth());
+        userToUpdate.setPlaceOfBirth(this.addressMapper.mapAddressDtoToEntity(appUserDto.getPlaceOfBirth()));
         userToUpdate.setBirthDate(appUserDto.getBirthDate());
         AppUser updatedUser = this.userRepository.save(userToUpdate);
 
@@ -88,7 +91,7 @@ public class AppUserServiceImpl implements AppUserService {
         if (userOptional.isEmpty()) {
             String message = String.format("User cannot be deleted! Cause: user not found with id: %d", id);
             log.error(message);
-            throw new UserNotFoundException(message);
+            throw new UserNotFoundException(message, OperationType.DELETE);
         }
         AppUserDto deletedUser = this.userMapper.mapAppUserEntityToDto(userOptional.get());
         this.userRepository.deleteById(id);

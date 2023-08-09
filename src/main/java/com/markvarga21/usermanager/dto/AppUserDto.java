@@ -3,6 +3,7 @@ package com.markvarga21.usermanager.dto;
 import com.markvarga21.usermanager.entity.Address;
 import com.markvarga21.usermanager.entity.Gender;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,8 +26,9 @@ public class AppUserDto {
     @PastOrPresent
     private LocalDate birthDate;
 
+    @Valid
     @NotNull(message = "Place of birth cannot be null!")
-    private Address placeOfBirth;
+    private AddressDto placeOfBirth;
 
     @NotBlank(message = "Nationality cannot be null or empty!")
     private String nationality;
@@ -34,9 +36,9 @@ public class AppUserDto {
     @NotNull(message = "Gender cannot be null!")
     private Gender gender;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @Valid
     @NotNull(message = "Address cannot be null!")
-    private Address address;
+    private AddressDto address;
 
     @Email(message = "Email should be valid!")
     @NotBlank(message = "Email cannot be empty!")
