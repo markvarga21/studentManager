@@ -24,26 +24,37 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public List<AppUserDto> getAllUsers() {
-        return userRepository
+        List<AppUserDto> userDtoList = userRepository
                 .findAll()
                 .stream()
                 .map(this.userMapper::mapAppUserEntityToDto)
                 .toList();
+        log.info(String.format("Listing %d users.", userDtoList.size()));
+
+        return userDtoList;
     }
 
     @Override
     public AppUserDto createUser(AppUserDto appUserDto) {
         AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
         this.userRepository.save(userToSave);
-        return this.userMapper.mapAppUserEntityToDto(userToSave);
+
+        AppUserDto userDto = this.userMapper.mapAppUserEntityToDto(userToSave);
+        log.info(String.format("Saving user: %s", userDto));
+
+        return userDto;
     }
 
     @Override
     public AppUserDto getUserById(Long id) {
         Optional<AppUser> userOptional = this.userRepository.findById(id);
         if (userOptional.isEmpty()) {
-            throw new UserNotFoundException(String.format("User not found with id: %d", id));
+            String message = String.format("User cant be retrieved! Cause: user not found with id: %d", id);
+            log.error(message);
+            throw new UserNotFoundException(message);
         }
+        log.info(String.format("User with id %d retrieved successfully!", id));
+
         return this.userMapper.mapAppUserEntityToDto(userOptional.get());
     }
 
@@ -51,7 +62,9 @@ public class AppUserServiceImpl implements AppUserService {
     public AppUserDto modifyUserById(AppUserDto appUserDto, Long id) {
         Optional<AppUser> userOptional = this.userRepository.findById(id);
         if (userOptional.isEmpty()) {
-            throw new UserNotFoundException(String.format("User not found with id: %d", id));
+            String message = String.format("User cant be modified! Cause: User not found with id: %d", id);
+            log.error(message);
+            throw new UserNotFoundException(message);
         }
         AppUser userToUpdate = userOptional.get();
         userToUpdate.setAddress(appUserDto.getAddress());
@@ -65,6 +78,7 @@ public class AppUserServiceImpl implements AppUserService {
         userToUpdate.setBirthDate(appUserDto.getBirthDate());
         AppUser updatedUser = this.userRepository.save(userToUpdate);
 
+        log.info(String.format("User with id %d modified successfully!", id));
         return this.userMapper.mapAppUserEntityToDto(updatedUser);
     }
 
@@ -72,10 +86,14 @@ public class AppUserServiceImpl implements AppUserService {
     public AppUserDto deleteUserById(Long id) {
         Optional<AppUser> userOptional = this.userRepository.findById(id);
         if (userOptional.isEmpty()) {
-            throw new UserNotFoundException(String.format("User not found with id: %d", id));
+            String message = String.format("User cannot be deleted! Cause: user not found with id: %d", id);
+            log.error(message);
+            throw new UserNotFoundException(message);
         }
         AppUserDto deletedUser = this.userMapper.mapAppUserEntityToDto(userOptional.get());
         this.userRepository.deleteById(id);
+        log.info(String.format("User with id %d deleted successfully!", id));
+
         return deletedUser;
     }
 }
