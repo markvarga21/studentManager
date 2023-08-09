@@ -34,4 +34,16 @@ public class AppUserController {
         AppUserDto foundUser = this.userService.getUserById(id);
         return new ResponseEntity<>(foundUser, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AppUserDto> updateUserById(@RequestBody AppUserDto appUserDto, @PathVariable Long id) {
+        AppUserDto updatedUser = this.userService.modifyUserById(appUserDto, id);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<AppUserDto> deleteUserById(@PathVariable Long id) {
+        AppUserDto deletedUser = this.userService.deleteUserById(id);
+        return new ResponseEntity<>(deletedUser, HttpStatus.OK);
+    }
 }

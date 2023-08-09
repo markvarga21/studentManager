@@ -46,4 +46,36 @@ public class AppUserServiceImpl implements AppUserService {
         }
         return this.userMapper.mapAppUserEntityToDto(userOptional.get());
     }
+
+    @Override
+    public AppUserDto modifyUserById(AppUserDto appUserDto, Long id) {
+        Optional<AppUser> userOptional = this.userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException(String.format("User not found with id: %d", id));
+        }
+        AppUser userToUpdate = userOptional.get();
+        userToUpdate.setAddress(appUserDto.getAddress());
+        userToUpdate.setEmail(appUserDto.getEmail());
+        userToUpdate.setGender(appUserDto.getGender());
+        userToUpdate.setFirstName(appUserDto.getFirstName());
+        userToUpdate.setLastName(appUserDto.getLastName());
+        userToUpdate.setNationality(appUserDto.getNationality());
+        userToUpdate.setPhoneNumber(appUserDto.getPhoneNumber());
+        userToUpdate.setPlaceOfBirth(appUserDto.getPlaceOfBirth());
+        userToUpdate.setBirthDate(appUserDto.getBirthDate());
+        AppUser updatedUser = this.userRepository.save(userToUpdate);
+
+        return this.userMapper.mapAppUserEntityToDto(updatedUser);
+    }
+
+    @Override
+    public AppUserDto deleteUserById(Long id) {
+        Optional<AppUser> userOptional = this.userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException(String.format("User not found with id: %d", id));
+        }
+        AppUserDto deletedUser = this.userMapper.mapAppUserEntityToDto(userOptional.get());
+        this.userRepository.deleteById(id);
+        return deletedUser;
+    }
 }
