@@ -8,15 +8,33 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents an address entity in the application.
+ */
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Address {
+    /**
+     * A unique identifier for the address.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    /**
+     * The country of the address.
+     */
     private String country;
+
+    /**
+     * The street of the address.
+     */
     private String street;
+
+    /**
+     * The street number of the address.
+     */
     private Integer number;
 }
