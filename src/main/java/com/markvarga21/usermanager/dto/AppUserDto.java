@@ -11,39 +11,73 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+/**
+ * Represents a user data transfer object in the application.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppUserDto {
+    /**
+     * A unique identifier for the user.
+     */
     private Long Id;
+
+    /**
+     * The first name of the user.
+     */
     @NotBlank(message = "First name cannot be null or empty!")
     private String firstName;
 
+    /**
+     * The last name of the user.
+     */
     @NotBlank(message = "Last name cannot be null or empty!")
     private String lastName;
 
+    /**
+     * The birthdate name of the user.
+     */
     @NotNull(message = "Date of birth cannot be null!")
     @PastOrPresent
     private LocalDate birthDate;
 
+    /**
+     * The birthplace of the user.
+     */
     @Valid
     @NotNull(message = "Place of birth cannot be null!")
     private AddressDto placeOfBirth;
 
+    /**
+     * The nationality of the user.
+     */
     @NotBlank(message = "Nationality cannot be null or empty!")
     private String nationality;
 
+    /**
+     * The user's gender.
+     */
     @NotNull(message = "Gender cannot be null!")
     private Gender gender;
 
+    /**
+     * The user's address.
+     */
     @Valid
     @NotNull(message = "Address cannot be null!")
     private AddressDto address;
 
+    /**
+     * The user's email address.
+     */
     @Email(message = "Email should be valid!")
     @NotBlank(message = "Email cannot be empty!")
     private String email;
 
+    /**
+     * The user's phone number.
+     */
     @Pattern(regexp="(^$|[0-9]{10})", message = "Invalid phone number!")
     @NotBlank(message = "Phone number cannot be empty!")
     private String phoneNumber;

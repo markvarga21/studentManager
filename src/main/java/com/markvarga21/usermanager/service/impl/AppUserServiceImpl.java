@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The service class which contains the core logic of the application.
+ */
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
@@ -25,6 +28,12 @@ public class AppUserServiceImpl implements AppUserService {
     private final AppUserMapper userMapper;
     private final AddressMapper addressMapper;
 
+    /**
+     * Retrieves all the users in the application.
+     *
+     * @return all to users stored in a {@code List}.
+     * @since 1.0
+     */
     @Override
     public List<AppUserDto> getAllUsers() {
         List<AppUserDto> userDtoList = userRepository
@@ -37,6 +46,13 @@ public class AppUserServiceImpl implements AppUserService {
         return userDtoList;
     }
 
+    /**
+     * Saves a user in the application.
+     *
+     * @param appUserDto the user which you want to save in the application.
+     * @return the recently created user.
+     * @since 1.0
+     */
     @Override
     public AppUserDto createUser(AppUserDto appUserDto) {
         AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
@@ -48,6 +64,13 @@ public class AppUserServiceImpl implements AppUserService {
         return userDto;
     }
 
+    /**
+     * Retrieves a user from the application using its id.
+     *
+     * @param id the identifier of the user we want to retrieve.
+     * @return the searched user.
+     * @since 1.0
+     */
     @Override
     public AppUserDto getUserById(Long id) {
         Optional<AppUser> userOptional = this.userRepository.findById(id);
@@ -61,6 +84,14 @@ public class AppUserServiceImpl implements AppUserService {
         return this.userMapper.mapAppUserEntityToDto(userOptional.get());
     }
 
+    /**
+     * Modifies the user's information.
+     *
+     * @param appUserDto the modified user information.
+     * @param id the identifier of the user you want to modify.
+     * @return the newly modified user's dto.
+     * @since 1.0
+     */
     @Override
     public AppUserDto modifyUserById(AppUserDto appUserDto, Long id) {
         Optional<AppUser> userOptional = this.userRepository.findById(id);
@@ -85,6 +116,13 @@ public class AppUserServiceImpl implements AppUserService {
         return this.userMapper.mapAppUserEntityToDto(updatedUser);
     }
 
+    /**
+     * Deletes a user by its id.
+     *
+     * @param id the identifier used for deleting a user.
+     * @return the recently deleted user's dto.
+     * @since 1.0
+     */
     @Override
     public AppUserDto deleteUserById(Long id) {
         Optional<AppUser> userOptional = this.userRepository.findById(id);

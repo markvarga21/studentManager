@@ -18,9 +18,20 @@ import java.io.StringWriter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+/**
+ * A custom exception handler for dealing with
+ * certain exceptions in the applications.
+ */
 @ControllerAdvice
 @Slf4j
 public class ApplicationExceptionHandler {
+    /**
+     * Handles if the user did not input the information correctly when using
+     * the application's endpoints.
+     *
+     * @param ex the exception caused by the invalid field value.
+     * @return a readable {@code ResponseEntity} containing useful information.
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -43,6 +54,12 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    /**
+     * Handles the exception if a user cannot be found in the application.
+     *
+     * @param ex the exception caused by not founding the user.
+     * @return a readable {@code ResponseEntity} containing useful information.
+     */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex) {
         log.error("User not found!");
@@ -56,6 +73,12 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    /**
+     * Handles if the format of the user's birthdate is invalid or not yet supported.
+     *
+     * @param ex the exception caused by incorrectly formatting the birthdate.
+     * @return a readable {@code ResponseEntity} containing useful information.
+     */
     @ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<Object> handleInvalidDateFormatException(DateTimeParseException ex) {
         log.error("Invalid date format!");
@@ -69,6 +92,13 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+
+    /**
+     * Handles the exception if the inputted gender is invalid.
+     *
+     * @param ex the exception caused by the invalid gender.
+     * @return a readable {@code ResponseEntity} containing useful information.
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Object> handleInvalidGenderException(HttpMessageNotReadableException ex) {
         String message = "Invalid gender type! Allowed gender types are: MALE or FEMALE";

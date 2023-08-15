@@ -21,7 +21,7 @@
 	</parent>
 	<groupId>com.markvarga21</groupId>
 	<artifactId>usermanager</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>usermanager</name>
 	<description>This project lets authorized users to manipulate (add, remove) users from/to the database which includes ID and face verification services.</description>
 	<properties>
@@ -68,6 +68,11 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0</version>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
