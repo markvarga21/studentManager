@@ -1,8 +1,6 @@
 package com.markvarga21.usermanager.dto;
 
-import com.markvarga21.usermanager.entity.Address;
 import com.markvarga21.usermanager.entity.Gender;
-import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

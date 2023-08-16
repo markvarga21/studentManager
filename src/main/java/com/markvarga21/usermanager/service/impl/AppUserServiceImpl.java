@@ -1,5 +1,7 @@
 package com.markvarga21.usermanager.service.impl;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.entity.AppUser;
 import com.markvarga21.usermanager.exception.OperationType;
@@ -15,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +33,7 @@ public class AppUserServiceImpl implements AppUserService {
     private final AppUserMapper userMapper;
     private final AddressMapper addressMapper;
     private final FormRecognizerService formRecognizerService;
+    private final Gson gson;
 
     /**
      * Retrieves all the users in the application.
@@ -51,21 +55,20 @@ public class AppUserServiceImpl implements AppUserService {
 
     /**
      * Saves a user in the application.
-     *
-     * @param appUserDto the user which you want to save in the application.
-     * @return the recently created user.
-     * @since 1.0
+     * /TODO
      */
     @Override
-    public AppUserDto createUser(AppUserDto appUserDto, MultipartFile idDocument) {
-        this.formRecognizerService.validateUser(appUserDto, idDocument);
-        AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
-        this.userRepository.save(userToSave);
+    public AppUserDto createUser(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson) {
+        AppUserDto appUserDto = this.gson.fromJson(appUserJson, AppUserDto.class);
+        System.out.println(appUserDto);
+//        this.formRecognizerService.validateUser(appUserDto, idDocument);
+//        AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
+//        this.userRepository.save(userToSave);
+//
+//        AppUserDto userDto = this.userMapper.mapAppUserEntityToDto(userToSave);
+//        log.info(String.format("Saving user: %s", userDto));
 
-        AppUserDto userDto = this.userMapper.mapAppUserEntityToDto(userToSave);
-        log.info(String.format("Saving user: %s", userDto));
-
-        return userDto;
+        return null;
     }
 
     /**

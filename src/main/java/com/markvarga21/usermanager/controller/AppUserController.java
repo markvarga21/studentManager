@@ -35,9 +35,7 @@ public class AppUserController {
 
     /**
      * Saves a user in the database and then returns it.
-     *
-     * @param appUserDto the user which has been stored.
-     * @return If used correctly, it sends back the saved user.
+     * // TOD
      */
     @PostMapping
     public ResponseEntity<AppUserDto> createUser(
@@ -45,11 +43,8 @@ public class AppUserController {
             @RequestParam("idDocument") MultipartFile selfiePhoto,
             @RequestParam("appUserJson") String appUserJson
     ) {
-//        AppUserDto createdUser = this.userService.createUser(appUserDto, idDocument);
-        System.out.println(idDocument == null);
-        System.out.println(selfiePhoto == null);
-        System.out.println(appUserJson);
 
+        AppUserDto createdUser = this.userService.createUser(idDocument, selfiePhoto, appUserJson);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
