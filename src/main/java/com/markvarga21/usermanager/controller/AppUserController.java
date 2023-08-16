@@ -41,10 +41,11 @@ public class AppUserController {
     public ResponseEntity<AppUserDto> createUser(
             @RequestParam("idDocument") MultipartFile idDocument,
             @RequestParam("idDocument") MultipartFile selfiePhoto,
-            @RequestParam("appUserJson") String appUserJson
+            @RequestParam("appUserJson") String appUserJson,
+            @RequestParam("identification") String identification
     ) {
 
-        AppUserDto createdUser = this.userService.createUser(idDocument, selfiePhoto, appUserJson);
+        AppUserDto createdUser = this.userService.createUser(idDocument, selfiePhoto, appUserJson, identification);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 

@@ -58,15 +58,14 @@ public class AppUserServiceImpl implements AppUserService {
      * /TODO
      */
     @Override
-    public AppUserDto createUser(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson) {
+    public AppUserDto createUser(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, String identification) {
         AppUserDto appUserDto = this.gson.fromJson(appUserJson, AppUserDto.class);
-        System.out.println(appUserDto);
-//        this.formRecognizerService.validateUser(appUserDto, idDocument);
-//        AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
-//        this.userRepository.save(userToSave);
-//
-//        AppUserDto userDto = this.userMapper.mapAppUserEntityToDto(userToSave);
-//        log.info(String.format("Saving user: %s", userDto));
+        this.formRecognizerService.validateUser(appUserDto, idDocument, identification);
+        AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
+        this.userRepository.save(userToSave);
+
+        AppUserDto userDto = this.userMapper.mapAppUserEntityToDto(userToSave);
+        log.info(String.format("Saving user: %s", userDto));
 
         return null;
     }

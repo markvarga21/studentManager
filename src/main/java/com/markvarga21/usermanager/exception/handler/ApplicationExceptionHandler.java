@@ -115,13 +115,13 @@ public class ApplicationExceptionHandler {
     }
 
     @ExceptionHandler(InvalidIdDocumentException.class)
-    public ResponseEntity<Object> handleInvalidIdDocumentException(UserNotFoundException ex) {
-        log.error("ID document not found!");
+    public ResponseEntity<Object> handleInvalidIdDocumentException(InvalidIdDocumentException ex) {
+        log.error(ex.getMessage());
         ApiError apiError = new ApiError(
                 new Date(),
                 HttpStatus.BAD_REQUEST,
-                "ID document not found!!",
-                ex.getOperationType(),
+                ex.getMessage(),
+                OperationType.CREATE,
                 getStackTraceAsString(ex)
         );
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());

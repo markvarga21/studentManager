@@ -20,7 +20,7 @@ public interface AppUserService {
      * Saves a user in the application.
      * //TODO
      */
-    AppUserDto createUser(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson);
+    AppUserDto createUser(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, String identification);
 
     /**
      * Retrieves a user from the application using its id.
