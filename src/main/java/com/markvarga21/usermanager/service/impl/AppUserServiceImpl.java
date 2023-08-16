@@ -6,12 +6,14 @@ import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.UserNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
 import com.markvarga21.usermanager.service.AppUserService;
+import com.markvarga21.usermanager.service.FormRecognizerService;
 import com.markvarga21.usermanager.util.mapping.AddressMapper;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +29,7 @@ public class AppUserServiceImpl implements AppUserService {
     private final AppUserRepository userRepository;
     private final AppUserMapper userMapper;
     private final AddressMapper addressMapper;
+    private final FormRecognizerService formRecognizerService;
 
     /**
      * Retrieves all the users in the application.
@@ -54,7 +57,8 @@ public class AppUserServiceImpl implements AppUserService {
      * @since 1.0
      */
     @Override
-    public AppUserDto createUser(AppUserDto appUserDto) {
+    public AppUserDto createUser(AppUserDto appUserDto, MultipartFile idDocument) {
+        this.formRecognizerService.validateUser(appUserDto, idDocument);
         AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
         this.userRepository.save(userToSave);
 

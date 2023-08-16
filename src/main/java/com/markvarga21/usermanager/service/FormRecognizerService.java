@@ -1,8 +1,10 @@
 package com.markvarga21.usermanager.service;
 
-import org.springframework.stereotype.Component;
+import com.markvarga21.usermanager.dto.AppUserDto;
+import org.springframework.web.multipart.MultipartFile;
 
-@Component
-public class FormRecognizerService {
+import java.io.IOException;
 
+public interface FormRecognizerService {
+    boolean validateUser(AppUserDto appUserDto, MultipartFile idDocument);
 }

@@ -1,6 +1,7 @@
 package com.markvarga21.usermanager.exception.handler;
 
 import com.markvarga21.usermanager.exception.ApiError;
+import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
 import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -108,6 +109,19 @@ public class ApplicationExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 message,
                 OperationType.CREATE,
+                getStackTraceAsString(ex)
+        );
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler(InvalidIdDocumentException.class)
+    public ResponseEntity<Object> handleInvalidIdDocumentException(UserNotFoundException ex) {
+        log.error("ID document not found!");
+        ApiError apiError = new ApiError(
+                new Date(),
+                HttpStatus.BAD_REQUEST,
+                "ID document not found!!",
+                ex.getOperationType(),
                 getStackTraceAsString(ex)
         );
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());

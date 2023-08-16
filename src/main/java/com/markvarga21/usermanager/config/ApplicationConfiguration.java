@@ -1,7 +1,7 @@
 package com.markvarga21.usermanager.config;
 
-import com.azure.ai.formrecognizer.documentanalysis.administration.DocumentModelAdministrationClient;
-import com.azure.ai.formrecognizer.documentanalysis.administration.DocumentModelAdministrationClientBuilder;
+import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClient;
+import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClientBuilder;
 import com.azure.core.credential.AzureKeyCredential;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +27,8 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public DocumentModelAdministrationClient getDocumentModelAdministrationClient() {
-        return new DocumentModelAdministrationClientBuilder()
+    public DocumentAnalysisClient getDocumentanalysisClient() {
+        return new DocumentAnalysisClientBuilder()
                 .credential(new AzureKeyCredential(this.formRecognizerKey))
                 .endpoint(this.formRecognizerEndpoint)
                 .buildClient();
