@@ -25,6 +25,12 @@ public class AddressDto {
     private String country;
 
     /**
+     * The city of the address.
+     */
+    @NotBlank(message = "Country cannot be empty!")
+    private String city;
+
+    /**
      * The street of the address.
      */
     @NotBlank(message = "Street cannot be empty!")

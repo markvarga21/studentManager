@@ -32,12 +32,9 @@ public interface AppUserService {
 
     /**
      * Modifies the user's information.
-     *
-     * @param appUserDto the modified user information.
-     * @param id the identifier of the user you want to modify.
-     * @return the newly modified user's dto.
+     * //TODO
      */
-    AppUserDto modifyUserById(AppUserDto appUserDto, Long id);
+    AppUserDto modifyUserById(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, Long userId, String identification);
 
     /**
      * Deletes a user by its id.

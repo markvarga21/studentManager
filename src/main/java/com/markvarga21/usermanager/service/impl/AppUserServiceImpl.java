@@ -67,7 +67,7 @@ public class AppUserServiceImpl implements AppUserService {
         AppUserDto userDto = this.userMapper.mapAppUserEntityToDto(userToSave);
         log.info(String.format("Saving user: %s", userDto));
 
-        return null;
+        return userDto;
     }
 
     /**
@@ -92,21 +92,20 @@ public class AppUserServiceImpl implements AppUserService {
 
     /**
      * Modifies the user's information.
-     *
-     * @param appUserDto the modified user information.
-     * @param id the identifier of the user you want to modify.
-     * @return the newly modified user's dto.
+     * //TODO
      * @since 1.0
      */
     @Override
-    public AppUserDto modifyUserById(AppUserDto appUserDto, Long id) {
-        Optional<AppUser> userOptional = this.userRepository.findById(id);
+    public AppUserDto modifyUserById(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, Long userId, String identification) {
+        Optional<AppUser> userOptional = this.userRepository.findById(userId);
         if (userOptional.isEmpty()) {
-            String message = String.format("User cant be modified! Cause: User not found with id: %d", id);
+            String message = String.format("User cant be modified! Cause: User not found with id: %d", userId);
             log.error(message);
             throw new UserNotFoundException(message, OperationType.UPDATE);
         }
         AppUser userToUpdate = userOptional.get();
+        AppUserDto appUserDto = this.gson.fromJson(appUserJson, AppUserDto.class);
+        this.formRecognizerService.validateUser(appUserDto, idDocument, identification);
         userToUpdate.setAddress(this.addressMapper.mapAddressDtoToEntity(appUserDto.getAddress()));
         userToUpdate.setEmail(appUserDto.getEmail());
         userToUpdate.setGender(appUserDto.getGender());
@@ -118,7 +117,7 @@ public class AppUserServiceImpl implements AppUserService {
         userToUpdate.setBirthDate(appUserDto.getBirthDate());
         AppUser updatedUser = this.userRepository.save(userToUpdate);
 
-        log.info(String.format("User with id %d modified successfully!", id));
+        log.info(String.format("User with id %d modified successfully!", userId));
         return this.userMapper.mapAppUserEntityToDto(updatedUser);
     }
 
