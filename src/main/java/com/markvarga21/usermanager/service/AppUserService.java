@@ -1,6 +1,7 @@
 package com.markvarga21.usermanager.service;
 
 import com.markvarga21.usermanager.dto.AppUserDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,11 +18,9 @@ public interface AppUserService {
 
     /**
      * Saves a user in the application.
-     *
-     * @param appUserDto the user which you want to save in the application.
-     * @return the recently created user.
+     * //TODO
      */
-    AppUserDto createUser(AppUserDto appUserDto);
+    AppUserDto createUser(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, String identification);
 
     /**
      * Retrieves a user from the application using its id.

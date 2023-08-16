@@ -1,5 +1,6 @@
 package com.markvarga21.usermanager.controller;
 
+import com.azure.core.annotation.QueryParam;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.service.AppUserService;
 import jakarta.validation.Valid;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -33,14 +35,18 @@ public class AppUserController {
 
     /**
      * Saves a user in the database and then returns it.
-     *
-     * @param appUserDto the user which has been stored.
-     * @return If used correctly, it sends back the saved user.
+     * // TOD
      */
     @PostMapping
-    public ResponseEntity<AppUserDto> createUser(@RequestBody @Valid AppUserDto appUserDto) {
-        AppUserDto createdUser = this.userService.createUser(appUserDto);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    public ResponseEntity<AppUserDto> createUser(
+            @RequestParam("idDocument") MultipartFile idDocument,
+            @RequestParam("idDocument") MultipartFile selfiePhoto,
+            @RequestParam("appUserJson") String appUserJson,
+            @RequestParam("identification") String identification
+    ) {
+
+        AppUserDto createdUser = this.userService.createUser(idDocument, selfiePhoto, appUserJson, identification);
+        return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     /**
