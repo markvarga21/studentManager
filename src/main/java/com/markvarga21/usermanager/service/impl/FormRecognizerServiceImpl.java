@@ -31,13 +31,12 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     private final DocumentAnalysisClient documentAnalysisClient;
 
     @Override
-    public boolean validateUser(AppUserDto appUserDto, MultipartFile idDocument, String identification) {
+    public void validateUser(AppUserDto appUserDto, MultipartFile idDocument, String identification) {
         if (!isValidIdContent(appUserDto, idDocument, identification)) {
             log.error("Invalid content!");
-            return false;
+            throw new InvalidIdDocumentException("Invalid content!");
         }
         log.info("Valid content!");
-        return true;
     }
 
     private Map<String, DocumentField> getFieldsFromDocument(MultipartFile idDocument) {
