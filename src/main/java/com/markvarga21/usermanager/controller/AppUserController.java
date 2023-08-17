@@ -20,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin
 public class AppUserController {
     private final AppUserService userService;
 
@@ -46,7 +47,7 @@ public class AppUserController {
     ) {
 
         AppUserDto createdUser = this.userService.createUser(idDocument, selfiePhoto, appUserJson, identification);
-        return new ResponseEntity<>(null, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     /**
@@ -63,14 +64,23 @@ public class AppUserController {
 
     /**
      * Updates a user and then retrieves it.
-     *
-     * @param appUserDto the user which has been modified.
-     * @param id the ID of the user which we want to modify.
-     * @return the newly updated user DTO object.
+     * //TODO
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<AppUserDto> updateUserById(@RequestBody AppUserDto appUserDto, @PathVariable Long id) {
-        AppUserDto updatedUser = this.userService.modifyUserById(appUserDto, id);
+    @PutMapping("/{userId}")
+    public ResponseEntity<AppUserDto> updateUserById(
+            @RequestParam("idDocument") MultipartFile idDocument,
+            @RequestParam("idDocument") MultipartFile selfiePhoto,
+            @RequestParam("appUserJson") String appUserJson,
+            @RequestParam("identification") String identification,
+            @PathVariable("userId") Long userId
+            ) {
+        AppUserDto updatedUser = this.userService.modifyUserById(
+                idDocument,
+                selfiePhoto,
+                appUserJson,
+                userId,
+                identification
+        );
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 

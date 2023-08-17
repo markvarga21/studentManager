@@ -29,6 +29,11 @@ public class Address {
     private String country;
 
     /**
+     * The city of the address.
+     */
+    private String city;
+
+    /**
      * The street of the address.
      */
     private String street;
