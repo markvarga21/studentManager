@@ -114,6 +114,12 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    /**
+     * Handles the exception if the ID document is invalid.
+     *
+     * @param ex the exception caused by the invalid ID document.
+     * @return a readable {@code ResponseEntity} containing useful information.
+     */
     @ExceptionHandler(InvalidIdDocumentException.class)
     public ResponseEntity<Object> handleInvalidIdDocumentException(InvalidIdDocumentException ex) {
         log.error(ex.getMessage());
@@ -127,6 +133,12 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    /**
+     * Extracts the exceptions stacktrace into a more readable {@code String} format.
+     *
+     * @param throwable the throwable object.
+     * @return the chained {@code String} representation of the stacktrace.
+     */
     private String getStackTraceAsString(Throwable throwable) {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);

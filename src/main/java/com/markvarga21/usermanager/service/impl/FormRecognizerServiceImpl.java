@@ -14,22 +14,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.Document;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 
+/**
+ * A service which is used to verify the data entered by the user to the data which
+ * can be found on either the uploaded ID document or passport. It uses Azure's Form
+ * Recognizer.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class FormRecognizerServiceImpl implements FormRecognizerService {
     private final DocumentAnalysisClient documentAnalysisClient;
 
+    /**
+     * A method which checks whether the data entered by the user is the same
+     * as in the uploaded ID document or passport.
+     *
+     * @param appUserDto the user which has to be validated.
+     * @param idDocument the ID document or passport of the user.
+     * @param identification the type of the document. Can be either 'passport' or 'idDocument'.
+     */
     @Override
     public void validateUser(AppUserDto appUserDto, MultipartFile idDocument, String identification) {
         if (!isValidIdContent(appUserDto, idDocument, identification)) {
@@ -39,6 +46,12 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         log.info("Valid content!");
     }
 
+    /**
+     * Extracts all the fields from the uploaded ID document.
+     *
+     * @param idDocument the uploaded ID document or passport.
+     * @return the extracted fields stored in a {@code Map}.
+     */
     private Map<String, DocumentField> getFieldsFromDocument(MultipartFile idDocument) {
         try {
             BinaryData binaryData = BinaryData.fromBytes(idDocument.getBytes());
@@ -56,6 +69,14 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         }
     }
 
+    /**
+     * Checks if the content of the user's inputted data matched the data on the ID document.
+     *
+     * @param appUserDto the user which has to be validated.
+     * @param idDocument the identification document which can be ID card of passport.
+     * @param identification the identification type. Can be 'idDocument' or 'passport'.
+     * @return {@code true} if all the data in the form matches the data on extracted from the ID document.
+     */
     private boolean isValidIdContent(AppUserDto appUserDto, MultipartFile idDocument, String identification) {
         var fields = getFieldsFromDocument(idDocument);
         String firstName = fields.get("FirstName").getContent();
@@ -118,10 +139,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             }
         }
 
-        return true;
-    }
-
-    private boolean isValidSelfieForId(MultipartFile idDocument, MultipartFile selfiePhoto) {
         return true;
     }
 }

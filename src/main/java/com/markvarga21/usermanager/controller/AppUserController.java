@@ -1,9 +1,7 @@
 package com.markvarga21.usermanager.controller;
 
-import com.azure.core.annotation.QueryParam;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.service.AppUserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,8 +33,13 @@ public class AppUserController {
     }
 
     /**
-     * Saves a user in the database and then returns it.
-     * // TOD
+     * Saves and validates a user in the database and then returns it.
+     *
+     * @param idDocument a photo of the users ID card or passport.
+     * @param selfiePhoto a selfie photo for verifying identity.
+     * @param appUserJson the user itself in a JSON string.
+     * @param identification the identification type which can be either 'passport' or 'idDocument'.
+     * @return the saved {@code AppUserDto}.
      */
     @PostMapping
     public ResponseEntity<AppUserDto> createUser(
@@ -64,7 +67,12 @@ public class AppUserController {
 
     /**
      * Updates a user and then retrieves it.
-     * //TODO
+     *
+     * @param idDocument a photo of the users ID card or passport.
+     * @param selfiePhoto a selfie photo for verifying identity.
+     * @param appUserJson the user itself in a JSON string.
+     * @param identification the identification type which can be either 'passport' or 'idDocument'.
+     * @return the updated {@code AppUserDto}.
      */
     @PutMapping("/{userId}")
     public ResponseEntity<AppUserDto> updateUserById(

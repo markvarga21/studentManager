@@ -54,8 +54,13 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     /**
-     * Saves a user in the application.
-     * /TODO
+     * Validates  and then persists the user into the database.
+     *
+     * @param idDocument a photo of the users ID card or passport.
+     * @param selfiePhoto a selfie photo for verifying identity.
+     * @param appUserJson the user itself in a JSON string.
+     * @param identification the identification type which can be either 'passport' or 'idDocument'.
+     * @return the updated {@code AppUserDto}.
      */
     @Override
     public AppUserDto createUser(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, String identification) {
@@ -91,8 +96,13 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     /**
-     * Modifies the user's information.
-     * //TODO
+     * Validates and then modifies the user's information.
+     *
+     * @param idDocument a photo of the users ID card or passport.
+     * @param selfiePhoto a selfie photo for verifying identity.
+     * @param appUserJson the user itself in a JSON string.
+     * @param identification the identification type which can be either 'passport' or 'idDocument'.
+     * @return the updated {@code AppUserDto}.
      * @since 1.0
      */
     @Override

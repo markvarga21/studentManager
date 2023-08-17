@@ -34,6 +34,11 @@ public class ApplicationConfiguration {
         return new ModelMapper();
     }
 
+    /**
+     * A bean for setting up the ID document analysis.
+     *
+     * @return the already sat up {@code DocumentAnalysisClient}.
+     */
     @Bean
     public DocumentAnalysisClient getDocumentanalysisClient() {
         return new DocumentAnalysisClientBuilder()
@@ -42,6 +47,11 @@ public class ApplicationConfiguration {
                 .buildClient();
     }
 
+    /**
+     * A bean created for deserializing user JSON strings into POJO.
+     *
+     * @return the built {@code Gson} object.
+     */
     @Bean
     public Gson getGsonDeserializer() {
         return new GsonBuilder()
