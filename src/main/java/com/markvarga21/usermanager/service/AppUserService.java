@@ -17,8 +17,13 @@ public interface AppUserService {
     List<AppUserDto> getAllUsers();
 
     /**
-     * Saves a user in the application.
-     * //TODO
+     * Validates and then persists a user in the database.
+     *
+     * @param idDocument a photo of the ID document or passport.
+     * @param selfiePhoto a selfie file of the user.
+     * @param appUserJson the user itself with the new data.
+     * @param identification the identification type ('idDocument' or 'passport').
+     * @return the newly modified user.
      */
     AppUserDto createUser(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, String identification);
 
@@ -31,8 +36,14 @@ public interface AppUserService {
     AppUserDto getUserById(Long id);
 
     /**
-     * Modifies the user's information.
-     * //TODO
+     * Modifies the user identified by its id.
+     *
+     * @param idDocument a photo of the ID document or passport.
+     * @param selfiePhoto a selfie file of the user.
+     * @param appUserJson the user itself with the new data.
+     * @param userId the id of the user we want to modify.
+     * @param identification the identification type ('idDocument' or 'passport').
+     * @return the newly modified user.
      */
     AppUserDto modifyUserById(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, Long userId, String identification);
 

@@ -1,4 +1,4 @@
-package com.markvarga21.usermanager.service.impl;
+package com.markvarga21.usermanager.service.azure.impl;
 
 import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClient;
 import com.azure.ai.formrecognizer.documentanalysis.models.AnalyzeResult;
@@ -8,7 +8,7 @@ import com.azure.core.util.BinaryData;
 import com.azure.core.util.polling.SyncPoller;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
-import com.markvarga21.usermanager.service.FormRecognizerService;
+import com.markvarga21.usermanager.service.azure.FormRecognizerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -8,7 +8,8 @@ import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.UserNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
 import com.markvarga21.usermanager.service.AppUserService;
-import com.markvarga21.usermanager.service.FormRecognizerService;
+import com.markvarga21.usermanager.service.azure.FormRecognizerService;
+import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import com.markvarga21.usermanager.util.mapping.AddressMapper;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import jakarta.transaction.Transactional;
@@ -40,6 +41,7 @@ public class AppUserServiceImpl implements AppUserService {
     private final AddressMapper addressMapper;
     private final FormRecognizerService formRecognizerService;
     private final Gson gson;
+    private final FaceApiService faceApiService;
 
     /**
      * Retrieves all the users in the application.
@@ -85,6 +87,7 @@ public class AppUserServiceImpl implements AppUserService {
         }
 
         this.formRecognizerService.validateUser(appUserDto, idDocument, identification);
+        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
         AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
         this.userRepository.save(userToSave);
 
@@ -148,6 +151,7 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser userToUpdate = userOptional.get();
         AppUserDto appUserDto = this.gson.fromJson(appUserJson, AppUserDto.class);
         this.formRecognizerService.validateUser(appUserDto, idDocument, identification);
+        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
         userToUpdate.setAddress(this.addressMapper.mapAddressDtoToEntity(appUserDto.getAddress()));
         userToUpdate.setEmail(appUserDto.getEmail());
         userToUpdate.setGender(appUserDto.getGender());

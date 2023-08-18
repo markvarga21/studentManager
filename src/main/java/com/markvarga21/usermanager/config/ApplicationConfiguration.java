@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 
@@ -60,5 +61,15 @@ public class ApplicationConfiguration {
         return new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, this.localDateDeserializer)
                 .create();
+    }
+
+    /**
+     * A bean created for talking with the Face API.
+     *
+     * @return the created bean.
+     */
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
     }
 }

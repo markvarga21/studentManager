@@ -1,4 +1,4 @@
-package com.markvarga21.usermanager.service;
+package com.markvarga21.usermanager.service.azure;
 
 import com.markvarga21.usermanager.dto.AppUserDto;
 import jakarta.validation.Valid;

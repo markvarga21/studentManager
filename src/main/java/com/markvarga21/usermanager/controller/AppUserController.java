@@ -2,6 +2,7 @@ package com.markvarga21.usermanager.controller;
 
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.service.AppUserService;
+import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ public class AppUserController {
      * App user service.
      */
     private final AppUserService userService;
+    private final FaceApiService faceApiService;
 
     /**
      * Retrieves all users which are present in the application.
@@ -47,7 +49,7 @@ public class AppUserController {
     @PostMapping
     public ResponseEntity<AppUserDto> createUser(
             @RequestParam("idDocument") MultipartFile idDocument,
-            @RequestParam("idDocument") MultipartFile selfiePhoto,
+            @RequestParam("selfiePhoto") MultipartFile selfiePhoto,
             @RequestParam("appUserJson") String appUserJson,
             @RequestParam("identification") String identification
     ) {
@@ -86,7 +88,7 @@ public class AppUserController {
     @PutMapping("/{userId}")
     public ResponseEntity<AppUserDto> updateUserById(
             @RequestParam("idDocument") MultipartFile idDocument,
-            @RequestParam("idDocument") MultipartFile selfiePhoto,
+            @RequestParam("selfiePhoto") MultipartFile selfiePhoto,
             @RequestParam("appUserJson") String appUserJson,
             @RequestParam("identification") String identification,
             @PathVariable("userId") Long userId
