@@ -19,7 +19,7 @@ public class AppUserDto {
     /**
      * A unique identifier for the user.
      */
-    private Long Id;
+    private Long id;
 
     /**
      * The first name of the user.
@@ -76,7 +76,7 @@ public class AppUserDto {
     /**
      * The user's phone number.
      */
-    @Pattern(regexp="(^$|[0-9]{10})", message = "Invalid phone number!")
+    @Pattern(regexp = "(^$|[0-9]{10})", message = "Invalid phone number!")
     @NotBlank(message = "Phone number cannot be empty!")
     private String phoneNumber;
 }

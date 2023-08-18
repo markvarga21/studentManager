@@ -1,9 +1,9 @@
 package com.markvarga21.usermanager.service.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.entity.AppUser;
+import com.markvarga21.usermanager.exception.InvalidUserException;
 import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.UserNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +28,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class AppUserServiceImpl implements AppUserService {
+    /**
+     * Repository for app users.
+     */
     private final AppUserRepository userRepository;
+
+    /**
+     * A
+     */
     private final AppUserMapper userMapper;
     private final AddressMapper addressMapper;
     private final FormRecognizerService formRecognizerService;
@@ -65,6 +71,19 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public AppUserDto createUser(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, String identification) {
         AppUserDto appUserDto = this.gson.fromJson(appUserJson, AppUserDto.class);
+
+        String firstName = appUserDto.getFirstName();
+        String lastName = appUserDto.getLastName();
+        if (!validNames(firstName, lastName)) {
+            String message = String.format(
+                    "'%s' first name and '%s' last name is already in use!",
+                    firstName,
+                    lastName
+            );
+            log.error(message);
+            throw new InvalidUserException(message);
+        }
+
         this.formRecognizerService.validateUser(appUserDto, idDocument, identification);
         AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
         this.userRepository.save(userToSave);
@@ -73,6 +92,19 @@ public class AppUserServiceImpl implements AppUserService {
         log.info(String.format("Saving user: %s", userDto));
 
         return userDto;
+    }
+
+    /**
+     * Checks whether is or not a user with the same first and last name
+     * in the database.
+     *
+     * @param firstName the first name of the user.
+     * @param lastName the last name of the user.
+     * @return {@code true} if there is no other user with the same name, else {@code false}.
+     */
+    private boolean validNames(String firstName, String lastName) {
+        Optional<AppUser> appUser = this.userRepository.findAppUserByFirstNameAndLastName(firstName, lastName);
+        return appUser.isEmpty();
     }
 
     /**

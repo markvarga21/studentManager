@@ -20,6 +20,9 @@ import java.time.LocalDate;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfiguration {
+    /**
+     * The Azure's Form Recognizers services key.
+     */
     @Value("${form.recognizer.key}")
     private String formRecognizerKey;
     @Value("${form.recognizer.endpoint}")

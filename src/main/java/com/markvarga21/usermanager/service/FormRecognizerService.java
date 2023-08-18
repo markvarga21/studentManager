@@ -1,6 +1,7 @@
 package com.markvarga21.usermanager.service;
 
 import com.markvarga21.usermanager.dto.AppUserDto;
+import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -15,5 +16,5 @@ public interface FormRecognizerService {
      * @param idDocument the ID document or passport.
      * @param identification the identification type. Can be either 'idDocument' or 'passport'.
      */
-    void validateUser(AppUserDto appUserDto, MultipartFile idDocument, String identification);
+    void validateUser(@Valid AppUserDto appUserDto, MultipartFile idDocument, String identification);
 }

@@ -20,6 +20,9 @@ import java.util.List;
 @Slf4j
 @CrossOrigin
 public class AppUserController {
+    /**
+     * App user service.
+     */
     private final AppUserService userService;
 
     /**
@@ -38,7 +41,7 @@ public class AppUserController {
      * @param idDocument a photo of the users ID card or passport.
      * @param selfiePhoto a selfie photo for verifying identity.
      * @param appUserJson the user itself in a JSON string.
-     * @param identification the identification type which can be either 'passport' or 'idDocument'.
+     * @param identification the ID type ('passport' or 'idDocument').
      * @return the saved {@code AppUserDto}.
      */
     @PostMapping
@@ -49,7 +52,12 @@ public class AppUserController {
             @RequestParam("identification") String identification
     ) {
 
-        AppUserDto createdUser = this.userService.createUser(idDocument, selfiePhoto, appUserJson, identification);
+        AppUserDto createdUser = this.userService.createUser(
+                idDocument,
+                selfiePhoto,
+                appUserJson,
+                identification
+        );
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
@@ -71,7 +79,8 @@ public class AppUserController {
      * @param idDocument a photo of the users ID card or passport.
      * @param selfiePhoto a selfie photo for verifying identity.
      * @param appUserJson the user itself in a JSON string.
-     * @param identification the identification type which can be either 'passport' or 'idDocument'.
+     * @param identification the ID type ('passport' or 'idDocument').
+     * @param userId the ID of the user which has to be updated.
      * @return the updated {@code AppUserDto}.
      */
     @PutMapping("/{userId}")

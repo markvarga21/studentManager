@@ -9,9 +9,11 @@ import com.azure.core.util.polling.SyncPoller;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
 import com.markvarga21.usermanager.service.FormRecognizerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,6 +28,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class FormRecognizerServiceImpl implements FormRecognizerService {
     private final DocumentAnalysisClient documentAnalysisClient;
 
@@ -38,7 +41,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * @param identification the type of the document. Can be either 'passport' or 'idDocument'.
      */
     @Override
-    public void validateUser(AppUserDto appUserDto, MultipartFile idDocument, String identification) {
+    public void validateUser(@Valid AppUserDto appUserDto, MultipartFile idDocument, String identification) {
         if (!isValidIdContent(appUserDto, idDocument, identification)) {
             log.error("Invalid content!");
             throw new InvalidIdDocumentException("Invalid content!");
@@ -77,7 +80,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * @param identification the identification type. Can be 'idDocument' or 'passport'.
      * @return {@code true} if all the data in the form matches the data on extracted from the ID document.
      */
-    private boolean isValidIdContent(AppUserDto appUserDto, MultipartFile idDocument, String identification) {
+    private boolean isValidIdContent(@Valid AppUserDto appUserDto, MultipartFile idDocument, String identification) {
         var fields = getFieldsFromDocument(idDocument);
         String firstName = fields.get("FirstName").getContent();
         String lastName = fields.get("LastName").getContent();
@@ -125,7 +128,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
 
         if (identification.equalsIgnoreCase("passport")) {
             DocumentField nationality = fields.get("Nationality");
-            System.out.println(nationality == null);
             if (nationality == null) {
                 throw new InvalidIdDocumentException("Nationality not present or not readable!");
             }
