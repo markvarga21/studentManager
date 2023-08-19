@@ -5,7 +5,11 @@ package com.markvarga21.usermanager.exception;
  * processing the ID document or passport.
  */
 public class InvalidIdDocumentException extends RuntimeException {
-    public InvalidIdDocumentException(String message) {
+    /**
+     * Constructor with a message as parameter.
+     * @param message the custom message.
+     */
+    public InvalidIdDocumentException(final String message) {
         super(message);
     }
 }

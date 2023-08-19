@@ -5,5 +5,20 @@ package com.markvarga21.usermanager.exception;
  * thus causing an exception to raise.
  */
 public enum OperationType {
-    CREATE, READ, UPDATE, DELETE
+    /**
+     * An operations which involves creating an object.
+     */
+    CREATE,
+    /**
+     * An operations which involves reading an object.
+     */
+    READ,
+    /**
+     * An operations which involves updating an object.
+     */
+    UPDATE,
+    /**
+     * An operations which involves deleting an object.
+     */
+    DELETE
 }

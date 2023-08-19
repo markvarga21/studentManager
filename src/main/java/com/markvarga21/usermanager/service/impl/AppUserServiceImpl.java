@@ -126,7 +126,7 @@ public class AppUserServiceImpl implements AppUserService {
      * @return {@code true} if there is no other user
      * with the same name, else {@code false}.
      */
-    private boolean validNames(
+    public boolean validNames(
             final String firstName,
             final String lastName
     ) {
