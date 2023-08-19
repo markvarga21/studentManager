@@ -62,7 +62,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * @param idDocument the uploaded ID document or passport.
      * @return the extracted fields stored in a {@code Map}.
      */
-    private Map<String, DocumentField> getFieldsFromDocument(
+    public Map<String, DocumentField> getFieldsFromDocument(
             final MultipartFile idDocument
     ) {
         try {
@@ -94,7 +94,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * @return {@code true} if all the data in the form matches
      * the data on extracted from the ID document.
      */
-    private boolean isValidIdContent(
+    public boolean isValidIdContent(
             @Valid final AppUserDto appUserDto,
             final MultipartFile idDocument,
             final String identification

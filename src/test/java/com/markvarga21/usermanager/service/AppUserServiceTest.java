@@ -21,9 +21,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.markvarga21.usermanager.util.FileFetcher.getFileForName;
-import static com.markvarga21.usermanager.util.MockDataProvider.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static com.markvarga21.usermanager.util.MockDataProvider.MOCK_USER_JSON;
+import static com.markvarga21.usermanager.util.MockDataProvider.getStaticAppUser;
+import static com.markvarga21.usermanager.util.MockDataProvider.getStaticAppUserDto;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -31,21 +37,45 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The app user service tester class.
+ */
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 class AppUserServiceTest {
+    /**
+     * The app user service mock object.
+     */
     @InjectMocks
     private AppUserServiceImpl appUserService;
+    /**
+     * The app user repository.
+     */
     @Mock
     private AppUserRepository appUserRepository;
+    /**
+     * The app user mapper.
+     */
     @Mock
     private AppUserMapper appUserMapper;
+    /**
+     * The address mapper.
+     */
     @Mock
     private AddressMapper addressMapper;
+    /**
+     * The form recognizer service.
+     */
     @Mock
     private FormRecognizerService formRecognizerService;
+    /**
+     * The GSON deserializer.
+     */
     @Mock
     private Gson gson;
+    /**
+     * The Face API service.
+     */
     @Mock
     private FaceApiService faceApiService;
 
@@ -57,8 +87,10 @@ class AppUserServiceTest {
         List<AppUserDto> expected = List.of(appUserDto);
 
         // When
-        when(this.appUserRepository.findAll()).thenReturn(List.of(appUser));
-        when(this.appUserMapper.mapAppUserEntityToDto(any())).thenReturn(appUserDto);
+        when(this.appUserRepository.findAll())
+                .thenReturn(List.of(appUser));
+        when(this.appUserMapper.mapAppUserEntityToDto(any()))
+                .thenReturn(appUserDto);
         List<AppUserDto> actual = this.appUserService.getAllUsers();
 
         // Then
@@ -76,13 +108,22 @@ class AppUserServiceTest {
         String idType = "idDocument";
 
         // When
-        when(this.gson.fromJson(userJson, AppUserDto.class)).thenReturn(appUserDto);
-        when(this.appUserMapper.mapAppUserDtoToEntity(appUserDto)).thenReturn(appUser);
-        when(this.appUserMapper.mapAppUserEntityToDto(appUser)).thenReturn(appUserDto);
-        doNothing().when(this.formRecognizerService).validateUser(eq(appUserDto), any(), anyString());
-        doNothing().when(this.faceApiService).facesAreMatching(any(), any());
-        when(this.appUserRepository.save(appUser)).thenReturn(appUser);
-        AppUserDto actual = this.appUserService.createUser(idDocument, selfiePhoto, userJson, idType);
+        when(this.gson.fromJson(userJson, AppUserDto.class))
+                .thenReturn(appUserDto);
+        when(this.appUserMapper.mapAppUserDtoToEntity(appUserDto))
+                .thenReturn(appUser);
+        when(this.appUserMapper.mapAppUserEntityToDto(appUser))
+                .thenReturn(appUserDto);
+        doNothing()
+                .when(this.formRecognizerService)
+                .validateUser(eq(appUserDto), any(), anyString());
+        doNothing()
+                .when(this.faceApiService)
+                .facesAreMatching(any(), any());
+        when(this.appUserRepository.save(appUser))
+                .thenReturn(appUser);
+        AppUserDto actual = this.appUserService
+                .createUser(idDocument, selfiePhoto, userJson, idType);
 
         // Then
         assertEquals(appUserDto, actual);
@@ -101,12 +142,16 @@ class AppUserServiceTest {
         String lastName = appUserDto.getLastName();
 
         // When
-        when(this.gson.fromJson(userJson, AppUserDto.class)).thenReturn(appUserDto);
-        when(this.appUserRepository.findAppUserByFirstNameAndLastName(firstName, lastName)).thenReturn(Optional.of(appUser));
+        when(this.gson.fromJson(userJson, AppUserDto.class))
+                .thenReturn(appUserDto);
+        when(this.appUserRepository
+                .findAppUserByFirstNameAndLastName(firstName, lastName))
+                .thenReturn(Optional.of(appUser));
 
         // Then
         assertThrows(InvalidUserException.class,
-                () -> this.appUserService.createUser(idDocument, selfiePhoto, userJson, idType)
+                () -> this.appUserService
+                        .createUser(idDocument, selfiePhoto, userJson, idType)
         );
     }
 
@@ -118,7 +163,9 @@ class AppUserServiceTest {
         boolean expected = false;
 
         // When
-        when(this.appUserRepository.findAppUserByFirstNameAndLastName(firstName, lastName)).thenReturn(Optional.of(getStaticAppUser()));
+        when(this.appUserRepository
+                .findAppUserByFirstNameAndLastName(firstName, lastName))
+                .thenReturn(Optional.of(getStaticAppUser()));
         boolean actual = this.appUserService.validNames(firstName, lastName);
 
         // Then
@@ -133,7 +180,10 @@ class AppUserServiceTest {
         boolean expected = true;
 
         // When
-        when(this.appUserRepository.findAppUserByFirstNameAndLastName(firstName, lastName)).thenReturn(Optional.empty());
+        when(this.appUserRepository.findAppUserByFirstNameAndLastName(
+                firstName, lastName
+        ))
+                .thenReturn(Optional.empty());
         boolean actual = this.appUserService.validNames(firstName, lastName);
 
         // Then
@@ -148,8 +198,10 @@ class AppUserServiceTest {
         Long id = appUser.getId();
 
         // When
-        when(this.appUserRepository.findById(id)).thenReturn(Optional.of(appUser));
-        when(this.appUserMapper.mapAppUserEntityToDto(appUser)).thenReturn(appUserDto);
+        when(this.appUserRepository.findById(id))
+                .thenReturn(Optional.of(appUser));
+        when(this.appUserMapper.mapAppUserEntityToDto(appUser))
+                .thenReturn(appUserDto);
         AppUserDto actual = this.appUserService.getUserById(id);
 
         // Then
@@ -160,7 +212,6 @@ class AppUserServiceTest {
     void getUserByIdShouldThrowExceptionWhenUserIsNotPresentTest() {
         // Given
         AppUser appUser = getStaticAppUser();
-        AppUserDto appUserDto = getStaticAppUserDto();
         Long id = appUser.getId();
 
         // When
@@ -186,15 +237,28 @@ class AppUserServiceTest {
         String userJson = MOCK_USER_JSON;
 
         // When
-        when(this.appUserRepository.findById(id)).thenReturn(Optional.of(appUser));
-        when(this.gson.fromJson(userJson, AppUserDto.class)).thenReturn(expected);
-        doNothing().when(this.formRecognizerService).validateUser(eq(expected), any(), anyString());
-        doNothing().when(this.faceApiService).facesAreMatching(any(), any());
-        when(this.addressMapper.mapAddressDtoToEntity(expected.getAddress())).thenReturn(address);
-        when(this.addressMapper.mapAddressDtoToEntity(expected.getPlaceOfBirth())).thenReturn(birthAddress);
-        when(this.appUserRepository.save(appUser)).thenReturn(appUser);
-        when(this.appUserMapper.mapAppUserEntityToDto(appUser)).thenReturn(expected);
-        AppUserDto actual = this.appUserService.modifyUserById(idDocument, selfiePhoto, userJson, id, idType);
+        when(this.appUserRepository.findById(id))
+                .thenReturn(Optional.of(appUser));
+        when(this.gson.fromJson(userJson, AppUserDto.class))
+                .thenReturn(expected);
+        doNothing()
+                .when(this.formRecognizerService)
+                .validateUser(eq(expected), any(), anyString());
+        doNothing()
+                .when(this.faceApiService)
+                .facesAreMatching(any(), any());
+        when(this.addressMapper.mapAddressDtoToEntity(expected.getAddress()))
+                .thenReturn(address);
+        when(this.addressMapper.mapAddressDtoToEntity(
+                expected.getPlaceOfBirth())
+        )
+                .thenReturn(birthAddress);
+        when(this.appUserRepository.save(appUser))
+                .thenReturn(appUser);
+        when(this.appUserMapper.mapAppUserEntityToDto(appUser))
+                .thenReturn(expected);
+        AppUserDto actual = this.appUserService
+                .modifyUserById(idDocument, selfiePhoto, userJson, id, idType);
 
         // Then
         assertSame(expected, actual);
@@ -208,14 +272,19 @@ class AppUserServiceTest {
         MultipartFile idDocument = getFileForName("huId.jpg");
         MultipartFile selfiePhoto = getFileForName("huFace.png");
         String idType = "idDocument";
-        String userJson = MOCK_USER_JSON;
 
         // When
         when(this.appUserRepository.findById(id)).thenReturn(Optional.empty());
 
         // Then
         assertThrows(UserNotFoundException.class,
-                () -> this.appUserService.modifyUserById(idDocument, selfiePhoto, userJson, id, idType)
+                () -> this.appUserService.modifyUserById(
+                        idDocument,
+                        selfiePhoto,
+                        MOCK_USER_JSON,
+                        id,
+                        idType
+                )
         );
     }
 
@@ -227,9 +296,13 @@ class AppUserServiceTest {
         Long id = appUser.getId();
 
         // When
-        when(this.appUserRepository.findById(id)).thenReturn(Optional.of(appUser));
-        when(this.appUserMapper.mapAppUserEntityToDto(appUser)).thenReturn(expected);
-        doNothing().when(this.appUserRepository).deleteById(id);
+        when(this.appUserRepository.findById(id))
+                .thenReturn(Optional.of(appUser));
+        when(this.appUserMapper.mapAppUserEntityToDto(appUser))
+                .thenReturn(expected);
+        doNothing()
+                .when(this.appUserRepository)
+                .deleteById(id);
         AppUserDto actual = this.appUserService.deleteUserById(id);
 
         // Then

@@ -8,14 +8,42 @@ import com.markvarga21.usermanager.entity.Gender;
 
 import java.time.LocalDate;
 
+/**
+ * A class which contains static mock data
+ * for testing purposes.
+ */
 public final class MockDataProvider {
+    /**
+     * Static mock year for the birthdate.
+     */
     public static final int MOCK_YEAR = 1990;
+    /**
+     * Static mock month for the birthdate.
+     */
     public static final int MOCK_MONTH = 5;
+    /**
+     * Static mock day for the birthdate.
+     */
     public static final int MOCK_DAY = 10;
+    /**
+     * Static mock country for the address.
+     */
     public static final String MOCK_COUNTRY = "Hungary";
+    /**
+     * Static mock city for the address.
+     */
     public static final String MOCK_CITY = "Debrecen";
+    /**
+     * Static mock street for the address.
+     */
     public static final String MOCK_STREET = "Piac";
+    /**
+     * Static mock number for the address.
+     */
     public static final Integer MOCK_NUMBER = 10;
+    /**
+     * Static mock user.
+     */
     public static final String MOCK_USER_JSON = """
                 {
                     "id": 2,
@@ -41,13 +69,25 @@ public final class MockDataProvider {
                     "email": "john.doe@gmail.com",
                     "phoneNumber": "123456789"
                 }""";
-    private MockDataProvider() {
+    private MockDataProvider() { }
 
-    }
-
+    /**
+     * Builds an app user entity and then returns it.
+     * @return the statically built user entity.
+     */
     public static AppUser getStaticAppUser() {
-        Address birthPlace = new Address(1L, MOCK_COUNTRY, MOCK_CITY, MOCK_STREET, MOCK_NUMBER);
-        Address address = new Address(2L, MOCK_COUNTRY, MOCK_CITY, MOCK_STREET, MOCK_NUMBER);
+        Address birthPlace = Address.builder()
+                .id(1L)
+                .country(MOCK_COUNTRY)
+                .city(MOCK_CITY)
+                .street(MOCK_STREET)
+                .number(MOCK_NUMBER).build();
+        Address address = Address.builder()
+                .id(2L)
+                .country(MOCK_COUNTRY)
+                .city(MOCK_CITY)
+                .street(MOCK_STREET)
+                .number(MOCK_NUMBER).build();
         LocalDate birthDate = LocalDate.of(MOCK_YEAR, MOCK_MONTH, MOCK_DAY);
         String nationality = "american";
         String firstName = "John";
@@ -56,23 +96,36 @@ public final class MockDataProvider {
         Gender gender = Gender.MALE;
         String email = "john.doe@gmail.com";
         String phoneNumber = "123456789";
-        return new AppUser(
-                id,
-                firstName,
-                lastName,
-                birthDate,
-                birthPlace,
-                nationality,
-                gender,
-                address,
-                email,
-                phoneNumber
-        );
+        return AppUser.builder()
+                .id(id)
+                .firstName(firstName)
+                .lastName(lastName)
+                .birthDate(birthDate)
+                .placeOfBirth(birthPlace)
+                .address(address)
+                .gender(gender)
+                .nationality(nationality)
+                .email(email)
+                .phoneNumber(phoneNumber).build();
     }
 
+    /**
+     * Builds an app user DTO and then returns it.
+     * @return the statically built user DTO.
+     */
     public static AppUserDto getStaticAppUserDto() {
-        AddressDto birthPlace = new AddressDto(1L, MOCK_COUNTRY, MOCK_CITY, MOCK_STREET, MOCK_NUMBER);
-        AddressDto address = new AddressDto(2L, MOCK_COUNTRY, MOCK_CITY, MOCK_STREET, MOCK_NUMBER);
+        AddressDto birthPlace = AddressDto.builder()
+                .id(1L)
+                .country(MOCK_COUNTRY)
+                .city(MOCK_CITY)
+                .street(MOCK_STREET)
+                .number(MOCK_NUMBER).build();
+        AddressDto address = AddressDto.builder()
+                .id(2L)
+                .country(MOCK_COUNTRY)
+                .city(MOCK_CITY)
+                .street(MOCK_STREET)
+                .number(MOCK_NUMBER).build();
         LocalDate birthDate = LocalDate.of(MOCK_YEAR, MOCK_MONTH, MOCK_DAY);
         String nationality = "american";
         String firstName = "John";
@@ -81,17 +134,16 @@ public final class MockDataProvider {
         Gender gender = Gender.MALE;
         String email = "john.doe@gmail.com";
         String phoneNumber = "123456789";
-        return new AppUserDto(
-                id,
-                firstName,
-                lastName,
-                birthDate,
-                birthPlace,
-                nationality,
-                gender,
-                address,
-                email,
-                phoneNumber
-        );
+        return AppUserDto.builder()
+                .id(id)
+                .firstName(firstName)
+                .lastName(lastName)
+                .birthDate(birthDate)
+                .placeOfBirth(birthPlace)
+                .address(address)
+                .gender(gender)
+                .nationality(nationality)
+                .email(email)
+                .phoneNumber(phoneNumber).build();
     }
 }
