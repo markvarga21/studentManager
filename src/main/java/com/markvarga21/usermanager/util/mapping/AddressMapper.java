@@ -13,25 +13,19 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class AddressMapper {
+    /**
+     * A model mapper for mapping entities to DTOs
+     * and backwards.
+     */
     private final ModelMapper mapper;
 
     /**
      * Maps an {@code AddressDto} to an {@code Address} entity.
      *
-     * @param addressDto the DTO object to be mapped to an {@code Address} entity class.
+     * @param addressDto the DTO object to be mapped to an entity class.
      * @return the converted {@code Address} entity.
      */
-    public Address mapAddressDtoToEntity(AddressDto addressDto) {
+    public Address mapAddressDtoToEntity(final AddressDto addressDto) {
         return this.mapper.map(addressDto, Address.class);
-    }
-
-    /**
-     * Maps an {@code Address} entity to an {@code AddressDto}.
-     *
-     * @param address the entity object to be mapped to an {@code AddressDto} class.
-     * @return the converted {@code AddressDto}.
-     */
-    public AddressDto mapAddressEntityToDto(Address address) {
-        return this.mapper.map(address, AddressDto.class);
     }
 }

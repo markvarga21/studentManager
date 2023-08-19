@@ -13,25 +13,28 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class AppUserMapper {
+    /**
+     * A model mapper.
+     */
     private final ModelMapper mapper;
 
     /**
      * Maps an {@code AppUserDto} to an {@code AppUser} entity.
      *
-     * @param appUserDto the DTO object to be mapped to an {@code AppUser} entity class.
+     * @param appUserDto the DTO object to be mapped to an entity class.
      * @return the converted {@code AppUser} entity.
      */
-    public AppUser mapAppUserDtoToEntity(AppUserDto appUserDto) {
+    public AppUser mapAppUserDtoToEntity(final AppUserDto appUserDto) {
         return this.mapper.map(appUserDto, AppUser.class);
     }
 
     /**
      * Maps an {@code AppUser} entity to an {@code AppUserDto}.
      *
-     * @param appUser the entity object to be mapped to an {@code AppUserDto} class.
+     * @param appUser the entity object to be mapped to a DTO class.
      * @return the converted {@code AppUserDto}.
      */
-    public AppUserDto mapAppUserEntityToDto(AppUser appUser) {
+    public AppUserDto mapAppUserEntityToDto(final AppUser appUser) {
         return this.mapper.map(appUser, AppUserDto.class);
     }
 }

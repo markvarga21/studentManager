@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -25,29 +28,45 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class FaceApiServiceImpl implements FaceApiService {
+    /**
+     * The endpoint of the Face API.
+     */
     @Value("${face.api.endpoint}")
     private String faceApiUrl;
+    /**
+     * The rest template used to make API calls.
+     */
     private final RestTemplate restTemplate;
+    /**
+     * A simple multiplier for converting floating point percentage
+     * to decimal percentage.
+     */
+    public static final int PERCENT_MULTIPLIER = 100;
 
     /**
      * Compares two faces.
      *
-     * @param idPhoto the identification photo of the user. Can be passport or ID document.
-     * @param selfiePhoto the selfie which the user had taken for validation purposes.
+     * @param idPhoto the ID photo of the user.
+     * @param selfiePhoto a selfie of the user.
      */
     @Override
-    public void facesAreMatching(MultipartFile idPhoto, MultipartFile selfiePhoto) {
+    public void facesAreMatching(
+            final MultipartFile idPhoto,
+            final MultipartFile selfiePhoto
+    ) {
         log.info("Comparing faces...");
         try {
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
-            body.add("idPhoto", new ByteArrayResource(idPhoto.getBytes()) {
+            byte[] idPhotoBytes = idPhoto.getBytes();
+            body.add("idPhoto", new ByteArrayResource(idPhotoBytes) {
                 @Override
                 public String getFilename() {
                     return idPhoto.getOriginalFilename();
                 }
             });
-            body.add("selfiePhoto", new ByteArrayResource(selfiePhoto.getBytes()) {
+            byte[] selfiePhotoBytes = selfiePhoto.getBytes();
+            body.add("selfiePhoto", new ByteArrayResource(selfiePhotoBytes) {
                 @Override
                 public String getFilename() {
                     return selfiePhoto.getOriginalFilename();
@@ -57,9 +76,15 @@ public class FaceApiServiceImpl implements FaceApiService {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+            HttpEntity<MultiValueMap<String, Object>> requestEntity =
+                    new HttpEntity<>(body, headers);
 
-            ResponseEntity<FaceApiResponse> response = this.restTemplate.postForEntity(this.faceApiUrl, requestEntity, FaceApiResponse.class);
+            ResponseEntity<FaceApiResponse> response = this.restTemplate
+                    .postForEntity(
+                            this.faceApiUrl,
+                            requestEntity,
+                            FaceApiResponse.class
+                    );
             FaceApiResponse faceApiResponse = response.getBody();
 
             if (faceApiResponse == null) {
@@ -69,16 +94,20 @@ public class FaceApiServiceImpl implements FaceApiService {
             }
 
             log.info(String.format(
-                    "The probability that the faces are the same is %,.2f percent.",
-                    100*faceApiResponse.getProba())
+                "The probability that the faces are the same is %,.2f percent.",
+                PERCENT_MULTIPLIER * faceApiResponse.getProba())
             );
 
             if (Boolean.FALSE.equals(faceApiResponse.getIsValid())) {
-                String message = "ID document photo is not matching with the selfie!";
+                String message =
+                        "ID document photo is not matching with the selfie!";
                 throw new InvalidIdDocumentException(message);
             }
         } catch (IOException exception) {
-            String message = String.format("Something went wrong when comparing the photos: %s", exception.getMessage());
+            String message = String.format(
+                    "Something went wrong when comparing the photos: %s",
+                    exception.getMessage()
+            );
             log.error(message);
         }
     }

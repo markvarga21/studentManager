@@ -14,7 +14,11 @@ public interface FormRecognizerService {
      *
      * @param appUserDto the user which is used for validation.
      * @param idDocument the ID document or passport.
-     * @param identification the identification type. Can be either 'idDocument' or 'passport'.
+     * @param identification the ID type ('idDocument' or 'passport').
      */
-    void validateUser(@Valid AppUserDto appUserDto, MultipartFile idDocument, String identification);
+    void validateUser(
+            @Valid AppUserDto appUserDto,
+            MultipartFile idDocument,
+            String identification
+    );
 }

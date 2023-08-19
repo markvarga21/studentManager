@@ -1,6 +1,10 @@
 package com.markvarga21.usermanager.exception.handler;
 
-import com.markvarga21.usermanager.exception.*;
+import com.markvarga21.usermanager.exception.ApiError;
+import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
+import com.markvarga21.usermanager.exception.InvalidUserException;
+import com.markvarga21.usermanager.exception.OperationType;
+import com.markvarga21.usermanager.exception.UserNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +19,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A custom exception handler for dealing with
@@ -33,12 +39,12 @@ public class ApplicationExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(
-            MethodArgumentNotValidException ex
+            final MethodArgumentNotValidException ex
     ) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult()
                 .getAllErrors()
-                .forEach((error) -> {
+                .forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
@@ -70,7 +76,7 @@ public class ApplicationExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(
-            ConstraintViolationException ex
+            final ConstraintViolationException ex
     ) {
         String message = String.format(
                 "Invalid field in creating the user! Violations: %s",
@@ -98,14 +104,14 @@ public class ApplicationExceptionHandler {
      */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Object> handleUserNotFoundException(
-            UserNotFoundException ex
+            final UserNotFoundException ex
     ) {
         log.error("User not found!");
         ApiError apiError = new ApiError(
                 new Date(),
                 HttpStatus.NOT_FOUND,
                 "User not found!",
-                ex.getOperationType(),
+                ex.getType(),
                 getStackTraceAsString(ex)
         );
         return new ResponseEntity<>(
@@ -124,7 +130,7 @@ public class ApplicationExceptionHandler {
      */
     @ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<Object> handleInvalidDateFormatException(
-            DateTimeParseException ex
+            final DateTimeParseException ex
     ) {
         log.error("Invalid date format!");
         ApiError apiError = new ApiError(
@@ -150,7 +156,7 @@ public class ApplicationExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Object> handleInvalidGenderException(
-            HttpMessageNotReadableException ex
+            final HttpMessageNotReadableException ex
     ) {
         String message = "Invalid gender! Allowed gender are: MALE or FEMALE";
         log.error(message);
@@ -176,7 +182,7 @@ public class ApplicationExceptionHandler {
      */
     @ExceptionHandler(InvalidIdDocumentException.class)
     public ResponseEntity<Object> handleInvalidIdDocumentException(
-            InvalidIdDocumentException ex
+            final InvalidIdDocumentException ex
     ) {
         log.error(ex.getMessage());
         ApiError apiError = new ApiError(
@@ -201,7 +207,7 @@ public class ApplicationExceptionHandler {
      */
     @ExceptionHandler(InvalidUserException.class)
     public ResponseEntity<Object> handleInvalidUserException(
-            InvalidUserException ex
+            final InvalidUserException ex
     ) {
         log.error(ex.getMessage());
         ApiError apiError = new ApiError(
@@ -225,7 +231,7 @@ public class ApplicationExceptionHandler {
      * @param throwable the throwable object.
      * @return the chained {@code String} representation of the stacktrace.
      */
-    private String getStackTraceAsString(Throwable throwable) {
+    private String getStackTraceAsString(final Throwable throwable) {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
         throwable.printStackTrace(printWriter);

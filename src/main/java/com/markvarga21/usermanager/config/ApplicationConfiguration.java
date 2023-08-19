@@ -5,7 +5,7 @@ import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClientBuilde
 import com.azure.core.credential.AzureKeyCredential;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.markvarga21.usermanager.util.mapping.LocalDateDeserializer;
+import com.markvarga21.usermanager.util.LocalDateDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,11 +26,18 @@ public class ApplicationConfiguration {
      */
     @Value("${form.recognizer.key}")
     private String formRecognizerKey;
+    /**
+     * The API endpoint for the Face API.
+     */
     @Value("${form.recognizer.endpoint}")
     private String formRecognizerEndpoint;
+    /**
+     * A custom {@code LocalDate} deserializer.
+     */
     private final LocalDateDeserializer localDateDeserializer;
     /**
-     * A method used to create a model mapper bean which then can be used anywhere in the application.
+     * A method used to create a model mapper bean which
+     * then can be used anywhere in the application.
      * @return a {@code ModelMapper} instance.
      */
     @Bean
@@ -40,7 +47,6 @@ public class ApplicationConfiguration {
 
     /**
      * A bean for setting up the ID document analysis.
-     *
      * @return the already sat up {@code DocumentAnalysisClient}.
      */
     @Bean
@@ -59,7 +65,10 @@ public class ApplicationConfiguration {
     @Bean
     public Gson getGsonDeserializer() {
         return new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, this.localDateDeserializer)
+                .registerTypeAdapter(
+                        LocalDate.class,
+                        this.localDateDeserializer
+                )
                 .create();
     }
 

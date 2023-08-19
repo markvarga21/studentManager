@@ -21,15 +21,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 /**
- * A service which is used to verify the data entered by the user to the data which
- * can be found on either the uploaded ID document or passport. It uses Azure's Form
- * Recognizer.
+ * A service which is used to verify the data entered by the user
+ * to the data which can be found on either the uploaded ID document
+ * or passport. It uses Azure's Form Recognizer.
  */
 @Component
 @RequiredArgsConstructor
 @Slf4j
 @Validated
 public class FormRecognizerServiceImpl implements FormRecognizerService {
+    /**
+     * A client which is used to analyze documents.
+     */
     private final DocumentAnalysisClient documentAnalysisClient;
 
     /**
@@ -38,10 +41,14 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      *
      * @param appUserDto the user which has to be validated.
      * @param idDocument the ID document or passport of the user.
-     * @param identification the type of the document. Can be either 'passport' or 'idDocument'.
+     * @param identification the document type ('passport' or 'idDocument').
      */
     @Override
-    public void validateUser(@Valid AppUserDto appUserDto, MultipartFile idDocument, String identification) {
+    public void validateUser(
+            @Valid final AppUserDto appUserDto,
+            final MultipartFile idDocument,
+            final String identification
+    ) {
         if (!isValidIdContent(appUserDto, idDocument, identification)) {
             log.error("Invalid content!");
             throw new InvalidIdDocumentException("Invalid content!");
@@ -55,14 +62,19 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * @param idDocument the uploaded ID document or passport.
      * @return the extracted fields stored in a {@code Map}.
      */
-    private Map<String, DocumentField> getFieldsFromDocument(MultipartFile idDocument) {
+    private Map<String, DocumentField> getFieldsFromDocument(
+            final MultipartFile idDocument
+    ) {
         try {
             BinaryData binaryData = BinaryData.fromBytes(idDocument.getBytes());
             String modelId = "prebuilt-idDocument";
             SyncPoller<OperationResult, AnalyzeResult> analyzeDocumentPoller =
-                    this.documentAnalysisClient.beginAnalyzeDocument(modelId, binaryData);
+                    this.documentAnalysisClient.beginAnalyzeDocument(
+                            modelId, binaryData
+                    );
 
-            AnalyzeResult analyzeResult = analyzeDocumentPoller.getFinalResult();
+            AnalyzeResult analyzeResult =
+                    analyzeDocumentPoller.getFinalResult();
             var documentResult = analyzeResult.getDocuments().get(0);
             return documentResult.getFields();
         } catch (IOException e) {
@@ -73,54 +85,79 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     }
 
     /**
-     * Checks if the content of the user's inputted data matched the data on the ID document.
+     * Checks if the content of the user's inputted data
+     * matched the data on the ID document.
      *
      * @param appUserDto the user which has to be validated.
-     * @param idDocument the identification document which can be ID card of passport.
-     * @param identification the identification type. Can be 'idDocument' or 'passport'.
-     * @return {@code true} if all the data in the form matches the data on extracted from the ID document.
+     * @param idDocument the identification document.
+     * @param identification the ID type ('idDocument' or 'passport').
+     * @return {@code true} if all the data in the form matches
+     * the data on extracted from the ID document.
      */
-    private boolean isValidIdContent(@Valid AppUserDto appUserDto, MultipartFile idDocument, String identification) {
+    private boolean isValidIdContent(
+            @Valid final AppUserDto appUserDto,
+            final MultipartFile idDocument,
+            final String identification
+    ) {
         var fields = getFieldsFromDocument(idDocument);
         String firstName = fields.get("FirstName").getContent();
         String lastName = fields.get("LastName").getContent();
-        String birthDate = fields.get("DateOfBirth").getContent().replace(".", " ");
+        String birthDate = fields
+                .get("DateOfBirth")
+                .getContent()
+                .replace(".", " ");
 
         log.info("ID lastName = " + lastName + ", firstName = " + firstName);
 
         String formFirstName = appUserDto.getFirstName();
         String formLastName = appUserDto.getLastName();
 
-        String dateFormat = identification.equalsIgnoreCase("passport") ? "dd MMM/MMM yyyy" : "dd MM yyyy";
+        String dateFormat = identification
+                .equalsIgnoreCase("passport")
+                ? "dd MMM/MMM yyyy" : "dd MM yyyy";
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateFormat);
-        String formBirthDate = appUserDto.getBirthDate().format(dateTimeFormatter).replace(".", "");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter
+                .ofPattern(dateFormat);
+        String formBirthDate = appUserDto
+                .getBirthDate()
+                .format(dateTimeFormatter)
+                .replace(".", "");
 
-        log.info("FORM lastName = " + formLastName + ", firstName = " + formFirstName);
-        log.info("Form birthdate = " + formBirthDate + ", id birthdate = " + birthDate);
+        log.info(String.format("FORM lastName = %s, firstName = %s",
+                formLastName,
+                formFirstName)
+        );
+        log.info(String.format(
+                "Form birthdate = %s, id birthdate = %s",
+                formBirthDate,
+                birthDate)
+        );
 
         if (!formFirstName.equalsIgnoreCase(firstName)) {
-            String message = String.format("Form's first name '%s' not matching with ID's first name '%s'",
-                    formFirstName,
-                    firstName
+            String message = String.format(
+                "Form's first name '%s' not matching with ID's first name '%s'",
+                formFirstName,
+                firstName
             );
             log.error(message);
             throw new InvalidIdDocumentException(message);
         }
 
         if (!formLastName.equalsIgnoreCase(lastName)) {
-            String message = String.format("Form's last name '%s' not matching with ID's last name '%s'",
-                    formLastName,
-                    lastName
+            String message = String.format(
+                "Form's last name '%s' not matching with ID's last name '%s'",
+                formLastName,
+                lastName
             );
             log.error(message);
             throw new InvalidIdDocumentException(message);
         }
 
         if (!formBirthDate.equalsIgnoreCase(birthDate)) {
-            String message = String.format("Form's birth date '%s' not matching with ID's birth date '%s'",
-                    formBirthDate,
-                    birthDate
+            String message = String.format(
+                "Form's birth date '%s' not matching with ID's birth date '%s'",
+                formBirthDate,
+                birthDate
             );
             log.error(message);
             throw new InvalidIdDocumentException(message);
@@ -129,12 +166,20 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         if (identification.equalsIgnoreCase("passport")) {
             DocumentField nationality = fields.get("Nationality");
             if (nationality == null) {
-                throw new InvalidIdDocumentException("Nationality not present or not readable!");
+                String message = "Nationality not present or not readable!";
+                throw new InvalidIdDocumentException(message);
             }
-            if (!nationality.getContent().toLowerCase().contains(appUserDto.getNationality().toLowerCase())) {
-                String message = String.format("Nationality '%s' on passport does not match with the provided one: '%s'",
-                        nationality,
-                        appUserDto.getNationality()
+            String normalizedNationality = nationality
+                    .getContent()
+                    .toLowerCase();
+            String normalizedAppUserNationality = appUserDto
+                    .getNationality()
+                    .toLowerCase();
+            if (!normalizedNationality.contains(normalizedAppUserNationality)) {
+                String message = String.format(
+                    "Invalid Nationality: '%s' not equals with '%s'",
+                    nationality,
+                    appUserDto.getNationality()
                 );
                 log.error(message);
                 throw new InvalidIdDocumentException(message);

@@ -6,7 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 /**
- * An interface which contains essential methods for manipulating the user information.
+ * An interface which contains essential methods
+ * for manipulating the user information.
  */
 public interface AppUserService {
     /**
@@ -22,10 +23,15 @@ public interface AppUserService {
      * @param idDocument a photo of the ID document or passport.
      * @param selfiePhoto a selfie file of the user.
      * @param appUserJson the user itself with the new data.
-     * @param identification the identification type ('idDocument' or 'passport').
+     * @param identification the identification type.
      * @return the newly modified user.
      */
-    AppUserDto createUser(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, String identification);
+    AppUserDto createUser(
+            MultipartFile idDocument,
+            MultipartFile selfiePhoto,
+            String appUserJson,
+            String identification
+    );
 
     /**
      * Retrieves a user from the application using its id.
@@ -42,10 +48,15 @@ public interface AppUserService {
      * @param selfiePhoto a selfie file of the user.
      * @param appUserJson the user itself with the new data.
      * @param userId the id of the user we want to modify.
-     * @param identification the identification type ('idDocument' or 'passport').
+     * @param identification the identification type.
      * @return the newly modified user.
      */
-    AppUserDto modifyUserById(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, Long userId, String identification);
+    AppUserDto modifyUserById(
+            MultipartFile idDocument,
+            MultipartFile selfiePhoto,
+            String appUserJson, Long userId,
+            String identification
+    );
 
     /**
      * Deletes a user by its id.
