@@ -54,6 +54,11 @@ public class FaceApiServiceImpl implements FaceApiService {
             final MultipartFile idPhoto,
             final MultipartFile selfiePhoto
     ) {
+        if (idPhoto == null || selfiePhoto == null) {
+            String message = "ID photo or selfie file missing!";
+            log.error(message);
+            throw new InvalidIdDocumentException(message);
+        }
         log.info("Comparing faces...");
         try {
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -75,6 +80,7 @@ public class FaceApiServiceImpl implements FaceApiService {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            headers.setAccessControlAllowOrigin("*");
 
             HttpEntity<MultiValueMap<String, Object>> requestEntity =
                     new HttpEntity<>(body, headers);

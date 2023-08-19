@@ -81,4 +81,5 @@ public class ApplicationConfiguration {
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
+    
 }
