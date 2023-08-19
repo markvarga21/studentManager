@@ -15,18 +15,21 @@ public class UserNotFoundException extends RuntimeException {
     /**
      * The type of the operation the user just did which caused the exception.
      */
-    private OperationType operationType;
+    private final OperationType type;
 
     /**
      * Custom constructor which contains a message and the
      * operation type of the exception.
      *
      * @param message a custom message for alerting the lack of a user.
-     * @param operationType the type of the operation.
+     * @param type the type of the operation.
      */
-    public UserNotFoundException(String message, OperationType operationType) {
+    public UserNotFoundException(
+            final String message,
+            final OperationType type
+    ) {
         super(message);
-        this.operationType = operationType;
+        this.type = type;
     }
 }
 

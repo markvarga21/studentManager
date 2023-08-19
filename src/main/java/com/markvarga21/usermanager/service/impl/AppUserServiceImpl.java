@@ -1,14 +1,16 @@
 package com.markvarga21.usermanager.service.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.markvarga21.usermanager.dto.AppUserDto;
+import com.markvarga21.usermanager.entity.Address;
 import com.markvarga21.usermanager.entity.AppUser;
+import com.markvarga21.usermanager.exception.InvalidUserException;
 import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.UserNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
 import com.markvarga21.usermanager.service.AppUserService;
-import com.markvarga21.usermanager.service.FormRecognizerService;
+import com.markvarga21.usermanager.service.azure.FormRecognizerService;
+import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import com.markvarga21.usermanager.util.mapping.AddressMapper;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import jakarta.transaction.Transactional;
@@ -17,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,11 +30,31 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class AppUserServiceImpl implements AppUserService {
+    /**
+     * Repository for app users.
+     */
     private final AppUserRepository userRepository;
+
+    /**
+     * A user mapper.
+     */
     private final AppUserMapper userMapper;
+    /**
+     * An address mapper.
+     */
     private final AddressMapper addressMapper;
+    /**
+     * The form recognizer service.
+     */
     private final FormRecognizerService formRecognizerService;
+    /**
+     * A GSON converter.
+     */
     private final Gson gson;
+    /**
+     * The Face API service.
+     */
+    private final FaceApiService faceApiService;
 
     /**
      * Retrieves all the users in the application.
@@ -54,13 +75,39 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     /**
-     * Saves a user in the application.
-     * /TODO
+     * Validates  and then persists the user into the database.
+     *
+     * @param idDocument a photo of the users ID card or passport.
+     * @param selfiePhoto a selfie photo for verifying identity.
+     * @param appUserJson the user itself in a JSON string.
+     * @param identification the ID type.
+     * @return the updated {@code AppUserDto}.
      */
     @Override
-    public AppUserDto createUser(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, String identification) {
-        AppUserDto appUserDto = this.gson.fromJson(appUserJson, AppUserDto.class);
-        this.formRecognizerService.validateUser(appUserDto, idDocument, identification);
+    public AppUserDto createUser(
+            final MultipartFile idDocument,
+            final MultipartFile selfiePhoto,
+            final String appUserJson,
+            final String identification
+    ) {
+        AppUserDto appUserDto = this.gson.
+                fromJson(appUserJson, AppUserDto.class);
+
+        String firstName = appUserDto.getFirstName();
+        String lastName = appUserDto.getLastName();
+        if (!validNames(firstName, lastName)) {
+            String message = String.format(
+                    "'%s' first name and '%s' last name is already in use!",
+                    firstName,
+                    lastName
+            );
+            log.error(message);
+            throw new InvalidUserException(message);
+        }
+
+        this.formRecognizerService
+                .validateUser(appUserDto, idDocument, identification);
+        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
         AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
         this.userRepository.save(userToSave);
 
@@ -71,6 +118,24 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     /**
+     * Checks whether is or not a user with the same first and last name
+     * in the database.
+     *
+     * @param firstName the first name of the user.
+     * @param lastName the last name of the user.
+     * @return {@code true} if there is no other user
+     * with the same name, else {@code false}.
+     */
+    public boolean validNames(
+            final String firstName,
+            final String lastName
+    ) {
+        Optional<AppUser> appUser = this.userRepository
+                .findAppUserByFirstNameAndLastName(firstName, lastName);
+        return appUser.isEmpty();
+    }
+
+    /**
      * Retrieves a user from the application using its id.
      *
      * @param id the identifier of the user we want to retrieve.
@@ -78,10 +143,13 @@ public class AppUserServiceImpl implements AppUserService {
      * @since 1.0
      */
     @Override
-    public AppUserDto getUserById(Long id) {
+    public AppUserDto getUserById(final Long id) {
         Optional<AppUser> userOptional = this.userRepository.findById(id);
         if (userOptional.isEmpty()) {
-            String message = String.format("User cant be retrieved! Cause: user not found with id: %d", id);
+            String message = String.format(
+                    "User cant be retrieved! Cause: user not found with id: %d",
+                    id
+            );
             log.error(message);
             throw new UserNotFoundException(message, OperationType.READ);
         }
@@ -91,33 +159,56 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     /**
-     * Modifies the user's information.
-     * //TODO
+     * Validates and then modifies the user's information.
+     *
+     * @param idDocument a photo of the users ID card or passport.
+     * @param selfiePhoto a selfie photo for verifying identity.
+     * @param appUserJson the user itself in a JSON string.
+     * @param identification the ID type.
+     * @return the updated {@code AppUserDto}.
      * @since 1.0
      */
     @Override
-    public AppUserDto modifyUserById(MultipartFile idDocument, MultipartFile selfiePhoto, String appUserJson, Long userId, String identification) {
+    public AppUserDto modifyUserById(
+            final MultipartFile idDocument,
+            final MultipartFile selfiePhoto,
+            final String appUserJson,
+            final Long userId,
+            final String identification
+    ) {
         Optional<AppUser> userOptional = this.userRepository.findById(userId);
         if (userOptional.isEmpty()) {
-            String message = String.format("User cant be modified! Cause: User not found with id: %d", userId);
+            String message = String.format(
+                    "User cant be modified! Cause: User not found with id: %d",
+                    userId
+            );
             log.error(message);
             throw new UserNotFoundException(message, OperationType.UPDATE);
         }
         AppUser userToUpdate = userOptional.get();
-        AppUserDto appUserDto = this.gson.fromJson(appUserJson, AppUserDto.class);
-        this.formRecognizerService.validateUser(appUserDto, idDocument, identification);
-        userToUpdate.setAddress(this.addressMapper.mapAddressDtoToEntity(appUserDto.getAddress()));
+        AppUserDto appUserDto = this.gson
+                .fromJson(appUserJson, AppUserDto.class);
+        this.formRecognizerService
+                .validateUser(appUserDto, idDocument, identification);
+        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
+        Address mappedAddressDtoToEntity = this.addressMapper
+                .mapAddressDtoToEntity(appUserDto.getAddress());
+        userToUpdate.setAddress(mappedAddressDtoToEntity);
         userToUpdate.setEmail(appUserDto.getEmail());
         userToUpdate.setGender(appUserDto.getGender());
         userToUpdate.setFirstName(appUserDto.getFirstName());
         userToUpdate.setLastName(appUserDto.getLastName());
         userToUpdate.setNationality(appUserDto.getNationality());
         userToUpdate.setPhoneNumber(appUserDto.getPhoneNumber());
-        userToUpdate.setPlaceOfBirth(this.addressMapper.mapAddressDtoToEntity(appUserDto.getPlaceOfBirth()));
+        Address mappedBirthplaceAddressEntity = this.addressMapper
+                .mapAddressDtoToEntity(appUserDto.getPlaceOfBirth());
+        userToUpdate.setPlaceOfBirth(mappedBirthplaceAddressEntity);
         userToUpdate.setBirthDate(appUserDto.getBirthDate());
         AppUser updatedUser = this.userRepository.save(userToUpdate);
 
-        log.info(String.format("User with id %d modified successfully!", userId));
+        log.info(String.format(
+                "User with id %d modified successfully!", userId)
+        );
         return this.userMapper.mapAppUserEntityToDto(updatedUser);
     }
 
@@ -129,14 +220,18 @@ public class AppUserServiceImpl implements AppUserService {
      * @since 1.0
      */
     @Override
-    public AppUserDto deleteUserById(Long id) {
+    public AppUserDto deleteUserById(final Long id) {
         Optional<AppUser> userOptional = this.userRepository.findById(id);
         if (userOptional.isEmpty()) {
-            String message = String.format("User cannot be deleted! Cause: user not found with id: %d", id);
+            String message = String.format(
+                    "User cannot be deleted! Cause: user not found with id: %d",
+                    id
+            );
             log.error(message);
             throw new UserNotFoundException(message, OperationType.DELETE);
         }
-        AppUserDto deletedUser = this.userMapper.mapAppUserEntityToDto(userOptional.get());
+        AppUserDto deletedUser = this.userMapper
+                .mapAppUserEntityToDto(userOptional.get());
         this.userRepository.deleteById(id);
         log.info(String.format("User with id %d deleted successfully!", id));
 

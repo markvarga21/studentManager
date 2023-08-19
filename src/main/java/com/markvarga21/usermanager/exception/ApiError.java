@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 import java.util.Date;
 
 /**
- * A custom class for sending useful information in a {@code ResponseEntity} when
+ * A custom class for sending useful information
+ * in a {@code ResponseEntity} when
  * an exception occurs in the application.
  */
 @Data
