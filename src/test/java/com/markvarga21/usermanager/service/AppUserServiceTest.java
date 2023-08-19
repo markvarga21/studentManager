@@ -1,11 +1,9 @@
 package com.markvarga21.usermanager.service;
 
 import com.google.gson.Gson;
-import com.markvarga21.usermanager.dto.AddressDto;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.entity.Address;
 import com.markvarga21.usermanager.entity.AppUser;
-import com.markvarga21.usermanager.entity.Gender;
 import com.markvarga21.usermanager.exception.InvalidUserException;
 import com.markvarga21.usermanager.exception.UserNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
@@ -15,32 +13,27 @@ import com.markvarga21.usermanager.service.impl.AppUserServiceImpl;
 import com.markvarga21.usermanager.util.mapping.AddressMapper;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.markvarga21.usermanager.util.FileFetcher.getFileForName;
+import static com.markvarga21.usermanager.util.MockDataProvider.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
-public class AppUserServiceTest {
+class AppUserServiceTest {
     @InjectMocks
     private AppUserServiceImpl appUserService;
     @Mock
@@ -55,98 +48,6 @@ public class AppUserServiceTest {
     private Gson gson;
     @Mock
     private FaceApiService faceApiService;
-    public static final int MOCK_YEAR = 1990;
-    public static final int MOCK_MONTH = 5;
-    public static final int MOCK_DAY = 10;
-    public static final String MOCK_COUNTRY = "Hungary";
-    public static final String MOCK_CITY = "Debrecen";
-    public static final String MOCK_STREET = "Piac";
-    public static final Integer MOCK_NUMBER = 10;
-    public static final String MOCK_USER_JSON = """
-                {
-                    "id": 2,
-                    "firstName": "John",
-                    "lastName": "Doe",
-                    "birthDate": "1990-05-10",
-                    "placeOfBirth": {
-                        "id": 1,
-                        "country": "Hungary",
-                        "city": "Debrecen",
-                        "street": "Piac",
-                        "number": 10
-                    },
-                    "nationality": "american",
-                    "gender": "MALE",
-                    "address": {
-                        "id": 2,
-                        "country": "Hungary",
-                        "city": "Debrecen",
-                        "street": "Piac",
-                        "number": 10
-                    },
-                    "email": "john.doe@gmail.com",
-                    "phoneNumber": "123456789"
-                }""";
-
-    static AppUser getStaticAppUser() {
-        Address birthPlace = new Address(1L, MOCK_COUNTRY, MOCK_CITY, MOCK_STREET, MOCK_NUMBER);
-        Address address = new Address(2L, MOCK_COUNTRY, MOCK_CITY, MOCK_STREET, MOCK_NUMBER);
-        LocalDate birthDate = LocalDate.of(MOCK_YEAR, MOCK_MONTH, MOCK_DAY);
-        String nationality = "american";
-        String firstName = "John";
-        long id = 1L;
-        String lastName = "Doe";
-        Gender gender = Gender.MALE;
-        String email = "john.doe@gmail.com";
-        String phoneNumber = "123456789";
-        return new AppUser(
-                id,
-                firstName,
-                lastName,
-                birthDate,
-                birthPlace,
-                nationality,
-                gender,
-                address,
-                email,
-                phoneNumber
-        );
-    }
-
-    static AppUserDto getStaticAppUserDto() {
-        AddressDto birthPlace = new AddressDto(1L, MOCK_COUNTRY, MOCK_CITY, MOCK_STREET, MOCK_NUMBER);
-        AddressDto address = new AddressDto(2L, MOCK_COUNTRY, MOCK_CITY, MOCK_STREET, MOCK_NUMBER);
-        LocalDate birthDate = LocalDate.of(MOCK_YEAR, MOCK_MONTH, MOCK_DAY);
-        String nationality = "american";
-        String firstName = "John";
-        long id = 1L;
-        String lastName = "Doe";
-        Gender gender = Gender.MALE;
-        String email = "john.doe@gmail.com";
-        String phoneNumber = "123456789";
-        return new AppUserDto(
-                id,
-                firstName,
-                lastName,
-                birthDate,
-                birthPlace,
-                nationality,
-                gender,
-                address,
-                email,
-                phoneNumber
-        );
-    }
-
-    static MultipartFile getFileForName(final String fileName) {
-        try (InputStream inputStream = AppUserServiceTest.class.getClassLoader().getResourceAsStream(fileName)) {
-            return new MockMultipartFile(fileName, inputStream);
-        } catch (IOException exception) {
-            String message = String.format("Something went wrong when reading '%s'", fileName);
-            log.error(message);
-        }
-        return null;
-    }
 
     @Test
     void getAllUsersShouldReturnListOfUsersTest() {
