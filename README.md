@@ -1,11 +1,4 @@
 <div id="top"></div>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
 
 <br />
 <div align="center">
@@ -15,11 +8,11 @@
   <p align="center">
     This application lets authorized people to register users into a database.
     <br />
-    <a href="https://github.com/INBPM0420L/homework-project-markvarga21"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/markvarga21/userManager"><strong>Explore the docs »</strong></a>
     <br />
-    <a href="https://github.com/INBPM0420L/homework-project-markvarga21/issues">Report Bug</a>
+    <a href="https://github.com/markvarga21/userManager/issues">Report Bug</a>
     ·
-    <a href="https://github.com/INBPM0420L/homework-project-markvarga21/issues">Request Feature</a>
+    <a href="https://github.com/markvarga21/userManager/issues">Request Feature</a>
   </p>
 </div>
 
