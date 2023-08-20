@@ -25,6 +25,7 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
+    <li><a href="#screenshots">Screenshots</a></li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
@@ -106,6 +107,8 @@ Finally, there is a minimal authentication service which is also provided by <a 
 - [Docker](https://www.docker.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+<div id="screenshots"></div>
 
 ## Screenshots
 
