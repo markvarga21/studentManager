@@ -125,6 +125,8 @@ Edit user page:
 Login page:
 ![loginPage](./static/loginPage.jpg)
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Getting Started
 
 In this section you can see a step-by-step guide in order to start and use the application.
@@ -173,6 +175,8 @@ Here you can find the only, but the most important one, prerequisity to run the 
 
 ![flowChart](./static/userManagerFlowchart.png)
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Known Bugs
 
 As any application, this app contains some bugs and some sensitive parts which are:
@@ -191,6 +195,8 @@ As any application, this app contains some bugs and some sensitive parts which a
 - The application is not deployed yet in a cloud service provider.
 - There could be UI/UX inconsistencies when using the application.
 - Lack of registration option and authorization services.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Contact
 
