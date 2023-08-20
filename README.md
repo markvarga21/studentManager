@@ -33,6 +33,7 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
+    <li><a href="#flowchart">Flowchart</a></li>
     <li><a href="#known-bugs">Known bugs</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
@@ -165,6 +166,12 @@ Here you can find the only, but the most important one, prerequisity to run the 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <div id="known-bugs"></div>
+
+<div id="flowchart"></div>
+
+## Flowchart
+
+![flowChart](./static/userManagerFlowchart.png)
 
 ## Known Bugs
 
