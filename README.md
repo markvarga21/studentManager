@@ -33,6 +33,7 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
+    <li><a href="#known-bugs">Known bugs</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
@@ -143,7 +144,9 @@ Here you can find the only, but the most important one, prerequisity to run the 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Known Bugs / Assumptions
+<div id="known-bugs"></div>
+
+## Known Bugs
 As any application, this app contains some bugs and some sensitive parts which are:
 - The application is not yet fully implemented for verifying nationality on the passports, because the nationality part of the passports vary too much around the world.
     - Also, there could be problems with analyzing a passport, but hungarian ID documents work well. Thus, there is not any option for selecting the ID document type on the frontend yet.
