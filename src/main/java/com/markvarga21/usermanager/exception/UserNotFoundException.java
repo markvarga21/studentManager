@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class UserNotFoundException extends RuntimeException {
     /**
-     * The type of the operation the user just did which caused the exception.
+     * The type of the operation the user just did, which caused the exception.
      */
     private final OperationType type;
 

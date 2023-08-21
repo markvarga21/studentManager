@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
     /**
      * A method which is used to verify whether a user already exists
-     * in the database with the same first name and last name.
+     * in the database with the same first name and last name or not.
      *
      * @param firstName the first name of the user.
      * @param lastName the last name of the user.

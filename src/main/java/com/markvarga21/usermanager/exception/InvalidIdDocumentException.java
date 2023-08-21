@@ -7,6 +7,7 @@ package com.markvarga21.usermanager.exception;
 public class InvalidIdDocumentException extends RuntimeException {
     /**
      * Constructor with a message as parameter.
+     * 
      * @param message the custom message.
      */
     public InvalidIdDocumentException(final String message) {

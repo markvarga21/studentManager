@@ -21,7 +21,7 @@ import java.io.IOException;
 
 /**
  * A service which uses Deepface to compare two faces.
- * It is then used for comparing the photo from the
+ * It is then used for comparing the face on the
  * ID card/passport and the selfie which the user has uploaded.
  */
 @Component

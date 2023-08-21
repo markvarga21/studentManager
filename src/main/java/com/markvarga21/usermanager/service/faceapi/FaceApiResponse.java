@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.ToString;
 
 /**
- * A util class for correctly mapping
- * the response from the Face API.
+ * A utility class for correctly mapping
+ * the response from the Face API to POJO.
  */
 @Data
 @ToString
@@ -16,7 +16,7 @@ public class FaceApiResponse {
     private Boolean isValid;
 
     /**
-     * The probability of how similar ar the photos
+     * The probability of how similar are the photos
      * compared to each other.
      */
     private Double proba;

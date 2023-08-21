@@ -25,7 +25,7 @@ public class ApiError {
     private HttpStatus status;
 
     /**
-     * The custom message of the error.
+     * A custom message for the error.
      */
     private String message;
 

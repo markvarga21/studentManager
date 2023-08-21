@@ -22,12 +22,12 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class ApplicationConfiguration {
     /**
-     * The Azure's Form Recognizers services key.
+     * The Azure's Form Recognizer service key.
      */
     @Value("${form.recognizer.key}")
     private String formRecognizerKey;
     /**
-     * The API endpoint for the Face API.
+     * The Face API URL and endpoint.
      */
     @Value("${form.recognizer.endpoint}")
     private String formRecognizerEndpoint;
@@ -38,6 +38,7 @@ public class ApplicationConfiguration {
     /**
      * A method used to create a model mapper bean which
      * then can be used anywhere in the application.
+     * 
      * @return a {@code ModelMapper} instance.
      */
     @Bean
@@ -47,6 +48,7 @@ public class ApplicationConfiguration {
 
     /**
      * A bean for setting up the ID document analysis.
+     * 
      * @return the already sat up {@code DocumentAnalysisClient}.
      */
     @Bean
@@ -59,7 +61,7 @@ public class ApplicationConfiguration {
 
     /**
      * A bean created for deserializing user JSON strings into POJO.
-     *
+     * 
      * @return the built {@code Gson} object.
      */
     @Bean
@@ -74,7 +76,7 @@ public class ApplicationConfiguration {
 
     /**
      * A bean created for talking with the Face API.
-     *
+     * 
      * @return the created bean.
      */
     @Bean

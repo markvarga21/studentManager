@@ -73,6 +73,7 @@ public final class MockDataProvider {
 
     /**
      * Builds an app user entity and then returns it.
+     * 
      * @return the statically built user entity.
      */
     public static AppUser getStaticAppUser() {
@@ -111,6 +112,7 @@ public final class MockDataProvider {
 
     /**
      * Builds an app user DTO and then returns it.
+     * 
      * @return the statically built user DTO.
      */
     public static AppUserDto getStaticAppUserDto() {

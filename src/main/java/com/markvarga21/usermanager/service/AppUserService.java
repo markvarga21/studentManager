@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * An interface which contains essential methods
- * for manipulating the user information.
+ * for manipulating user information.
  */
 public interface AppUserService {
     /**

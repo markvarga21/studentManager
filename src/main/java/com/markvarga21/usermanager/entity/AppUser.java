@@ -41,7 +41,7 @@ public class AppUser {
     private String lastName;
 
     /**
-     * The birthdate name of the user.
+     * The birthdate of the user.
      */
     private LocalDate birthDate;
 

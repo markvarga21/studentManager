@@ -41,7 +41,6 @@ import java.util.Optional;
  * The app user service tester class.
  */
 @ExtendWith(MockitoExtension.class)
-@Slf4j
 class AppUserServiceTest {
     /**
      * The app user service mock object.

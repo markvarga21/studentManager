@@ -7,8 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 /**
- * A utility class which is used for mapping between the application's
- * user entities and DTOs and backwards.
+ * A utility class which is used for mapping between
+ * the application's user entities and DTOs and backwards.
  */
 @Component
 @RequiredArgsConstructor

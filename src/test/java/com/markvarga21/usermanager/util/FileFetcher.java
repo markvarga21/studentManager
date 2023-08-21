@@ -9,12 +9,13 @@ import java.io.InputStream;
 
 /**
  * A util class for fetching files from the
- * resources folder into {@code MultiPartFile}.
+ * resources folder into a {@code MultiPartFile}.
  */
 @Slf4j
 public final class FileFetcher {
     /**
      * Fetches a file from the applications tests resources folder.
+     * 
      * @param fileName the name of the file.
      * @return the created and configured {@code MultiPartFile}.
      */

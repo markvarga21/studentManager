@@ -25,7 +25,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-@Slf4j
 @CrossOrigin
 public class AppUserController {
     /**
@@ -73,7 +72,7 @@ public class AppUserController {
      * Retrieves the desired user using its ID, then returns it.
      *
      * @param id the ID of the user which we want to retrieve.
-     * @return the searched used if present.
+     * @return the searched user if present.
      */
     @GetMapping("/{id}")
     public ResponseEntity<AppUserDto> getUserById(@PathVariable final Long id) {

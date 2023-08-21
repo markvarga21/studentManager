@@ -78,7 +78,7 @@ public class AppUserServiceImpl implements AppUserService {
      * Validates  and then persists the user into the database.
      *
      * @param idDocument a photo of the users ID card or passport.
-     * @param selfiePhoto a selfie photo for verifying identity.
+     * @param selfiePhoto a selfie photo for verifying the user's identity.
      * @param appUserJson the user itself in a JSON string.
      * @param identification the ID type.
      * @return the updated {@code AppUserDto}.
@@ -118,8 +118,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     /**
-     * Checks whether is or not a user with the same first and last name
-     * in the database.
+     * Checks if the users first- and last names are available.
      *
      * @param firstName the first name of the user.
      * @param lastName the last name of the user.

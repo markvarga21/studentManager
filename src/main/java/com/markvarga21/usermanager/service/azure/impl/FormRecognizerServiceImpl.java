@@ -22,8 +22,8 @@ import java.util.Map;
 
 /**
  * A service which is used to verify the data entered by the user
- * to the data which can be found on either the uploaded ID document
- * or passport. It uses Azure's Form Recognizer.
+ * against the data which can be found on either the uploaded 
+ * ID document or passport. It uses Azure's Form Recognizer.
  */
 @Component
 @RequiredArgsConstructor
@@ -86,13 +86,13 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
 
     /**
      * Checks if the content of the user's inputted data
-     * matched the data on the ID document.
+     * matches the data on the ID document.
      *
      * @param appUserDto the user which has to be validated.
      * @param idDocument the identification document.
      * @param identification the ID type ('idDocument' or 'passport').
-     * @return {@code true} if all the data in the form matches
-     * the data on extracted from the ID document.
+     * @return {@code true} if all the data from the form matches
+     * the data extracted from the ID document.
      */
     public boolean isValidIdContent(
             @Valid final AppUserDto appUserDto,

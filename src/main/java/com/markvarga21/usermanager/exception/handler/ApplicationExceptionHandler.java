@@ -97,7 +97,7 @@ public class ApplicationExceptionHandler {
     }
 
     /**
-     * Handles the exception if a user cannot be found in the application.
+     * Handles the exception if a user cannot be found in the database.
      *
      * @param ex the exception caused by not founding the user.
      * @return a readable {@code ResponseEntity} containing useful information.
@@ -158,7 +158,7 @@ public class ApplicationExceptionHandler {
     public ResponseEntity<Object> handleInvalidGenderException(
             final HttpMessageNotReadableException ex
     ) {
-        String message = "Invalid gender! Allowed gender are: MALE or FEMALE";
+        String message = "Invalid gender! Allowed genders are: MALE or FEMALE";
         log.error(message);
         ApiError apiError = new ApiError(
                 new Date(),
