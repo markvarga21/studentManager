@@ -41,13 +41,13 @@
 
 ## About The Project
 
-<i>This repository is just a part of the whole application, but for easing its usage and the overall installation, the documentation, the features and the necessarry steps are listed and presented in this README below.</i>
+<i>This repository is just a part of the whole application, but for easing its usage and the overall installation process, the documentation, the features and the necessary steps are listed and presented in this README below.</i>
 
 ### - User manager API -
 
 This Spring Boot application lets you to manage users. It can store their name, address, birthdate, birthplace, phone number, email, gender and nationality.
 
-It also provides accurate validation on the entered data. It allows to upload ID document or passport and also a selfie. The application uses <a href="https://azure.microsoft.com/en-gb/products/form-recognizer">Azure's Form Recognizer</a> service to validate the entered data against the data on the ID document.
+It also provides accurate validation on the entered data. It allows users to upload ID document or passport and also a selfie. The application uses <a href="https://azure.microsoft.com/en-gb/products/form-recognizer">Azure's Form Recognizer</a> service to validate the entered data against the data on the ID document.
 
 In addition, it validates the photo on the ID card against the uploaded selfie taken by the user. For this, it uses a custom made <b>Face API</b> which is based on <a href="https://github.com/serengil/deepface">Deepface</a>.
 
@@ -71,11 +71,11 @@ This service was built using Flask on the backend side and Deepface on the servi
 
 ### - Frontend -
 
-This connects the applications backend with the user. It is built using ReactJS and for the styling Tailwind CSS. The frontend stores the uploaded selfie and displays it in the table row. This is achieved using <a href="https://firebase.google.com/docs/storage">Firebases's Storage</a> service.
+This connects the applications backend with the user. It was built using React JS and for the styling Tailwind CSS was applied. The frontend stores the uploaded selfie and displays it in the user table row. This is achieved using <a href="https://firebase.google.com/docs/storage">Firebases's Storage</a> service.
 
 The frontend also has the ability to inform the user about an error or exception in a custom error panel. In case, it is displayed on the user addition panel.
 
-Finally, there is a minimal authentication service which is also provided by <a href="https://firebase.google.com/docs/auth">Firebase</a>. For accessing the application please reach out to me, for granting access to the application, because its strictly restricted to the previously added users by me.
+Finally, there is a minimal authentication service which is also provided by <a href="https://firebase.google.com/docs/auth">Firebase</a>. For accessing the application please reach out to me, for granting you access to the application, because its strictly restricted to the previously added users by me.
 
 <a href="https://github.com/markvarga21/userManagerFrontend">Link to the frontend repository</a>
 
@@ -102,9 +102,9 @@ Finally, there is a minimal authentication service which is also provided by <a 
 
 **Frontend**
 
-- [React JS](https://spring.io/projects/spring-boot)
-- [Tailwind CSS](https://spring.io/projects/spring-boot)
-- [Firebase](https://spring.io/projects/spring-boot)
+- [React JS](https://react.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Firebase](https://firebase.google.com/)
 - [Docker](https://www.docker.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -158,7 +158,7 @@ Here you can find the only, but the most important one, prerequisity to run the 
    ```sh
    docker compose up --detach
    ```
-   This file is provided by me or by an admin for safety reasons. Also, make sure you run this command in the same folder you've put the `docker-compose.yaml` file.
+   This file is provided by me or by an admin for safety reasons. Also, make sure you run this command in the same directory you've put the `docker-compose.yaml` file into.
 6. Open the page in any browser using the link below
    ```
    http://localhost:3000/
@@ -179,15 +179,16 @@ Here you can find the only, but the most important one, prerequisity to run the 
 
 ## Known Bugs
 
-As any application, this app contains some bugs and some sensitive parts which are:
+As any application, this app contains some bugs and some sensitive parts too which are:
 
 - The application is not yet fully implemented for verifying nationality on the passports, because the nationality part of the passports vary too much around the world.
   - Also, there could be problems with analyzing a passport, but hungarian ID documents work well. Thus, there is not any option for selecting the ID document type on the frontend yet.
-- The app is tested only on hungarian ID cards, because not many valid ID card can be found on the web.
+  - The app cant recognize correctly the birth date on the passports because of the reasons listed above.
+- The app is tested only on hungarian ID cards, because not many valid ID cards can be found on the web.
 - For the selfies to load with the other data in the table there is a need to refresh the page before them showing up.
 - When refreshing the page, the login page comes in for a slight second then dissapears if the user is logged in.
 - If the user does not log out from the app, he/she will be remained logged in.
-- The Face API uses my custom made backend service for comparing and validating faces, because of the lack of permission on the Azure Face API service.
+- The Face API uses my custom made backend service for comparing and validating faces, because of the lack of permission on the Azure's Face API service.
 - If the two addresses (birth place and living place) are the same, two entities will be saved in the database instead of one.
 - It takes some time until the application is fully functional without lagging.
 - It takes a bit long for the first user addition, because the Face API's Deepface models have to be downloaded and initialized before use.
