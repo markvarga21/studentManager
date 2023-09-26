@@ -105,9 +105,11 @@ public class AppUserServiceImpl implements AppUserService {
             throw new InvalidUserException(message);
         }
 
-        this.formRecognizerService
-                .validateUser(appUserDto, idDocument, identification);
-        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
+        // TODO REMOVE THESE COMMENTS
+//        this.formRecognizerService
+//                .validateUser(appUserDto, idDocument, identification);
+//        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
+
         AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
         this.userRepository.save(userToSave);
 
@@ -187,12 +189,12 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser userToUpdate = userOptional.get();
         AppUserDto appUserDto = this.gson
                 .fromJson(appUserJson, AppUserDto.class);
-        this.formRecognizerService
-                .validateUser(appUserDto, idDocument, identification);
-        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
-        Address mappedAddressDtoToEntity = this.addressMapper
-                .mapAddressDtoToEntity(appUserDto.getAddress());
-        userToUpdate.setAddress(mappedAddressDtoToEntity);
+
+        // TODO REMOVE THESE COMMENTS
+//        this.formRecognizerService
+//              .validateUser(appUserDto, idDocument, identification);
+//        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
+
         userToUpdate.setEmail(appUserDto.getEmail());
         userToUpdate.setGender(appUserDto.getGender());
         userToUpdate.setFirstName(appUserDto.getFirstName());

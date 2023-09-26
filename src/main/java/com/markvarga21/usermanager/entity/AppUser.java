@@ -62,12 +62,6 @@ public class AppUser {
     private Gender gender;
 
     /**
-     * The user's address.
-     */
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Address address;
-
-    /**
      * The user's email address.
      */
     private String email;

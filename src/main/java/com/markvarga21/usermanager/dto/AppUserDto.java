@@ -66,13 +66,6 @@ public class AppUserDto {
     private Gender gender;
 
     /**
-     * The user's address.
-     */
-    @Valid
-    @NotNull(message = "Address cannot be null!")
-    private AddressDto address;
-
-    /**
      * The user's email address.
      */
     @Email(message = "Email should be valid!")
