@@ -80,15 +80,13 @@ public class AppUserServiceImpl implements AppUserService {
      * @param idDocument a photo of the users ID card or passport.
      * @param selfiePhoto a selfie photo for verifying the user's identity.
      * @param appUserJson the user itself in a JSON string.
-     * @param identification the ID type.
      * @return the updated {@code AppUserDto}.
      */
     @Override
     public AppUserDto createUser(
             final MultipartFile idDocument,
             final MultipartFile selfiePhoto,
-            final String appUserJson,
-            final String identification
+            final String appUserJson
     ) {
         AppUserDto appUserDto = this.gson.
                 fromJson(appUserJson, AppUserDto.class);
@@ -165,7 +163,6 @@ public class AppUserServiceImpl implements AppUserService {
      * @param idDocument a photo of the users ID card or passport.
      * @param selfiePhoto a selfie photo for verifying identity.
      * @param appUserJson the user itself in a JSON string.
-     * @param identification the ID type.
      * @return the updated {@code AppUserDto}.
      * @since 1.0
      */
@@ -174,8 +171,7 @@ public class AppUserServiceImpl implements AppUserService {
             final MultipartFile idDocument,
             final MultipartFile selfiePhoto,
             final String appUserJson,
-            final Long userId,
-            final String identification
+            final Long userId
     ) {
         Optional<AppUser> userOptional = this.userRepository.findById(userId);
         if (userOptional.isEmpty()) {

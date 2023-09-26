@@ -3,7 +3,6 @@ package com.markvarga21.usermanager.controller;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.service.AppUserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -48,22 +47,19 @@ public class AppUserController {
      * @param idDocument a photo of the users ID card or passport.
      * @param selfiePhoto a selfie photo for verifying identity.
      * @param appUserJson the user itself in a JSON string.
-     * @param identification the ID type ('passport' or 'idDocument').
      * @return the saved {@code AppUserDto}.
      */
     @PostMapping
     public ResponseEntity<AppUserDto> createUser(
             @RequestParam("idDocument") final MultipartFile idDocument,
             @RequestParam("selfiePhoto") final MultipartFile selfiePhoto,
-            @RequestParam("appUserJson") final String appUserJson,
-            @RequestParam("identification") final String identification
+            @RequestParam("appUserJson") final String appUserJson
     ) {
 
         AppUserDto createdUser = this.userService.createUser(
                 idDocument,
                 selfiePhoto,
-                appUserJson,
-                identification
+                appUserJson
         );
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
@@ -86,7 +82,6 @@ public class AppUserController {
      * @param idDocument a photo of the users ID card or passport.
      * @param selfiePhoto a selfie photo for verifying identity.
      * @param appUserJson the user itself in a JSON string.
-     * @param identification the ID type ('passport' or 'idDocument').
      * @param userId the ID of the user which has to be updated.
      * @return the updated {@code AppUserDto}.
      */
@@ -95,15 +90,13 @@ public class AppUserController {
             @RequestParam("idDocument") final MultipartFile idDocument,
             @RequestParam("selfiePhoto") final MultipartFile selfiePhoto,
             @RequestParam("appUserJson") final String appUserJson,
-            @RequestParam("identification") final String identification,
             @PathVariable("userId") final Long userId
             ) {
         AppUserDto updatedUser = this.userService.modifyUserById(
                 idDocument,
                 selfiePhoto,
                 appUserJson,
-                userId,
-                identification
+                userId
         );
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }

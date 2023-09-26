@@ -23,14 +23,12 @@ public interface AppUserService {
      * @param idDocument a photo of the ID document or passport.
      * @param selfiePhoto a selfie file of the user.
      * @param appUserJson the user itself with the new data.
-     * @param identification the identification type.
      * @return the newly modified user.
      */
     AppUserDto createUser(
             MultipartFile idDocument,
             MultipartFile selfiePhoto,
-            String appUserJson,
-            String identification
+            String appUserJson
     );
 
     /**
@@ -48,14 +46,12 @@ public interface AppUserService {
      * @param selfiePhoto a selfie file of the user.
      * @param appUserJson the user itself with the new data.
      * @param userId the id of the user we want to modify.
-     * @param identification the identification type.
      * @return the newly modified user.
      */
     AppUserDto modifyUserById(
             MultipartFile idDocument,
             MultipartFile selfiePhoto,
-            String appUserJson, Long userId,
-            String identification
+            String appUserJson, Long userId
     );
 
     /**

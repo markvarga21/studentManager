@@ -57,15 +57,8 @@ public final class MockDataProvider {
                         "street": "Piac",
                         "number": 10
                     },
-                    "nationality": "american",
+                    "countryOfCitizenship": "USA",
                     "gender": "MALE",
-                    "address": {
-                        "id": 2,
-                        "country": "Hungary",
-                        "city": "Debrecen",
-                        "street": "Piac",
-                        "number": 10
-                    },
                     "email": "john.doe@gmail.com",
                     "phoneNumber": "123456789"
                 }""";
@@ -90,7 +83,7 @@ public final class MockDataProvider {
                 .street(MOCK_STREET)
                 .number(MOCK_NUMBER).build();
         LocalDate birthDate = LocalDate.of(MOCK_YEAR, MOCK_MONTH, MOCK_DAY);
-        String nationality = "american";
+        String countryOfCitizenship = "american";
         String firstName = "John";
         long id = 1L;
         String lastName = "Doe";
@@ -103,9 +96,8 @@ public final class MockDataProvider {
                 .lastName(lastName)
                 .birthDate(birthDate)
                 .placeOfBirth(birthPlace)
-                .address(address)
                 .gender(gender)
-                .nationality(nationality)
+                .countryOfCitizenship(countryOfCitizenship)
                 .email(email)
                 .phoneNumber(phoneNumber).build();
     }
@@ -129,7 +121,7 @@ public final class MockDataProvider {
                 .street(MOCK_STREET)
                 .number(MOCK_NUMBER).build();
         LocalDate birthDate = LocalDate.of(MOCK_YEAR, MOCK_MONTH, MOCK_DAY);
-        String nationality = "american";
+        String countryOfCitizenship = "american";
         String firstName = "John";
         long id = 1L;
         String lastName = "Doe";
@@ -142,9 +134,8 @@ public final class MockDataProvider {
                 .lastName(lastName)
                 .birthDate(birthDate)
                 .placeOfBirth(birthPlace)
-                .address(address)
                 .gender(gender)
-                .nationality(nationality)
+                .countryOfCitizenship(countryOfCitizenship)
                 .email(email)
                 .phoneNumber(phoneNumber).build();
     }

@@ -12,7 +12,6 @@ import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import com.markvarga21.usermanager.service.impl.AppUserServiceImpl;
 import com.markvarga21.usermanager.util.mapping.AddressMapper;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -104,7 +103,6 @@ class AppUserServiceTest {
         AppUser appUser = getStaticAppUser();
         MultipartFile idDocument = getFileForName("huId.jpg");
         MultipartFile selfiePhoto = getFileForName("huFace.png");
-        String idType = "idDocument";
 
         // When
         when(this.gson.fromJson(userJson, AppUserDto.class))
@@ -122,7 +120,7 @@ class AppUserServiceTest {
         when(this.appUserRepository.save(appUser))
                 .thenReturn(appUser);
         AppUserDto actual = this.appUserService
-                .createUser(idDocument, selfiePhoto, userJson, idType);
+                .createUser(idDocument, selfiePhoto, userJson);
 
         // Then
         assertEquals(appUserDto, actual);
@@ -136,7 +134,6 @@ class AppUserServiceTest {
         AppUser appUser = getStaticAppUser();
         MultipartFile idDocument = getFileForName("huId.jpg");
         MultipartFile selfiePhoto = getFileForName("huFace.png");
-        String idType = "idDocument";
         String firstName = appUserDto.getFirstName();
         String lastName = appUserDto.getLastName();
 
@@ -150,7 +147,7 @@ class AppUserServiceTest {
         // Then
         assertThrows(InvalidUserException.class,
                 () -> this.appUserService
-                        .createUser(idDocument, selfiePhoto, userJson, idType)
+                        .createUser(idDocument, selfiePhoto, userJson)
         );
     }
 
@@ -226,13 +223,11 @@ class AppUserServiceTest {
     void modifyUserByIdShouldReturnUserIfIdExistsTest() {
         // Given
         AppUser appUser = getStaticAppUser();
-        Address address = appUser.getAddress();
         Address birthAddress = appUser.getPlaceOfBirth();
         AppUserDto expected = getStaticAppUserDto();
         Long id = appUser.getId();
         MultipartFile idDocument = getFileForName("huId.jpg");
         MultipartFile selfiePhoto = getFileForName("huFace.png");
-        String idType = "idDocument";
         String userJson = MOCK_USER_JSON;
 
         // When
@@ -246,8 +241,6 @@ class AppUserServiceTest {
         doNothing()
                 .when(this.faceApiService)
                 .facesAreMatching(any(), any());
-        when(this.addressMapper.mapAddressDtoToEntity(expected.getAddress()))
-                .thenReturn(address);
         when(this.addressMapper.mapAddressDtoToEntity(
                 expected.getPlaceOfBirth())
         )
@@ -257,7 +250,7 @@ class AppUserServiceTest {
         when(this.appUserMapper.mapAppUserEntityToDto(appUser))
                 .thenReturn(expected);
         AppUserDto actual = this.appUserService
-                .modifyUserById(idDocument, selfiePhoto, userJson, id, idType);
+                .modifyUserById(idDocument, selfiePhoto, userJson, id);
 
         // Then
         assertSame(expected, actual);
@@ -270,7 +263,6 @@ class AppUserServiceTest {
         Long id = appUser.getId();
         MultipartFile idDocument = getFileForName("huId.jpg");
         MultipartFile selfiePhoto = getFileForName("huFace.png");
-        String idType = "idDocument";
 
         // When
         when(this.appUserRepository.findById(id)).thenReturn(Optional.empty());
@@ -281,8 +273,7 @@ class AppUserServiceTest {
                         idDocument,
                         selfiePhoto,
                         MOCK_USER_JSON,
-                        id,
-                        idType
+                        id
                 )
         );
     }
