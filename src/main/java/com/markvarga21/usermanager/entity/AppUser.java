@@ -6,6 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -74,4 +77,14 @@ public class AppUser {
      * The user's passport number.
      */
     private String passportNumber;
+
+    /**
+     * The user's passports expiry date.
+     */
+    private LocalDate passportDateOfExpiry;
+
+    /**
+     * The user's passports issue date.
+     */
+    private LocalDate passportDateOfIssue;
 }

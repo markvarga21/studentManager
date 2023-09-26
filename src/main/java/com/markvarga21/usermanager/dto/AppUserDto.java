@@ -2,11 +2,7 @@ package com.markvarga21.usermanager.dto;
 
 import com.markvarga21.usermanager.entity.Gender;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -84,4 +80,18 @@ public class AppUserDto {
      */
     @NotBlank(message = "Passport number cannot be empty!")
     private String passportNumber;
+
+    /**
+     * The user's passports expiry date.
+     */
+    @NotNull(message = "Passport date of expiry cannot be null!")
+    @FutureOrPresent
+    private LocalDate passportDateOfExpiry;
+
+    /**
+     * The user's passports issue date.
+     */
+    @NotNull(message = "Passport date of issue cannot be null!")
+    @PastOrPresent
+    private LocalDate passportDateOfIssue;
 }
