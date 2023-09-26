@@ -69,4 +69,9 @@ public class AppUser {
      * The user's phone number.
      */
     private String phoneNumber;
+
+    /**
+     * The user's passport number.
+     */
+    private String passportNumber;
 }

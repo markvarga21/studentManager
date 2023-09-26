@@ -78,4 +78,10 @@ public class AppUserDto {
     @Pattern(regexp = "(^[0-9]+$)", message = "Invalid phone number!")
     @NotBlank(message = "Phone number cannot be empty!")
     private String phoneNumber;
+
+    /**
+     * The user's passport number.
+     */
+    @NotBlank(message = "Passport number cannot be empty!")
+    private String passportNumber;
 }
