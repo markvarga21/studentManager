@@ -173,13 +173,13 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                     .getContent()
                     .toLowerCase();
             String normalizedAppUserNationality = appUserDto
-                    .getNationality()
+                    .getCountryOfCitizenship()
                     .toLowerCase();
             if (!normalizedNationality.contains(normalizedAppUserNationality)) {
                 String message = String.format(
                     "Invalid Nationality: '%s' not equals with '%s'",
                     nationality,
-                    appUserDto.getNationality()
+                    appUserDto.getCountryOfCitizenship()
                 );
                 log.error(message);
                 throw new InvalidIdDocumentException(message);

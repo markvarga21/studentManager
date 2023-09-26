@@ -199,7 +199,7 @@ public class AppUserServiceImpl implements AppUserService {
         userToUpdate.setGender(appUserDto.getGender());
         userToUpdate.setFirstName(appUserDto.getFirstName());
         userToUpdate.setLastName(appUserDto.getLastName());
-        userToUpdate.setNationality(appUserDto.getNationality());
+        userToUpdate.setCountryOfCitizenship(appUserDto.getCountryOfCitizenship());
         userToUpdate.setPhoneNumber(appUserDto.getPhoneNumber());
         Address mappedBirthplaceAddressEntity = this.addressMapper
                 .mapAddressDtoToEntity(appUserDto.getPlaceOfBirth());

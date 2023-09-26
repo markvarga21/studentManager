@@ -57,7 +57,7 @@ public class AppUserDto {
      * The nationality of the user.
      */
     @NotBlank(message = "Nationality cannot be null or empty!")
-    private String nationality;
+    private String countryOfCitizenship;
 
     /**
      * The user's gender.
