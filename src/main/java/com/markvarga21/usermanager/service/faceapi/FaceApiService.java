@@ -14,4 +14,14 @@ public interface FaceApiService {
      * @param selfiePhoto the selfie file.
      */
     void facesAreMatching(MultipartFile idPhoto, MultipartFile selfiePhoto);
+
+    /**
+     * Compares the faces found on the passport and the
+     * portrait, and then sends it back to the client.
+     *
+     * @param passport the user's passport.
+     * @param selfiePhoto the portrait of the user.
+     * @return the validity and the percentage of the matching.
+     */
+    FaceApiResponse getValidityOfFaces(MultipartFile passport, MultipartFile selfiePhoto);
 }

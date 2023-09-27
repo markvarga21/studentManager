@@ -61,37 +61,8 @@ public class FaceApiServiceImpl implements FaceApiService {
         }
         log.info("Comparing faces...");
         try {
-            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-
-            byte[] idPhotoBytes = idPhoto.getBytes();
-            body.add("idPhoto", new ByteArrayResource(idPhotoBytes) {
-                @Override
-                public String getFilename() {
-                    return idPhoto.getOriginalFilename();
-                }
-            });
-            byte[] selfiePhotoBytes = selfiePhoto.getBytes();
-            body.add("selfiePhoto", new ByteArrayResource(selfiePhotoBytes) {
-                @Override
-                public String getFilename() {
-                    return selfiePhoto.getOriginalFilename();
-                }
-            });
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-            headers.setAccessControlAllowOrigin("*");
-
-            HttpEntity<MultiValueMap<String, Object>> requestEntity =
-                    new HttpEntity<>(body, headers);
-
-            ResponseEntity<FaceApiResponse> response = this.restTemplate
-                    .postForEntity(
-                            this.faceApiUrl,
-                            requestEntity,
-                            FaceApiResponse.class
-                    );
-            FaceApiResponse faceApiResponse = response.getBody();
+            FaceApiResponse faceApiResponse =
+                    this.compareFaces(idPhoto, selfiePhoto);
 
             if (faceApiResponse == null) {
                 String message = "Face api response is NULL!";
@@ -116,5 +87,67 @@ public class FaceApiServiceImpl implements FaceApiService {
             );
             log.error(message);
         }
+    }
+
+    private FaceApiResponse compareFaces(
+            final MultipartFile passport,
+            final MultipartFile selfiePhoto
+    ) throws IOException {
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        byte[] idPhotoBytes = passport.getBytes();
+        body.add("idPhoto", new ByteArrayResource(idPhotoBytes) {
+            @Override
+            public String getFilename() {
+                return passport.getOriginalFilename();
+            }
+        });
+        byte[] selfiePhotoBytes = selfiePhoto.getBytes();
+        body.add("selfiePhoto", new ByteArrayResource(selfiePhotoBytes) {
+            @Override
+            public String getFilename() {
+                return selfiePhoto.getOriginalFilename();
+            }
+        });
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setAccessControlAllowOrigin("*");
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity =
+                new HttpEntity<>(body, headers);
+
+        ResponseEntity<FaceApiResponse> response = this.restTemplate
+                .postForEntity(
+                        this.faceApiUrl,
+                        requestEntity,
+                        FaceApiResponse.class
+                );
+        return response.getBody();
+    }
+
+    /**
+     * Compares the faces found on the passport and the
+     * portrait, and then sends it back to the client.
+     *
+     * @param passport the user's passport.
+     * @param selfiePhoto the portrait of the user.
+     * @return the validity and the percentage of the matching.
+     */
+    @Override
+    public FaceApiResponse getValidityOfFaces(
+            final MultipartFile passport,
+            final MultipartFile selfiePhoto
+    ) {
+        try {
+             return this.compareFaces(passport, selfiePhoto);
+        } catch (IOException exception) {
+            String message = String.format(
+                    "Something went wrong when comparing the photos: %s",
+                    exception.getMessage()
+            );
+            log.error(message);
+        }
+        return new FaceApiResponse();
     }
 }
