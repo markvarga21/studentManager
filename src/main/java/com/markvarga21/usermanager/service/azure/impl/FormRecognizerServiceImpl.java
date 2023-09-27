@@ -99,7 +99,8 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             final MultipartFile idDocument,
             final String identification
     ) {
-        var fields = getFieldsFromDocument(idDocument);
+        Map<String, DocumentField> fields =
+                getKeyValuePairsFromPassport(idDocument);
         String firstName = fields.get("FirstName").getContent();
         String lastName = fields.get("LastName").getContent();
         String birthDate = fields
@@ -187,5 +188,21 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         }
 
         return true;
+    }
+
+    /**
+     * Extracts all the available key-value pairs from
+     * the uploaded passport.
+     *
+     * @param passport the user's passport.
+     * @return the extracted kay-value pairs.
+     */
+    @Override
+    public Map<String, DocumentField> getKeyValuePairsFromPassport(
+            final MultipartFile passport
+    ) {
+        // TODO remove this
+        return null;
+//        return getFieldsFromDocument(passport);
     }
 }

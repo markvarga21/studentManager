@@ -1,8 +1,11 @@
 package com.markvarga21.usermanager.service.azure;
 
+import com.azure.ai.formrecognizer.documentanalysis.models.DocumentField;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 /**
  * An interface containing methods for the Form Recognizer service.
@@ -20,5 +23,16 @@ public interface FormRecognizerService {
             @Valid AppUserDto appUserDto,
             MultipartFile idDocument,
             String identification
+    );
+
+    /**
+     * Extracts all the available key-value pairs from
+     * the uploaded passport.
+     *
+     * @param passport the user's passport.
+     * @return the extracted kay-value pairs.
+     */
+    Map<String, DocumentField> getKeyValuePairsFromPassport(
+            MultipartFile passport
     );
 }

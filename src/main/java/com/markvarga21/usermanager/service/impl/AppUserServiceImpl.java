@@ -1,9 +1,12 @@
 package com.markvarga21.usermanager.service.impl;
 
+import com.azure.ai.formrecognizer.documentanalysis.models.DocumentField;
 import com.google.gson.Gson;
+import com.markvarga21.usermanager.dto.AddressDto;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.entity.Address;
 import com.markvarga21.usermanager.entity.AppUser;
+import com.markvarga21.usermanager.entity.Gender;
 import com.markvarga21.usermanager.exception.InvalidUserException;
 import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.UserNotFoundException;
@@ -19,7 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -233,5 +238,52 @@ public class AppUserServiceImpl implements AppUserService {
         log.info(String.format("User with id %d deleted successfully!", id));
 
         return deletedUser;
+    }
+
+    /**
+     * Extracts and returns the data from the passport.
+     *
+     * @param passport the photo of the passport.
+     * @return the extracted {@code AppUserDto} object.
+     */
+    @Override
+    public AppUserDto extractDataFromPassport(final MultipartFile passport) {
+        Map<String, DocumentField> passportData = this.formRecognizerService
+                .getKeyValuePairsFromPassport(passport);
+        return this.convertDocumentMapToAppUserDto(passportData);
+    }
+
+    /**
+     * Converts a map, which contains all the extracted data
+     * from the passport, to an {@code AppUserDto}.
+     *
+     * @param passportData a map containing all the passport's data.
+     * @return the formed {@code AppUserDto}.
+     */
+    private AppUserDto convertDocumentMapToAppUserDto(
+            final Map<String, DocumentField> passportData
+    ) {
+        // Converting to AppUserDto
+
+        // TODO remove this static inlined content
+        AddressDto addressDto = AddressDto.builder()
+                .country("Hungary")
+                .city("Debrecen")
+                .street("Piac")
+                .number(5)
+                .build();
+        return AppUserDto.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("johndoe@gmail.com")
+                .birthDate(LocalDate.of(1970, 1, 1))
+                .gender(Gender.MALE)
+                .phoneNumber("123456789")
+                .placeOfBirth(addressDto)
+                .passportNumber("123456789")
+                .countryOfCitizenship("Hungary")
+                .passportDateOfExpiry(LocalDate.of(2030, 1, 1))
+                .passportDateOfIssue(LocalDate.of(1970, 1, 1))
+                .build();
     }
 }

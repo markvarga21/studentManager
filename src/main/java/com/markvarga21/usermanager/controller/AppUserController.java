@@ -114,4 +114,19 @@ public class AppUserController {
         AppUserDto deletedUser = this.userService.deleteUserById(id);
         return new ResponseEntity<>(deletedUser, HttpStatus.OK);
     }
+
+    /**
+     * Extracts and returns the data from the passport.
+     *
+     * @param passport the photo of the passport.
+     * @return the extracted {@code AppUserDto} object.
+     */
+    @GetMapping("/extractDataFromPassport")
+    public ResponseEntity<AppUserDto> getDataFromPassport(
+            @RequestParam("passport") final MultipartFile passport
+    ) {
+        AppUserDto appUserDto = this.userService
+                .extractDataFromPassport(passport);
+        return new ResponseEntity<>(appUserDto, HttpStatus.OK);
+    }
 }
