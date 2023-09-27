@@ -121,7 +121,7 @@ public class AppUserController {
      * @param passport the photo of the passport.
      * @return the extracted {@code AppUserDto} object.
      */
-    @GetMapping("/extractDataFromPassport")
+    @PostMapping("/extractDataFromPassport")
     public ResponseEntity<AppUserDto> getDataFromPassport(
             @RequestParam("passport") final MultipartFile passport
     ) {
