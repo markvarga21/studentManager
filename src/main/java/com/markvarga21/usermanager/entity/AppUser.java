@@ -50,8 +50,7 @@ public class AppUser {
     /**
      * The birthplace of the user.
      */
-    @OneToOne(cascade = CascadeType.ALL)
-    private Address placeOfBirth;
+    private String placeOfBirth;
 
     /**
      * The nationality of the user.
@@ -62,16 +61,6 @@ public class AppUser {
      * The user's gender.
      */
     private Gender gender;
-
-    /**
-     * The user's email address.
-     */
-    private String email;
-
-    /**
-     * The user's phone number.
-     */
-    private String phoneNumber;
 
     /**
      * The user's passport number.

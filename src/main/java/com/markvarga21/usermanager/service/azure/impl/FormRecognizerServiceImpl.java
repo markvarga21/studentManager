@@ -6,13 +6,12 @@ import com.azure.ai.formrecognizer.documentanalysis.models.DocumentField;
 import com.azure.ai.formrecognizer.documentanalysis.models.OperationResult;
 import com.azure.core.util.BinaryData;
 import com.azure.core.util.polling.SyncPoller;
-import com.markvarga21.usermanager.dto.AddressDto;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.entity.Gender;
 import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
 import com.markvarga21.usermanager.service.azure.FormRecognizerService;
+import com.markvarga21.usermanager.util.CountryNameFetcher;
 import com.markvarga21.usermanager.util.PassportDateFormatter;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,12 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 /**
  * A service which is used to verify the data entered by the user
- * against the data which can be found on either the uploaded 
+ * against the data which can be found on either the uploaded
  * ID document or passport. It uses Azure's Form Recognizer.
  */
 @Component
@@ -35,31 +33,23 @@ import java.util.Map;
 @Validated
 public class FormRecognizerServiceImpl implements FormRecognizerService {
     /**
+     * The default address if the address field is empty.
+     */
+    private final String EMPTY_ADDRESS = "Not known";
+    /**
      * A client which is used to analyze documents.
      */
     private final DocumentAnalysisClient documentAnalysisClient;
+    /**
+     * The passport date formatter.
+     */
     private final PassportDateFormatter passportDateFormatter;
 
     /**
-     * A method which checks whether the data entered by the user is the same
-     * as in the uploaded ID document or passport.
-     *
-     * @param appUserDto the user which has to be validated.
-     * @param idDocument the ID document or passport of the user.
-     * @param identification the document type ('passport' or 'idDocument').
+     * A util class for converting a country code to
+     * the actual name of the country.
      */
-    @Override
-    public void validateUser(
-            @Valid final AppUserDto appUserDto,
-            final MultipartFile idDocument,
-            final String identification
-    ) {
-        if (!isValidIdContent(appUserDto, idDocument, identification)) {
-            log.error("Invalid content!");
-            throw new InvalidIdDocumentException("Invalid content!");
-        }
-        log.info("Valid content!");
-    }
+    private final CountryNameFetcher countryNameFetcher;
 
     /**
      * Extracts all the fields from the uploaded ID document.
@@ -90,170 +80,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     }
 
     /**
-     * Checks if the content of the user's inputted data
-     * matches the data on the ID document.
-     *
-     * @param appUserDto the user which has to be validated.
-     * @param idDocument the identification document.
-     * @param identification the ID type ('idDocument' or 'passport').
-     * @return {@code true} if all the data from the form matches
-     * the data extracted from the ID document.
-     */
-    public boolean isValidIdContent(
-            @Valid final AppUserDto appUserDto,
-            final MultipartFile idDocument,
-            final String identification
-    ) {
-        Map<String, DocumentField> fields =
-                getKeyValuePairsFromPassport(idDocument);
-        String firstName = fields.get("FirstName").getContent();
-        String lastName = fields.get("LastName").getContent();
-        String birthDate = fields
-                .get("DateOfBirth")
-                .getContent()
-                .replace(".", " ");
-
-        log.info("ID lastName = " + lastName + ", firstName = " + firstName);
-
-        String formFirstName = appUserDto.getFirstName();
-        String formLastName = appUserDto.getLastName();
-
-        String dateFormat = identification
-                .equalsIgnoreCase("passport")
-                ? "dd MMM/MMM yyyy" : "dd MM yyyy";
-
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter
-                .ofPattern(dateFormat);
-        String formBirthDate = appUserDto
-                .getBirthDate()
-                .format(dateTimeFormatter)
-                .replace(".", "");
-
-        log.info(String.format("FORM lastName = %s, firstName = %s",
-                formLastName,
-                formFirstName)
-        );
-        log.info(String.format(
-                "Form birthdate = %s, id birthdate = %s",
-                formBirthDate,
-                birthDate)
-        );
-
-//        if (!formFirstName.equalsIgnoreCase(firstName)) {
-//            String message = String.format(
-//                "Form's first name '%s' not matching with ID's first name '%s'",
-//                formFirstName,
-//                firstName
-//            );
-//            log.error(message);
-//            throw new InvalidIdDocumentException(message);
-//        }
-//
-//        if (!formLastName.equalsIgnoreCase(lastName)) {
-//            String message = String.format(
-//                "Form's last name '%s' not matching with ID's last name '%s'",
-//                formLastName,
-//                lastName
-//            );
-//            log.error(message);
-//            throw new InvalidIdDocumentException(message);
-//        }
-//
-//        if (!formBirthDate.equalsIgnoreCase(birthDate)) {
-//            String message = String.format(
-//                "Form's birth date '%s' not matching with ID's birth date '%s'",
-//                formBirthDate,
-//                birthDate
-//            );
-//            log.error(message);
-//            throw new InvalidIdDocumentException(message);
-//        }
-//
-//        if (identification.equalsIgnoreCase("passport")) {
-//            DocumentField nationality = fields.get("Nationality");
-//            if (nationality == null) {
-//                String message = "Nationality not present or not readable!";
-//                throw new InvalidIdDocumentException(message);
-//            }
-//            String normalizedNationality = nationality
-//                    .getContent()
-//                    .toLowerCase();
-//            String normalizedAppUserNationality = appUserDto
-//                    .getCountryOfCitizenship()
-//                    .toLowerCase();
-//            if (!normalizedNationality.contains(normalizedAppUserNationality)) {
-//                String message = String.format(
-//                    "Invalid Nationality: '%s' not equals with '%s'",
-//                    nationality,
-//                    appUserDto.getCountryOfCitizenship()
-//                );
-//                log.error(message);
-//                throw new InvalidIdDocumentException(message);
-//            }
-//        }
-
-        return true;
-    }
-
-    /**
-     * Extracts all the available key-value pairs from
-     * the uploaded passport.
-     *
-     * @param passport the user's passport.
-     * @return the extracted kay-value pairs.
-     */
-    @Override
-    public Map<String, DocumentField> getKeyValuePairsFromPassport(
-            final MultipartFile passport
-    ) {
-        Map<String, DocumentField> fields = getFieldsFromDocument(passport);
-        String firstName = fields.get("FirstName").getContent();
-        String lastName = fields.get("LastName").getContent();
-        String birthdateField = fields
-                .get("DateOfBirth")
-                .getContent();
-        LocalDate birthDate = this.passportDateFormatter.format(birthdateField);
-
-        log.info("First name = " + firstName + ", " + " last name = " + lastName);
-        log.info("Birth date = " + birthDate);
-        return null;
-//        return getFieldsFromDocument(passport);
-    }
-
-    /**
-     * Converts a map, which contains all the extracted data
-     * from the passport, to an {@code AppUserDto}.
-     *
-     * @param passportData a map containing all the passport's data.
-     * @return the formed {@code AppUserDto}.
-     */
-    private AppUserDto convertDocumentMapToAppUserDto(
-            final Map<String, DocumentField> passportData
-    ) {
-        // TODO remove this static inlined content
-        AddressDto addressDto = AddressDto.builder()
-                .country("Hungary")
-                .city("Debrecen")
-                .street("Piac")
-                .number(5)
-                .build();
-        log.info("Building user from passport data.");
-        return AppUserDto.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .email("johndoe@gmail.com")
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .gender(Gender.MALE)
-                .phoneNumber("123456789")
-                .placeOfBirth(addressDto)
-                .passportNumber("123456789")
-                .countryOfCitizenship("Hungary")
-                .passportDateOfExpiry(LocalDate.of(2030, 1, 1))
-                .passportDateOfIssue(LocalDate.of(1970, 1, 1))
-                .build();
-    }
-
-    /**
      * Extracts and returns the data from the passport.
      *
      * @param passport the photo of the passport.
@@ -261,8 +87,45 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      */
     @Override
     public AppUserDto extractDataFromPassport(final MultipartFile passport) {
-        Map<String, DocumentField> passportData = this
-                .getKeyValuePairsFromPassport(passport);
-        return this.convertDocumentMapToAppUserDto(passportData);
+        Map<String, DocumentField> passportFields = this
+                .getFieldsFromDocument(passport);
+        String firstName = passportFields.get("FirstName").getContent();
+        String lastName = passportFields.get("LastName").getContent();
+        String birthdateField = passportFields
+                .get("DateOfBirth")
+                .getContent();
+        LocalDate birthDate = this.passportDateFormatter.format(birthdateField);
+        String address = passportFields.get("Address") == null
+                ? EMPTY_ADDRESS
+                : passportFields.get("Address").getContent();
+        String countryCode = passportFields.get("CountryRegion")
+                .getContent();
+        String countryOfCitizenship = this.countryNameFetcher
+                .getCountryNameForCode(countryCode);
+        Gender gender = passportFields.get("Sex").getContent().equals("M")
+                ? Gender.MALE
+                : Gender.FEMALE;
+        String passportNumber = passportFields.get("DocumentNumber")
+                .getContent();
+        String dateOfExpiryField = passportFields.get("DateOfExpiration")
+                .getContent();
+        LocalDate dateOfExpiry = this.passportDateFormatter
+                .format(dateOfExpiryField);
+        String dateOfIssueField = passportFields.get("DateOfIssue")
+                .getContent();
+        LocalDate dateOfIssue = this.passportDateFormatter
+                .format(dateOfIssueField);
+
+        return AppUserDto.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .birthDate(birthDate)
+                .placeOfBirth(address)
+                .countryOfCitizenship(countryOfCitizenship)
+                .gender(gender)
+                .passportNumber(passportNumber)
+                .passportDateOfExpiry(dateOfExpiry)
+                .passportDateOfIssue(dateOfIssue)
+                .build();
     }
 }

@@ -1,20 +1,13 @@
 package com.markvarga21.usermanager.service.impl;
 
-import com.azure.ai.formrecognizer.documentanalysis.models.DocumentField;
 import com.google.gson.Gson;
-import com.markvarga21.usermanager.dto.AddressDto;
 import com.markvarga21.usermanager.dto.AppUserDto;
-import com.markvarga21.usermanager.entity.Address;
 import com.markvarga21.usermanager.entity.AppUser;
-import com.markvarga21.usermanager.entity.Gender;
 import com.markvarga21.usermanager.exception.InvalidUserException;
 import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.UserNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
 import com.markvarga21.usermanager.service.AppUserService;
-import com.markvarga21.usermanager.service.azure.FormRecognizerService;
-import com.markvarga21.usermanager.service.faceapi.FaceApiService;
-import com.markvarga21.usermanager.util.mapping.AddressMapper;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -44,22 +35,11 @@ public class AppUserServiceImpl implements AppUserService {
      * A user mapper.
      */
     private final AppUserMapper userMapper;
-    /**
-     * An address mapper.
-     */
-    private final AddressMapper addressMapper;
-    /**
-     * The form recognizer service.
-     */
-    private final FormRecognizerService formRecognizerService;
+
     /**
      * A GSON converter.
      */
     private final Gson gson;
-    /**
-     * The Face API service.
-     */
-    private final FaceApiService faceApiService;
 
     /**
      * Retrieves all the users in the application.
@@ -107,11 +87,6 @@ public class AppUserServiceImpl implements AppUserService {
             log.error(message);
             throw new InvalidUserException(message);
         }
-
-        // TODO REMOVE THESE COMMENTS
-//        this.formRecognizerService
-//                .validateUser(appUserDto, idDocument, identification);
-//        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
 
         AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
         this.userRepository.save(userToSave);
@@ -191,20 +166,11 @@ public class AppUserServiceImpl implements AppUserService {
         AppUserDto appUserDto = this.gson
                 .fromJson(appUserJson, AppUserDto.class);
 
-        // TODO REMOVE THESE COMMENTS
-//        this.formRecognizerService
-//              .validateUser(appUserDto, idDocument, identification);
-//        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
-
-        userToUpdate.setEmail(appUserDto.getEmail());
         userToUpdate.setGender(appUserDto.getGender());
         userToUpdate.setFirstName(appUserDto.getFirstName());
         userToUpdate.setLastName(appUserDto.getLastName());
         userToUpdate.setCountryOfCitizenship(appUserDto.getCountryOfCitizenship());
-        userToUpdate.setPhoneNumber(appUserDto.getPhoneNumber());
-        Address mappedBirthplaceAddressEntity = this.addressMapper
-                .mapAddressDtoToEntity(appUserDto.getPlaceOfBirth());
-        userToUpdate.setPlaceOfBirth(mappedBirthplaceAddressEntity);
+        userToUpdate.setPlaceOfBirth(appUserDto.getPlaceOfBirth());
         userToUpdate.setBirthDate(appUserDto.getBirthDate());
         AppUser updatedUser = this.userRepository.save(userToUpdate);
 

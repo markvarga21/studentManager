@@ -22,7 +22,7 @@ public class PassportDateFormatter {
                     birthDateComponents[2]
             );
 
-            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yy", Locale.ENGLISH);
 
             try {
                 LocalDate date = formatter.parse(formattedDate).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
@@ -32,5 +32,10 @@ public class PassportDateFormatter {
                 log.error("Invalid date format: {}", formattedDate);
                 throw new InvalidDateFormatException(formattedDate);
             }
+        }
+
+        public String convertLocalDateToString(final LocalDate date) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            return date.format(formatter);
         }
 }

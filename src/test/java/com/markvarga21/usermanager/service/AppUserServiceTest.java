@@ -10,7 +10,6 @@ import com.markvarga21.usermanager.repository.AppUserRepository;
 import com.markvarga21.usermanager.service.azure.FormRecognizerService;
 import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import com.markvarga21.usermanager.service.impl.AppUserServiceImpl;
-import com.markvarga21.usermanager.util.mapping.AddressMapper;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,11 +55,7 @@ class AppUserServiceTest {
      */
     @Mock
     private AppUserMapper appUserMapper;
-    /**
-     * The address mapper.
-     */
-    @Mock
-    private AddressMapper addressMapper;
+
     /**
      * The form recognizer service.
      */
@@ -111,9 +106,9 @@ class AppUserServiceTest {
                 .thenReturn(appUser);
         when(this.appUserMapper.mapAppUserEntityToDto(appUser))
                 .thenReturn(appUserDto);
-        doNothing()
-                .when(this.formRecognizerService)
-                .validateUser(eq(appUserDto), any(), anyString());
+//        doNothing()
+//                .when(this.formRecognizerService)
+//                .validateUser(eq(appUserDto), any(), anyString());
         doNothing()
                 .when(this.faceApiService)
                 .facesAreMatching(any(), any());
@@ -223,7 +218,7 @@ class AppUserServiceTest {
     void modifyUserByIdShouldReturnUserIfIdExistsTest() {
         // Given
         AppUser appUser = getStaticAppUser();
-        Address birthAddress = appUser.getPlaceOfBirth();
+        String birthAddress = appUser.getPlaceOfBirth();
         AppUserDto expected = getStaticAppUserDto();
         Long id = appUser.getId();
         MultipartFile idDocument = getFileForName("huId.jpg");
@@ -235,16 +230,16 @@ class AppUserServiceTest {
                 .thenReturn(Optional.of(appUser));
         when(this.gson.fromJson(userJson, AppUserDto.class))
                 .thenReturn(expected);
-        doNothing()
-                .when(this.formRecognizerService)
-                .validateUser(eq(expected), any(), anyString());
-        doNothing()
-                .when(this.faceApiService)
-                .facesAreMatching(any(), any());
-        when(this.addressMapper.mapAddressDtoToEntity(
-                expected.getPlaceOfBirth())
-        )
-                .thenReturn(birthAddress);
+//        doNothing()
+//                .when(this.formRecognizerService)
+//                .validateUser(eq(expected), any(), anyString());
+//        doNothing()
+//                .when(this.faceApiService)
+//                .facesAreMatching(any(), any());
+//        when(this.addressMapper.mapAddressDtoToEntity(
+//                expected.getPlaceOfBirth())
+//        )
+//                .thenReturn(birthAddress);
         when(this.appUserRepository.save(appUser))
                 .thenReturn(appUser);
         when(this.appUserMapper.mapAppUserEntityToDto(appUser))
