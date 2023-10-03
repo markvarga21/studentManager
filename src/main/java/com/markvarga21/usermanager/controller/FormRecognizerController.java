@@ -2,6 +2,7 @@ package com.markvarga21.usermanager.controller;
 
 
 import com.markvarga21.usermanager.dto.AppUserDto;
+import com.markvarga21.usermanager.dto.PassportValidationResponse;
 import com.markvarga21.usermanager.service.azure.FormRecognizerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,5 +40,26 @@ public class FormRecognizerController {
         AppUserDto appUserDto = this.formRecognizerService
                 .extractDataFromPassport(passport);
         return new ResponseEntity<>(appUserDto, HttpStatus.OK);
+    }
+
+    /**
+     * Validates the data entered by the user against the data
+     * which can be found on the passport.
+     *
+     * @param passport the photo of the passport.
+     * @param appUserJson the user itself in a JSON string.
+     * @return a {@code PassportValidationResponse} object.
+     */
+    @PostMapping("/validate")
+    public ResponseEntity<PassportValidationResponse> validatePassport(
+            @RequestParam("passport") final MultipartFile passport,
+            @RequestParam("appUserJson") final String appUserJson
+    ) {
+        PassportValidationResponse passportValidationResponse =
+                this.formRecognizerService.validatePassport(
+                        passport,
+                        appUserJson
+                );
+        return new ResponseEntity<>(passportValidationResponse, HttpStatus.OK);
     }
 }

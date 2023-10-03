@@ -7,11 +7,15 @@ import com.azure.ai.formrecognizer.documentanalysis.models.OperationResult;
 import com.azure.core.util.BinaryData;
 import com.azure.core.util.polling.SyncPoller;
 import com.markvarga21.usermanager.dto.AppUserDto;
+import com.markvarga21.usermanager.dto.PassportValidationResponse;
 import com.markvarga21.usermanager.entity.Gender;
+import com.markvarga21.usermanager.entity.PassportValidationData;
 import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
+import com.markvarga21.usermanager.repository.PassportValidationDataRepository;
 import com.markvarga21.usermanager.service.azure.FormRecognizerService;
 import com.markvarga21.usermanager.util.CountryNameFetcher;
 import com.markvarga21.usermanager.util.PassportDateFormatter;
+import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,7 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A service which is used to verify the data entered by the user
@@ -35,7 +42,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     /**
      * The default address if the address field is empty.
      */
-    private final String EMPTY_ADDRESS = "Not known";
+    public static final String EMPTY_ADDRESS = "Not known";
     /**
      * A client which is used to analyze documents.
      */
@@ -52,11 +59,23 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     private final CountryNameFetcher countryNameFetcher;
 
     /**
+     * A user mapper.
+     */
+    private final AppUserMapper userMapper;
+
+    /**
+     * A repository which is used to store the data extracted
+     * from the passport while validation.
+     */
+    private final PassportValidationDataRepository validationRepository;
+
+    /**
      * Extracts all the fields from the uploaded ID document.
      *
      * @param idDocument the uploaded ID document or passport.
      * @return the extracted fields stored in a {@code Map}.
      */
+    @Override
     public Map<String, DocumentField> getFieldsFromDocument(
             final MultipartFile idDocument
     ) {
@@ -127,5 +146,107 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                 .passportDateOfExpiry(dateOfExpiry)
                 .passportDateOfIssue(dateOfIssue)
                 .build();
+    }
+
+    /**
+     * Validates the data entered by the user against the data
+     * which can be found on the passport.
+     *
+     * @param passport the photo of the passport.
+     * @param appUserJson the user itself in a JSON string.
+     * @return a {@code PassportValidationResponse} object.
+     */
+    @Override
+    public PassportValidationResponse validatePassport(
+            final MultipartFile passport,
+            final String appUserJson
+    ) {
+        AppUserDto userDataFromUser = this
+                .userMapper.mapJsonToDto(appUserJson);
+        if (this.isUserPresentInValidationDatabase(userDataFromUser)) {
+            log.info("User is present in the validation database.");
+            return PassportValidationResponse.builder()
+                    .isValid(true)
+                    .build();
+        }
+        AppUserDto userDataFromPassport = this
+                .extractDataFromPassport(passport);
+        if (userDataFromPassport.equals(userDataFromUser)) {
+            PassportValidationData passportValidationData =
+                    PassportValidationData.builder()
+                            .firstName(userDataFromPassport.getFirstName())
+                            .lastName(userDataFromPassport.getLastName())
+                            .birthDate(userDataFromPassport.getBirthDate())
+                            .placeOfBirth(userDataFromPassport.getPlaceOfBirth())
+                            .passportNumber(userDataFromPassport.getPassportNumber())
+                            .passportDateOfExpiry(userDataFromPassport.getPassportDateOfExpiry())
+                            .passportDateOfIssue(userDataFromPassport.getPassportDateOfIssue())
+                            .gender(userDataFromPassport.getGender())
+                            .countryOfCitizenship(userDataFromPassport.getCountryOfCitizenship())
+                            .timestamp(LocalDateTime.now())
+                            .build();
+            this.validationRepository.save(passportValidationData);
+
+            return PassportValidationResponse.builder()
+                    .isValid(true)
+                    .build();
+        }
+        log.info("Passport data: " + userDataFromPassport);
+        log.info("User data: " + userDataFromUser);
+        return PassportValidationResponse.builder()
+                .isValid(false)
+                .appUserDto(userDataFromPassport)
+                .build();
+    }
+
+    /**
+     * Checks if the user is present in the validation database.
+     *
+     * @param appUserDto the user.
+     * @return an {@code Optional} object.
+     */
+    @Override
+    public boolean isUserPresentInValidationDatabase(
+            final AppUserDto appUserDto
+    ) {
+        List<PassportValidationData> passportValidations = this
+                .validationRepository.findAll();
+        return !passportValidations.stream()
+                .filter(passportValidationData ->
+                    passportValidationData.getFirstName()
+                            .equals(appUserDto.getFirstName())
+                            && passportValidationData.getLastName()
+                            .equals(appUserDto.getLastName())
+                            && passportValidationData.getBirthDate()
+                            .equals(appUserDto.getBirthDate())
+                            && passportValidationData.getPlaceOfBirth()
+                            .equals(appUserDto.getPlaceOfBirth())
+                            && passportValidationData.getPassportNumber()
+                            .equals(appUserDto.getPassportNumber())
+                            && passportValidationData.getPassportDateOfExpiry()
+                            .equals(appUserDto.getPassportDateOfExpiry())
+                            && passportValidationData.getPassportDateOfIssue()
+                            .equals(appUserDto.getPassportDateOfIssue())
+                            && passportValidationData.getGender()
+                            .equals(appUserDto.getGender())
+                            && passportValidationData.getCountryOfCitizenship()
+                            .equals(appUserDto.getCountryOfCitizenship())
+                )
+                .toList()
+                .isEmpty();
+    }
+
+    /**
+     * Deletes the passport validation data by the passport number.
+     *
+     * @param passportNumber the passport number.
+     */
+    @Override
+    public void deletePassportValidationByPassportNumber(
+            final String passportNumber
+    ) {
+        this.validationRepository.deletePassportValidationDataByPassportNumber(
+                passportNumber
+        );
     }
 }

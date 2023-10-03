@@ -8,6 +8,7 @@ import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.UserNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
 import com.markvarga21.usermanager.service.AppUserService;
+import com.markvarga21.usermanager.service.azure.FormRecognizerService;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +38,9 @@ public class AppUserServiceImpl implements AppUserService {
     private final AppUserMapper userMapper;
 
     /**
-     * A GSON converter.
+     * A Form Recognizer service.
      */
-    private final Gson gson;
+    private final FormRecognizerService formRecognizerService;
 
     /**
      * Retrieves all the users in the application.
@@ -62,19 +63,12 @@ public class AppUserServiceImpl implements AppUserService {
     /**
      * Validates  and then persists the user into the database.
      *
-     * @param idDocument a photo of the users ID card or passport.
-     * @param selfiePhoto a selfie photo for verifying the user's identity.
      * @param appUserJson the user itself in a JSON string.
      * @return the updated {@code AppUserDto}.
      */
     @Override
-    public AppUserDto createUser(
-            final MultipartFile idDocument,
-            final MultipartFile selfiePhoto,
-            final String appUserJson
-    ) {
-        AppUserDto appUserDto = this.gson.
-                fromJson(appUserJson, AppUserDto.class);
+    public AppUserDto createUser(final String appUserJson) {
+        AppUserDto appUserDto = this.userMapper.mapJsonToDto(appUserJson);
 
         String firstName = appUserDto.getFirstName();
         String lastName = appUserDto.getLastName();
@@ -140,16 +134,12 @@ public class AppUserServiceImpl implements AppUserService {
     /**
      * Validates and then modifies the user's information.
      *
-     * @param idDocument a photo of the users ID card or passport.
-     * @param selfiePhoto a selfie photo for verifying identity.
      * @param appUserJson the user itself in a JSON string.
      * @return the updated {@code AppUserDto}.
      * @since 1.0
      */
     @Override
     public AppUserDto modifyUserById(
-            final MultipartFile idDocument,
-            final MultipartFile selfiePhoto,
             final String appUserJson,
             final Long userId
     ) {
@@ -163,13 +153,13 @@ public class AppUserServiceImpl implements AppUserService {
             throw new UserNotFoundException(message, OperationType.UPDATE);
         }
         AppUser userToUpdate = userOptional.get();
-        AppUserDto appUserDto = this.gson
-                .fromJson(appUserJson, AppUserDto.class);
+        AppUserDto appUserDto = this.userMapper.mapJsonToDto(appUserJson);
 
         userToUpdate.setGender(appUserDto.getGender());
         userToUpdate.setFirstName(appUserDto.getFirstName());
         userToUpdate.setLastName(appUserDto.getLastName());
-        userToUpdate.setCountryOfCitizenship(appUserDto.getCountryOfCitizenship());
+        userToUpdate
+                .setCountryOfCitizenship(appUserDto.getCountryOfCitizenship());
         userToUpdate.setPlaceOfBirth(appUserDto.getPlaceOfBirth());
         userToUpdate.setBirthDate(appUserDto.getBirthDate());
         AppUser updatedUser = this.userRepository.save(userToUpdate);
@@ -201,6 +191,9 @@ public class AppUserServiceImpl implements AppUserService {
         AppUserDto deletedUser = this.userMapper
                 .mapAppUserEntityToDto(userOptional.get());
         this.userRepository.deleteById(id);
+        this.formRecognizerService.deletePassportValidationByPassportNumber(
+                deletedUser.getPassportNumber()
+        );
         log.info(String.format("User with id %d deleted successfully!", id));
 
         return deletedUser;

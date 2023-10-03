@@ -20,16 +20,10 @@ public interface AppUserService {
     /**
      * Validates and then persists a user in the database.
      *
-     * @param idDocument a photo of the ID document or passport.
-     * @param selfiePhoto a selfie file of the user.
      * @param appUserJson the user itself with the new data.
      * @return the newly modified user.
      */
-    AppUserDto createUser(
-            MultipartFile idDocument,
-            MultipartFile selfiePhoto,
-            String appUserJson
-    );
+    AppUserDto createUser(String appUserJson);
 
     /**
      * Retrieves a user from the application using its id.
@@ -42,17 +36,11 @@ public interface AppUserService {
     /**
      * Modifies the user identified by its id.
      *
-     * @param idDocument a photo of the ID document or passport.
-     * @param selfiePhoto a selfie file of the user.
      * @param appUserJson the user itself with the new data.
      * @param userId the id of the user we want to modify.
      * @return the newly modified user.
      */
-    AppUserDto modifyUserById(
-            MultipartFile idDocument,
-            MultipartFile selfiePhoto,
-            String appUserJson, Long userId
-    );
+    AppUserDto modifyUserById(String appUserJson, Long userId);
 
     /**
      * Deletes a user by its id.

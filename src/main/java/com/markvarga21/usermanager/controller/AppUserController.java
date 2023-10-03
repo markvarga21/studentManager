@@ -2,7 +2,6 @@ package com.markvarga21.usermanager.controller;
 
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.service.AppUserService;
-import com.markvarga21.usermanager.service.faceapi.FaceApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,23 +44,15 @@ public class AppUserController {
     /**
      * Saves and validates a user in the database and then returns it.
      *
-     * @param idDocument a photo of the users ID card or passport.
-     * @param selfiePhoto a selfie photo for verifying identity.
      * @param appUserJson the user itself in a JSON string.
      * @return the saved {@code AppUserDto}.
      */
     @PostMapping
     public ResponseEntity<AppUserDto> createUser(
-            @RequestParam("idDocument") final MultipartFile idDocument,
-            @RequestParam("selfiePhoto") final MultipartFile selfiePhoto,
             @RequestParam("appUserJson") final String appUserJson
     ) {
 
-        AppUserDto createdUser = this.userService.createUser(
-                idDocument,
-                selfiePhoto,
-                appUserJson
-        );
+        AppUserDto createdUser = this.userService.createUser(appUserJson);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
@@ -88,17 +79,11 @@ public class AppUserController {
      */
     @PutMapping("/{userId}")
     public ResponseEntity<AppUserDto> updateUserById(
-            @RequestParam("idDocument") final MultipartFile idDocument,
-            @RequestParam("selfiePhoto") final MultipartFile selfiePhoto,
             @RequestParam("appUserJson") final String appUserJson,
             @PathVariable("userId") final Long userId
             ) {
-        AppUserDto updatedUser = this.userService.modifyUserById(
-                idDocument,
-                selfiePhoto,
-                appUserJson,
-                userId
-        );
+        AppUserDto updatedUser = this.userService
+                .modifyUserById(appUserJson, userId);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
