@@ -6,7 +6,9 @@ import com.azure.ai.formrecognizer.documentanalysis.models.DocumentField;
 import com.azure.ai.formrecognizer.documentanalysis.models.OperationResult;
 import com.azure.core.util.BinaryData;
 import com.azure.core.util.polling.SyncPoller;
+import com.markvarga21.usermanager.dto.AddressDto;
 import com.markvarga21.usermanager.dto.AppUserDto;
+import com.markvarga21.usermanager.entity.Gender;
 import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
 import com.markvarga21.usermanager.service.azure.FormRecognizerService;
 import jakarta.validation.Valid;
@@ -17,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -204,5 +207,51 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         // TODO remove this
         return null;
 //        return getFieldsFromDocument(passport);
+    }
+
+    /**
+     * Converts a map, which contains all the extracted data
+     * from the passport, to an {@code AppUserDto}.
+     *
+     * @param passportData a map containing all the passport's data.
+     * @return the formed {@code AppUserDto}.
+     */
+    private AppUserDto convertDocumentMapToAppUserDto(
+            final Map<String, DocumentField> passportData
+    ) {
+        // TODO remove this static inlined content
+        AddressDto addressDto = AddressDto.builder()
+                .country("Hungary")
+                .city("Debrecen")
+                .street("Piac")
+                .number(5)
+                .build();
+        log.info("Building user from passport data.");
+        return AppUserDto.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("johndoe@gmail.com")
+                .birthDate(LocalDate.of(1970, 1, 1))
+                .gender(Gender.MALE)
+                .phoneNumber("123456789")
+                .placeOfBirth(addressDto)
+                .passportNumber("123456789")
+                .countryOfCitizenship("Hungary")
+                .passportDateOfExpiry(LocalDate.of(2030, 1, 1))
+                .passportDateOfIssue(LocalDate.of(1970, 1, 1))
+                .build();
+    }
+
+    /**
+     * Extracts and returns the data from the passport.
+     *
+     * @param passport the photo of the passport.
+     * @return the extracted {@code AppUserDto} object.
+     */
+    @Override
+    public AppUserDto extractDataFromPassport(final MultipartFile passport) {
+        Map<String, DocumentField> passportData = this
+                .getKeyValuePairsFromPassport(passport);
+        return this.convertDocumentMapToAppUserDto(passportData);
     }
 }

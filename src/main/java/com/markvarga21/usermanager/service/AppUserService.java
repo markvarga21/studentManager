@@ -61,12 +61,4 @@ public interface AppUserService {
      * @return the recently deleted user's dto.
      */
     AppUserDto deleteUserById(Long id);
-
-    /**
-     * Extracts and returns the data from the passport.
-     *
-     * @param passport the photo of the passport.
-     * @return the extracted {@code AppUserDto} object.
-     */
-    AppUserDto extractDataFromPassport(MultipartFile passport);
 }

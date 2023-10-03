@@ -35,4 +35,12 @@ public interface FormRecognizerService {
     Map<String, DocumentField> getKeyValuePairsFromPassport(
             MultipartFile passport
     );
+
+    /**
+     * Extracts and returns the data from the passport.
+     *
+     * @param passport the photo of the passport.
+     * @return the extracted {@code AppUserDto} object.
+     */
+    AppUserDto extractDataFromPassport(MultipartFile passport);
 }
