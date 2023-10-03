@@ -1,10 +1,6 @@
 package com.markvarga21.usermanager.exception.handler;
 
-import com.markvarga21.usermanager.exception.ApiError;
-import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
-import com.markvarga21.usermanager.exception.InvalidUserException;
-import com.markvarga21.usermanager.exception.OperationType;
-import com.markvarga21.usermanager.exception.UserNotFoundException;
+import com.markvarga21.usermanager.exception.*;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -128,7 +124,10 @@ public class ApplicationExceptionHandler {
      * @param ex the exception caused by incorrectly formatting the birthdate.
      * @return a readable {@code ResponseEntity} containing useful information.
      */
-    @ExceptionHandler(DateTimeParseException.class)
+    @ExceptionHandler({
+            DateTimeParseException.class,
+            InvalidDateFormatException.class
+    })
     public ResponseEntity<Object> handleInvalidDateFormatException(
             final DateTimeParseException ex
     ) {

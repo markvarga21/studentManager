@@ -11,6 +11,7 @@ import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.entity.Gender;
 import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
 import com.markvarga21.usermanager.service.azure.FormRecognizerService;
+import com.markvarga21.usermanager.util.PassportDateFormatter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * A client which is used to analyze documents.
      */
     private final DocumentAnalysisClient documentAnalysisClient;
+    private final PassportDateFormatter passportDateFormatter;
 
     /**
      * A method which checks whether the data entered by the user is the same
@@ -137,58 +139,58 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                 birthDate)
         );
 
-        if (!formFirstName.equalsIgnoreCase(firstName)) {
-            String message = String.format(
-                "Form's first name '%s' not matching with ID's first name '%s'",
-                formFirstName,
-                firstName
-            );
-            log.error(message);
-            throw new InvalidIdDocumentException(message);
-        }
-
-        if (!formLastName.equalsIgnoreCase(lastName)) {
-            String message = String.format(
-                "Form's last name '%s' not matching with ID's last name '%s'",
-                formLastName,
-                lastName
-            );
-            log.error(message);
-            throw new InvalidIdDocumentException(message);
-        }
-
-        if (!formBirthDate.equalsIgnoreCase(birthDate)) {
-            String message = String.format(
-                "Form's birth date '%s' not matching with ID's birth date '%s'",
-                formBirthDate,
-                birthDate
-            );
-            log.error(message);
-            throw new InvalidIdDocumentException(message);
-        }
-
-        if (identification.equalsIgnoreCase("passport")) {
-            DocumentField nationality = fields.get("Nationality");
-            if (nationality == null) {
-                String message = "Nationality not present or not readable!";
-                throw new InvalidIdDocumentException(message);
-            }
-            String normalizedNationality = nationality
-                    .getContent()
-                    .toLowerCase();
-            String normalizedAppUserNationality = appUserDto
-                    .getCountryOfCitizenship()
-                    .toLowerCase();
-            if (!normalizedNationality.contains(normalizedAppUserNationality)) {
-                String message = String.format(
-                    "Invalid Nationality: '%s' not equals with '%s'",
-                    nationality,
-                    appUserDto.getCountryOfCitizenship()
-                );
-                log.error(message);
-                throw new InvalidIdDocumentException(message);
-            }
-        }
+//        if (!formFirstName.equalsIgnoreCase(firstName)) {
+//            String message = String.format(
+//                "Form's first name '%s' not matching with ID's first name '%s'",
+//                formFirstName,
+//                firstName
+//            );
+//            log.error(message);
+//            throw new InvalidIdDocumentException(message);
+//        }
+//
+//        if (!formLastName.equalsIgnoreCase(lastName)) {
+//            String message = String.format(
+//                "Form's last name '%s' not matching with ID's last name '%s'",
+//                formLastName,
+//                lastName
+//            );
+//            log.error(message);
+//            throw new InvalidIdDocumentException(message);
+//        }
+//
+//        if (!formBirthDate.equalsIgnoreCase(birthDate)) {
+//            String message = String.format(
+//                "Form's birth date '%s' not matching with ID's birth date '%s'",
+//                formBirthDate,
+//                birthDate
+//            );
+//            log.error(message);
+//            throw new InvalidIdDocumentException(message);
+//        }
+//
+//        if (identification.equalsIgnoreCase("passport")) {
+//            DocumentField nationality = fields.get("Nationality");
+//            if (nationality == null) {
+//                String message = "Nationality not present or not readable!";
+//                throw new InvalidIdDocumentException(message);
+//            }
+//            String normalizedNationality = nationality
+//                    .getContent()
+//                    .toLowerCase();
+//            String normalizedAppUserNationality = appUserDto
+//                    .getCountryOfCitizenship()
+//                    .toLowerCase();
+//            if (!normalizedNationality.contains(normalizedAppUserNationality)) {
+//                String message = String.format(
+//                    "Invalid Nationality: '%s' not equals with '%s'",
+//                    nationality,
+//                    appUserDto.getCountryOfCitizenship()
+//                );
+//                log.error(message);
+//                throw new InvalidIdDocumentException(message);
+//            }
+//        }
 
         return true;
     }
@@ -204,7 +206,16 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     public Map<String, DocumentField> getKeyValuePairsFromPassport(
             final MultipartFile passport
     ) {
-        // TODO remove this
+        Map<String, DocumentField> fields = getFieldsFromDocument(passport);
+        String firstName = fields.get("FirstName").getContent();
+        String lastName = fields.get("LastName").getContent();
+        String birthdateField = fields
+                .get("DateOfBirth")
+                .getContent();
+        LocalDate birthDate = this.passportDateFormatter.format(birthdateField);
+
+        log.info("First name = " + firstName + ", " + " last name = " + lastName);
+        log.info("Birth date = " + birthDate);
         return null;
 //        return getFieldsFromDocument(passport);
     }
