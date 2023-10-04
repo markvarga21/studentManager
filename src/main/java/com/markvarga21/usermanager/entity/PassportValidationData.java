@@ -1,36 +1,36 @@
 package com.markvarga21.usermanager.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
- * Represents a user entity in the application.
+ * An entity class which is used to store the data extracted
+ * from the passport.
  */
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class AppUser {
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class PassportValidationData {
     /**
-     * A unique identifier for the user.
+     * The ID of the passport validation entity.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    /**
+     * The time of the validation.
+     */
+    private LocalDateTime timestamp;
 
     /**
      * The first name of the user.

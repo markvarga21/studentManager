@@ -2,11 +2,7 @@ package com.markvarga21.usermanager.dto;
 
 import com.markvarga21.usermanager.entity.Gender;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,13 +47,13 @@ public class AppUserDto {
      */
     @Valid
     @NotNull(message = "Place of birth cannot be null!")
-    private AddressDto placeOfBirth;
+    private String placeOfBirth;
 
     /**
      * The nationality of the user.
      */
     @NotBlank(message = "Nationality cannot be null or empty!")
-    private String nationality;
+    private String countryOfCitizenship;
 
     /**
      * The user's gender.
@@ -66,23 +62,22 @@ public class AppUserDto {
     private Gender gender;
 
     /**
-     * The user's address.
+     * The user's passport number.
      */
-    @Valid
-    @NotNull(message = "Address cannot be null!")
-    private AddressDto address;
+    @NotBlank(message = "Passport number cannot be empty!")
+    private String passportNumber;
 
     /**
-     * The user's email address.
+     * The user's passports expiry date.
      */
-    @Email(message = "Email should be valid!")
-    @NotBlank(message = "Email cannot be empty!")
-    private String email;
+    @NotNull(message = "Passport date of expiry cannot be null!")
+    @FutureOrPresent
+    private LocalDate passportDateOfExpiry;
 
     /**
-     * The user's phone number.
+     * The user's passports issue date.
      */
-    @Pattern(regexp = "(^[0-9]+$)", message = "Invalid phone number!")
-    @NotBlank(message = "Phone number cannot be empty!")
-    private String phoneNumber;
+    @NotNull(message = "Passport date of issue cannot be null!")
+    @PastOrPresent
+    private LocalDate passportDateOfIssue;
 }

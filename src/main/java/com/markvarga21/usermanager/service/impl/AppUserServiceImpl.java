@@ -2,7 +2,6 @@ package com.markvarga21.usermanager.service.impl;
 
 import com.google.gson.Gson;
 import com.markvarga21.usermanager.dto.AppUserDto;
-import com.markvarga21.usermanager.entity.Address;
 import com.markvarga21.usermanager.entity.AppUser;
 import com.markvarga21.usermanager.exception.InvalidUserException;
 import com.markvarga21.usermanager.exception.OperationType;
@@ -10,8 +9,6 @@ import com.markvarga21.usermanager.exception.UserNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
 import com.markvarga21.usermanager.service.AppUserService;
 import com.markvarga21.usermanager.service.azure.FormRecognizerService;
-import com.markvarga21.usermanager.service.faceapi.FaceApiService;
-import com.markvarga21.usermanager.util.mapping.AddressMapper;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,22 +36,11 @@ public class AppUserServiceImpl implements AppUserService {
      * A user mapper.
      */
     private final AppUserMapper userMapper;
+
     /**
-     * An address mapper.
-     */
-    private final AddressMapper addressMapper;
-    /**
-     * The form recognizer service.
+     * A Form Recognizer service.
      */
     private final FormRecognizerService formRecognizerService;
-    /**
-     * A GSON converter.
-     */
-    private final Gson gson;
-    /**
-     * The Face API service.
-     */
-    private final FaceApiService faceApiService;
 
     /**
      * Retrieves all the users in the application.
@@ -77,21 +63,12 @@ public class AppUserServiceImpl implements AppUserService {
     /**
      * Validates  and then persists the user into the database.
      *
-     * @param idDocument a photo of the users ID card or passport.
-     * @param selfiePhoto a selfie photo for verifying the user's identity.
      * @param appUserJson the user itself in a JSON string.
-     * @param identification the ID type.
      * @return the updated {@code AppUserDto}.
      */
     @Override
-    public AppUserDto createUser(
-            final MultipartFile idDocument,
-            final MultipartFile selfiePhoto,
-            final String appUserJson,
-            final String identification
-    ) {
-        AppUserDto appUserDto = this.gson.
-                fromJson(appUserJson, AppUserDto.class);
+    public AppUserDto createUser(final String appUserJson) {
+        AppUserDto appUserDto = this.userMapper.mapJsonToDto(appUserJson);
 
         String firstName = appUserDto.getFirstName();
         String lastName = appUserDto.getLastName();
@@ -105,9 +82,6 @@ public class AppUserServiceImpl implements AppUserService {
             throw new InvalidUserException(message);
         }
 
-        this.formRecognizerService
-                .validateUser(appUserDto, idDocument, identification);
-        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
         AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
         this.userRepository.save(userToSave);
 
@@ -160,20 +134,14 @@ public class AppUserServiceImpl implements AppUserService {
     /**
      * Validates and then modifies the user's information.
      *
-     * @param idDocument a photo of the users ID card or passport.
-     * @param selfiePhoto a selfie photo for verifying identity.
      * @param appUserJson the user itself in a JSON string.
-     * @param identification the ID type.
      * @return the updated {@code AppUserDto}.
      * @since 1.0
      */
     @Override
     public AppUserDto modifyUserById(
-            final MultipartFile idDocument,
-            final MultipartFile selfiePhoto,
             final String appUserJson,
-            final Long userId,
-            final String identification
+            final Long userId
     ) {
         Optional<AppUser> userOptional = this.userRepository.findById(userId);
         if (userOptional.isEmpty()) {
@@ -185,23 +153,14 @@ public class AppUserServiceImpl implements AppUserService {
             throw new UserNotFoundException(message, OperationType.UPDATE);
         }
         AppUser userToUpdate = userOptional.get();
-        AppUserDto appUserDto = this.gson
-                .fromJson(appUserJson, AppUserDto.class);
-        this.formRecognizerService
-                .validateUser(appUserDto, idDocument, identification);
-        this.faceApiService.facesAreMatching(idDocument, selfiePhoto);
-        Address mappedAddressDtoToEntity = this.addressMapper
-                .mapAddressDtoToEntity(appUserDto.getAddress());
-        userToUpdate.setAddress(mappedAddressDtoToEntity);
-        userToUpdate.setEmail(appUserDto.getEmail());
+        AppUserDto appUserDto = this.userMapper.mapJsonToDto(appUserJson);
+
         userToUpdate.setGender(appUserDto.getGender());
         userToUpdate.setFirstName(appUserDto.getFirstName());
         userToUpdate.setLastName(appUserDto.getLastName());
-        userToUpdate.setNationality(appUserDto.getNationality());
-        userToUpdate.setPhoneNumber(appUserDto.getPhoneNumber());
-        Address mappedBirthplaceAddressEntity = this.addressMapper
-                .mapAddressDtoToEntity(appUserDto.getPlaceOfBirth());
-        userToUpdate.setPlaceOfBirth(mappedBirthplaceAddressEntity);
+        userToUpdate
+                .setCountryOfCitizenship(appUserDto.getCountryOfCitizenship());
+        userToUpdate.setPlaceOfBirth(appUserDto.getPlaceOfBirth());
         userToUpdate.setBirthDate(appUserDto.getBirthDate());
         AppUser updatedUser = this.userRepository.save(userToUpdate);
 
@@ -232,6 +191,9 @@ public class AppUserServiceImpl implements AppUserService {
         AppUserDto deletedUser = this.userMapper
                 .mapAppUserEntityToDto(userOptional.get());
         this.userRepository.deleteById(id);
+        this.formRecognizerService.deletePassportValidationByPassportNumber(
+                deletedUser.getPassportNumber()
+        );
         log.info(String.format("User with id %d deleted successfully!", id));
 
         return deletedUser;
