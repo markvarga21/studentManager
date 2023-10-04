@@ -1,12 +1,14 @@
 package com.markvarga21.usermanager.service.validation.passport.impl;
 
 import com.markvarga21.usermanager.entity.PassportValidationData;
+import com.markvarga21.usermanager.exception.PassportValidationDataNotFoundException;
 import com.markvarga21.usermanager.repository.PassportValidationDataRepository;
 import com.markvarga21.usermanager.service.validation.passport.PassportValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A service which is used to access passport
@@ -40,7 +42,17 @@ public class PassportValidationServiceImpl
      */
     @Override
     public void deletePassportValidationData(final Long id) {
-        this.passportValidationDataRepository
-                .deleteById(id);
+        Optional<PassportValidationData> passportValidationDataOptional =
+                this.passportValidationDataRepository
+                        .findById(id);
+        if (passportValidationDataOptional.isPresent()) {
+            this.passportValidationDataRepository.deleteById(id);
+            return;
+        }
+        String message = String.format(
+                "Passport validation data with ID %d not found.",
+                id
+        );
+        throw new PassportValidationDataNotFoundException(message);
     }
 }

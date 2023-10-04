@@ -1,6 +1,10 @@
 package com.markvarga21.usermanager.service.faceapi.impl;
 
+import com.markvarga21.usermanager.entity.FacialValidationData;
+import com.markvarga21.usermanager.exception.FaceValidationDataNotFoundException;
 import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
+import com.markvarga21.usermanager.exception.InvalidFacesException;
+import com.markvarga21.usermanager.repository.FacialValidationDataRepository;
 import com.markvarga21.usermanager.service.faceapi.FaceApiResponse;
 import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +22,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * A service which uses Deepface to compare two faces.
@@ -37,6 +43,12 @@ public class FaceApiServiceImpl implements FaceApiService {
      * The rest template used to make API calls.
      */
     private final RestTemplate restTemplate;
+
+    /**
+     * A repository which is used to access facial validation data.
+     */
+    private final FacialValidationDataRepository facialValidationDataRepository;
+
     /**
      * A simple multiplier for converting floating point percentage
      * to decimal percentage.
@@ -132,22 +144,99 @@ public class FaceApiServiceImpl implements FaceApiService {
      *
      * @param passport the user's passport.
      * @param selfiePhoto the portrait of the user.
+     * @param firstName the first name of the user.
+     * @param lastName the last name of the user.
      * @return the validity and the percentage of the matching.
      */
     @Override
     public FaceApiResponse getValidityOfFaces(
             final MultipartFile passport,
-            final MultipartFile selfiePhoto
+            final MultipartFile selfiePhoto,
+            final String firstName,
+            final String lastName
     ) {
-        try {
-             return this.compareFaces(passport, selfiePhoto);
-        } catch (IOException exception) {
-            String message = String.format(
-                    "Something went wrong when comparing the photos: %s",
-                    exception.getMessage()
+        Optional<FacialValidationData> facialValidationDataOptional =
+                this.isUserPresentInFacialDatabase(firstName, lastName);
+        if (facialValidationDataOptional.isPresent()) {
+            log.info("User is present in the facial database.");
+            return new FaceApiResponse(
+                    true,
+                    facialValidationDataOptional
+                            .get()
+                            .getProbabilityOfMatching()
             );
-            log.error(message);
+        } else {
+            try {
+                FaceApiResponse faceApiResponse =
+                        this.compareFaces(passport, selfiePhoto);
+
+                FacialValidationData facialValidationData = FacialValidationData
+                        .builder()
+                        .firstName(firstName)
+                        .lastName(lastName)
+                        .probabilityOfMatching(faceApiResponse.getProba())
+                        .build();
+                if (faceApiResponse.getIsValid()) {
+                    this.facialValidationDataRepository.save(facialValidationData);
+                }
+
+                return faceApiResponse;
+            } catch (IOException exception) {
+                String message = String.format(
+                        "Something went wrong when comparing the photos: %s",
+                        exception.getMessage()
+                );
+                log.error(message);
+                throw new InvalidFacesException(message);
+            }
         }
-        return new FaceApiResponse();
+    }
+
+    /**
+     * Checks if the user is present in the facial database.
+     *
+     * @param firstName the first name of the user.
+     * @param lastName the last name of the user.
+     * @return an optional facial validation data.
+     */
+    private Optional<FacialValidationData> isUserPresentInFacialDatabase(
+            final String firstName,
+            final String lastName
+    ) {
+        return this.facialValidationDataRepository
+                .findFacialValidationDataByFirstNameAndLastName(
+                        firstName,
+                        lastName
+                );
+    }
+
+    /**
+     * Returns all the facial validation data.
+     *
+     * @return all the facial validation data.
+     */
+    @Override
+    public List<FacialValidationData> fetchAllValidationData() {
+        return this.facialValidationDataRepository.findAll();
+    }
+
+    /**
+     * Deletes the facial validation data by ID.
+     *
+     * @param id the ID of the facial validation data.
+     */
+    @Override
+    public void deleteFacialValidationData(final Long id) {
+        Optional<FacialValidationData> facialValidationDataOptional =
+                this.facialValidationDataRepository.findById(id);
+        if (facialValidationDataOptional.isPresent()) {
+            this.facialValidationDataRepository.deleteById(id);
+            return;
+        }
+        String message = String.format(
+                "Facial validation data with ID %d not found!",
+                id
+        );
+        throw new FaceValidationDataNotFoundException(message);
     }
 }

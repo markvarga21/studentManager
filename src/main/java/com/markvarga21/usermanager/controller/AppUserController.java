@@ -71,8 +71,6 @@ public class AppUserController {
     /**
      * Updates a user and then retrieves it.
      *
-     * @param idDocument a photo of the users ID card or passport.
-     * @param selfiePhoto a selfie photo for verifying identity.
      * @param appUserJson the user itself in a JSON string.
      * @param userId the ID of the user which has to be updated.
      * @return the updated {@code AppUserDto}.

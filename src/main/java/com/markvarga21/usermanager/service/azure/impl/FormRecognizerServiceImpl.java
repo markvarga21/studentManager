@@ -168,35 +168,34 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             return PassportValidationResponse.builder()
                     .isValid(true)
                     .build();
-        }
-        AppUserDto userDataFromPassport = this
-                .extractDataFromPassport(passport);
-        if (userDataFromPassport.equals(userDataFromUser)) {
-            PassportValidationData passportValidationData =
-                    PassportValidationData.builder()
-                            .firstName(userDataFromPassport.getFirstName())
-                            .lastName(userDataFromPassport.getLastName())
-                            .birthDate(userDataFromPassport.getBirthDate())
-                            .placeOfBirth(userDataFromPassport.getPlaceOfBirth())
-                            .passportNumber(userDataFromPassport.getPassportNumber())
-                            .passportDateOfExpiry(userDataFromPassport.getPassportDateOfExpiry())
-                            .passportDateOfIssue(userDataFromPassport.getPassportDateOfIssue())
-                            .gender(userDataFromPassport.getGender())
-                            .countryOfCitizenship(userDataFromPassport.getCountryOfCitizenship())
-                            .timestamp(LocalDateTime.now())
-                            .build();
-            this.validationRepository.save(passportValidationData);
+        } else {
+            AppUserDto userDataFromPassport = this
+                    .extractDataFromPassport(passport);
+            if (userDataFromPassport.equals(userDataFromUser)) {
+                PassportValidationData passportValidationData =
+                        PassportValidationData.builder()
+                                .firstName(userDataFromPassport.getFirstName())
+                                .lastName(userDataFromPassport.getLastName())
+                                .birthDate(userDataFromPassport.getBirthDate())
+                                .placeOfBirth(userDataFromPassport.getPlaceOfBirth())
+                                .passportNumber(userDataFromPassport.getPassportNumber())
+                                .passportDateOfExpiry(userDataFromPassport.getPassportDateOfExpiry())
+                                .passportDateOfIssue(userDataFromPassport.getPassportDateOfIssue())
+                                .gender(userDataFromPassport.getGender())
+                                .countryOfCitizenship(userDataFromPassport.getCountryOfCitizenship())
+                                .timestamp(LocalDateTime.now())
+                                .build();
+                this.validationRepository.save(passportValidationData);
 
+                return PassportValidationResponse.builder()
+                        .isValid(true)
+                        .build();
+            }
             return PassportValidationResponse.builder()
-                    .isValid(true)
+                    .isValid(false)
+                    .appUserDto(userDataFromPassport)
                     .build();
         }
-        log.info("Passport data: " + userDataFromPassport);
-        log.info("User data: " + userDataFromUser);
-        return PassportValidationResponse.builder()
-                .isValid(false)
-                .appUserDto(userDataFromPassport)
-                .build();
     }
 
     /**
