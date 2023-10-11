@@ -80,7 +80,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     ) {
         try {
             BinaryData binaryData = BinaryData.fromBytes(passport.getBytes());
-            String modelId = "prebuilt-passport";
+            String modelId = "prebuilt-idDocument";
             SyncPoller<OperationResult, AnalyzeResult> analyzeDocumentPoller =
                     this.documentAnalysisClient.beginAnalyzeDocument(
                             modelId, binaryData
@@ -209,6 +209,8 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     ) {
         List<PassportValidationData> passportValidations = this
                 .validationRepository.findAll();
+        log.info("Student dto: {}", studentDto);
+        log.info("Passport validations: {}", passportValidations);
         return !passportValidations.stream()
                 .filter(passportValidationData ->
                     passportValidationData.getFirstName()

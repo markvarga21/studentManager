@@ -229,32 +229,21 @@ public class FaceApiServiceImpl implements FaceApiService {
             final String firstName,
             final String lastName
     ) {
-        Optional<FacialValidationData> facialValidationDataOptional =
-                this.isStudentPresentInFacialDatabase(firstName, lastName);
-        if (facialValidationDataOptional.isPresent()) {
-            log.info("Student is present in the facial database.");
-            return new FaceApiResponse(
-                    true,
-                    facialValidationDataOptional
-                            .get()
-                            .getProbabilityOfMatching()
-            );
-        } else {
-            FaceApiResponse faceApiResponse =
-                    this.compareFaces(passport, selfiePhoto);
 
-            FacialValidationData facialValidationData = FacialValidationData
-                    .builder()
-                    .firstName(firstName)
-                    .lastName(lastName)
-                    .probabilityOfMatching(faceApiResponse.getConfidence())
-                    .build();
-            if (Boolean.TRUE.equals(faceApiResponse.getIsIdentical())) {
-                this.facialValidationDataRepository.save(facialValidationData);
-            }
+        FaceApiResponse faceApiResponse =
+                this.compareFaces(passport, selfiePhoto);
 
-            return faceApiResponse;
+        FacialValidationData facialValidationData = FacialValidationData
+                .builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .probabilityOfMatching(faceApiResponse.getConfidence())
+                .build();
+        if (Boolean.TRUE.equals(faceApiResponse.getIsIdentical())) {
+            this.facialValidationDataRepository.save(facialValidationData);
         }
+
+        return faceApiResponse;
     }
 
     /**

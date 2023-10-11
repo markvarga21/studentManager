@@ -180,7 +180,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles the exception if the passport is invalid.
      *
-     * @param ex The exception caused by the invalid ID document.
+     * @param ex The exception caused by the invalid passport.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(InvalidPassportException.class)
