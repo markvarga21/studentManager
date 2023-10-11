@@ -169,10 +169,10 @@ public class FaceApiServiceImpl implements FaceApiService {
 
     /**
      * Compares the faces found on the passport and the
-     * portrait, and then sends it back to the client.
+     * selfie, and then sends it back to the client.
      *
      * @param passport The user's passport.
-     * @param selfiePhoto The portrait of the user.
+     * @param selfiePhoto The selfie of the user.
      * @return The validity and the percentage of the matching.
      */
     private FaceApiResponse compareFaces(
@@ -214,10 +214,10 @@ public class FaceApiServiceImpl implements FaceApiService {
 
     /**
      * Compares the faces found on the passport and the
-     * portrait, and then sends it back to the client.
+     * selfie, and then sends it back to the client.
      *
      * @param passport The student's passport.
-     * @param selfiePhoto The portrait of the student.
+     * @param selfiePhoto The selfie of the student.
      * @param firstName The first name of the student.
      * @param lastName The last name of the student.
      * @return The validity and the percentage of the matching.

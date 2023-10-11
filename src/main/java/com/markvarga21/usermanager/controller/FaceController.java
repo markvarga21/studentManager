@@ -35,16 +35,16 @@ public class FaceController {
 
     /**
      * Compares the faces found on the passport and the
-     * portrait, and then sends it back to the client.
+     * selfie, and then sends it back to the client.
      *
      * @param passport The user's passport.
-     * @param selfiePhoto The portrait of the user.
+     * @param selfiePhoto The selfie of the user.
      * @param firstName The first name of the user.
      * @param lastName The last name of the user.
      * @return The validity and the percentage of the matching.
      */
     @PostMapping("/validate")
-    public ResponseEntity<FaceApiResponse> getPortraitValidationData(
+    public ResponseEntity<FaceApiResponse> getSelfieValidationData(
             @RequestParam("passport") final MultipartFile passport,
             @RequestParam("selfiePhoto") final MultipartFile selfiePhoto,
             @RequestParam("firstName") final String firstName,
