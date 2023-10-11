@@ -2,7 +2,7 @@ package com.markvarga21.usermanager.exception.handler;
 
 import com.markvarga21.usermanager.exception.ApiError;
 import com.markvarga21.usermanager.exception.InvalidDateFormatException;
-import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
+import com.markvarga21.usermanager.exception.InvalidPassportException;
 import com.markvarga21.usermanager.exception.InvalidUserException;
 import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.StudentNotFoundException;
@@ -35,8 +35,8 @@ public class ApplicationExceptionHandler {
      * Handles if the user did not input the information correctly when using
      * the application's endpoints.
      *
-     * @param ex the exception caused by the invalid field value.
-     * @return a readable {@code ResponseEntity} containing useful information.
+     * @param ex The exception caused by the invalid field value.
+     * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(
@@ -72,15 +72,15 @@ public class ApplicationExceptionHandler {
     /**
      * Handles if the input fields are invalid.
      *
-     * @param ex the exception caused by a constraint violation.
-     * @return a readable {@code ResponseEntity} containing useful information.
+     * @param ex The exception caused by a constraint violation.
+     * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(
             final ConstraintViolationException ex
     ) {
         String message = String.format(
-                "Invalid field in creating the user! Violations: %s",
+                "Invalid field in creating the student! Violations: %s",
                 ex.getMessage()
         );
         ApiError apiError = new ApiError(
@@ -98,20 +98,20 @@ public class ApplicationExceptionHandler {
     }
 
     /**
-     * Handles the exception if a user cannot be found in the database.
+     * Handles the exception if a student cannot be found in the database.
      *
-     * @param ex the exception caused by not founding the user.
-     * @return a readable {@code ResponseEntity} containing useful information.
+     * @param ex The exception caused by not founding the student.
+     * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(StudentNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(
+    public ResponseEntity<Object> handleStudentNotFoundException(
             final StudentNotFoundException ex
     ) {
-        log.error("User not found!");
+        log.error("Student not found!");
         ApiError apiError = new ApiError(
                 new Date(),
                 HttpStatus.NOT_FOUND,
-                "User not found!",
+                "Student not found!",
                 ex.getType(),
                 getStackTraceAsString(ex)
         );
@@ -123,11 +123,11 @@ public class ApplicationExceptionHandler {
     }
 
     /**
-     * Handles if the format of the user's birthdate
+     * Handles if the format of the student's birthdate
      * is invalid or not yet supported.
      *
-     * @param ex the exception caused by incorrectly formatting the birthdate.
-     * @return a readable {@code ResponseEntity} containing useful information.
+     * @param ex The exception caused by incorrectly formatting the birthdate.
+     * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler({
             DateTimeParseException.class,
@@ -151,12 +151,11 @@ public class ApplicationExceptionHandler {
         );
     }
 
-
     /**
      * Handles the exception if the inputted gender is invalid.
      *
-     * @param ex the exception caused by the invalid gender.
-     * @return a readable {@code ResponseEntity} containing useful information.
+     * @param ex The exception caused by the invalid gender.
+     * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Object> handleInvalidGenderException(
@@ -179,14 +178,14 @@ public class ApplicationExceptionHandler {
     }
 
     /**
-     * Handles the exception if the ID document is invalid.
+     * Handles the exception if the passport is invalid.
      *
-     * @param ex the exception caused by the invalid ID document.
-     * @return a readable {@code ResponseEntity} containing useful information.
+     * @param ex The exception caused by the invalid ID document.
+     * @return A readable {@code ResponseEntity} containing useful information.
      */
-    @ExceptionHandler(InvalidIdDocumentException.class)
-    public ResponseEntity<Object> handleInvalidIdDocumentException(
-            final InvalidIdDocumentException ex
+    @ExceptionHandler(InvalidPassportException.class)
+    public ResponseEntity<Object> handleInvalidPassportException(
+            final InvalidPassportException ex
     ) {
         log.error(ex.getMessage());
         ApiError apiError = new ApiError(
@@ -204,13 +203,13 @@ public class ApplicationExceptionHandler {
     }
 
     /**
-     * Handles the exception if the users data are invalid.
+     * Handles the exception if the student's data are invalid.
      *
-     * @param ex the exception caused by the invalid field.
-     * @return a readable {@code ResponseEntity} containing useful information.
+     * @param ex The exception caused by the invalid field.
+     * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(InvalidUserException.class)
-    public ResponseEntity<Object> handleInvalidUserException(
+    public ResponseEntity<Object> handleInvalidStudentException(
             final InvalidUserException ex
     ) {
         log.error(ex.getMessage());
@@ -232,8 +231,8 @@ public class ApplicationExceptionHandler {
      * Extracts the exceptions stacktrace into a
      * more readable {@code String} format.
      *
-     * @param throwable the throwable object.
-     * @return the chained {@code String} representation of the stacktrace.
+     * @param throwable The throwable object.
+     * @return The chained {@code String} representation of the stacktrace.
      */
     private String getStackTraceAsString(final Throwable throwable) {
         StringWriter stringWriter = new StringWriter();

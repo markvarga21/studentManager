@@ -6,8 +6,8 @@ package com.markvarga21.usermanager.exception;
 public class InvalidUserException extends RuntimeException {
     /**
      * Constructor with a message as parameter.
-     * 
-     * @param message the custom message.
+     *
+     * @param message The custom message.
      */
     public InvalidUserException(final String message) {
         super(message);

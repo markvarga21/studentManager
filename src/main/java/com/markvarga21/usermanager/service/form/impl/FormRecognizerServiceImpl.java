@@ -10,7 +10,7 @@ import com.markvarga21.usermanager.dto.StudentDto;
 import com.markvarga21.usermanager.dto.PassportValidationResponse;
 import com.markvarga21.usermanager.entity.Gender;
 import com.markvarga21.usermanager.entity.PassportValidationData;
-import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
+import com.markvarga21.usermanager.exception.InvalidPassportException;
 import com.markvarga21.usermanager.repository.PassportValidationDataRepository;
 import com.markvarga21.usermanager.service.form.FormRecognizerService;
 import com.markvarga21.usermanager.util.CountryNameFetcher;
@@ -93,7 +93,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         } catch (IOException e) {
             String message = "ID document not found!";
             log.error(message);
-            throw new InvalidIdDocumentException(message);
+            throw new InvalidPassportException(message);
         }
     }
 

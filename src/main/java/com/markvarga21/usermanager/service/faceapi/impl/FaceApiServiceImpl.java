@@ -6,7 +6,7 @@ import com.markvarga21.usermanager.config.ApplicationConfiguration;
 import com.markvarga21.usermanager.dto.FaceDetectionResponse;
 import com.markvarga21.usermanager.dto.FacialValidationData;
 import com.markvarga21.usermanager.exception.FaceValidationDataNotFoundException;
-import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
+import com.markvarga21.usermanager.exception.InvalidPassportException;
 import com.markvarga21.usermanager.exception.InvalidFacesException;
 import com.markvarga21.usermanager.repository.FacialValidationDataRepository;
 import com.markvarga21.usermanager.dto.FaceApiResponse;
@@ -78,7 +78,7 @@ public class FaceApiServiceImpl implements FaceApiService {
         if (idPhoto == null || selfiePhoto == null) {
             String message = "ID photo or selfie file missing!";
             log.error(message);
-            throw new InvalidIdDocumentException(message);
+            throw new InvalidPassportException(message);
         }
         log.info("Comparing faces...");
         try {
@@ -88,7 +88,7 @@ public class FaceApiServiceImpl implements FaceApiService {
             if (faceApiResponse == null) {
                 String message = "Face api response is NULL!";
                 log.error(message);
-                throw new InvalidIdDocumentException(message);
+                throw new InvalidPassportException(message);
             }
 
             log.info(String.format(
@@ -99,7 +99,7 @@ public class FaceApiServiceImpl implements FaceApiService {
             if (Boolean.FALSE.equals(faceApiResponse.getIsIdentical())) {
                 String message =
                         "ID document photo is not matching with the selfie!";
-                throw new InvalidIdDocumentException(message);
+                throw new InvalidPassportException(message);
             }
         } catch (IOException exception) {
             String message = String.format(
