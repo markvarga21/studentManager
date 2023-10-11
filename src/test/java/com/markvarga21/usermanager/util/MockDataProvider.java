@@ -1,7 +1,7 @@
 package com.markvarga21.usermanager.util;
 
-import com.markvarga21.usermanager.dto.AppUserDto;
-import com.markvarga21.usermanager.entity.AppUser;
+import com.markvarga21.usermanager.dto.StudentDto;
+import com.markvarga21.usermanager.entity.Student;
 import com.markvarga21.usermanager.entity.Gender;
 
 import java.time.LocalDate;
@@ -61,7 +61,7 @@ public final class MockDataProvider {
      * 
      * @return the statically built user entity.
      */
-    public static AppUser getStaticAppUser() {
+    public static Student getStaticAppUser() {
         String birthPlace = "Hungary";
         LocalDate birthDate = LocalDate.of(MOCK_YEAR, MOCK_MONTH, MOCK_DAY);
         String countryOfCitizenship = "american";
@@ -69,7 +69,7 @@ public final class MockDataProvider {
         long id = 1L;
         String lastName = "Doe";
         Gender gender = Gender.MALE;
-        return AppUser.builder()
+        return Student.builder()
                 .id(id)
                 .firstName(firstName)
                 .lastName(lastName)
@@ -85,7 +85,7 @@ public final class MockDataProvider {
      *
      * @return the statically built user DTO.
      */
-    public static AppUserDto getStaticAppUserDto() {
+    public static StudentDto getStaticAppUserDto() {
         String birthPlace = "Hungary";
         LocalDate birthDate = LocalDate.of(MOCK_YEAR, MOCK_MONTH, MOCK_DAY);
         String countryOfCitizenship = "american";
@@ -93,7 +93,7 @@ public final class MockDataProvider {
         long id = 1L;
         String lastName = "Doe";
         Gender gender = Gender.MALE;
-        return AppUserDto.builder()
+        return StudentDto.builder()
                 .id(id)
                 .firstName(firstName)
                 .lastName(lastName)

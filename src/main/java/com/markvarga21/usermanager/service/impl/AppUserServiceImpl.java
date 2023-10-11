@@ -1,12 +1,13 @@
 package com.markvarga21.usermanager.service.impl;
 
-import com.markvarga21.usermanager.dto.AppUserDto;
-import com.markvarga21.usermanager.entity.AppUser;
+import com.markvarga21.usermanager.dto.StudentDto;
+import com.markvarga21.usermanager.entity.Student;
 import com.markvarga21.usermanager.exception.InvalidUserException;
 import com.markvarga21.usermanager.exception.OperationType;
-import com.markvarga21.usermanager.exception.UserNotFoundException;
+import com.markvarga21.usermanager.exception.StudentNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
 import com.markvarga21.usermanager.service.AppUserService;
+import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import com.markvarga21.usermanager.service.form.FormRecognizerService;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import jakarta.transaction.Transactional;
@@ -41,14 +42,19 @@ public class AppUserServiceImpl implements AppUserService {
     private final FormRecognizerService formRecognizerService;
 
     /**
+     * The Face API service.
+     */
+    private final FaceApiService faceApiService;
+
+    /**
      * Retrieves all the users in the application.
      *
      * @return all to users stored in a {@code List}.
      * @since 1.0
      */
     @Override
-    public List<AppUserDto> getAllUsers() {
-        List<AppUserDto> userDtoList = userRepository
+    public List<StudentDto> getAllUsers() {
+        List<StudentDto> userDtoList = userRepository
                 .findAll()
                 .stream()
                 .map(this.userMapper::mapAppUserEntityToDto)
@@ -65,11 +71,11 @@ public class AppUserServiceImpl implements AppUserService {
      * @return the updated {@code AppUserDto}.
      */
     @Override
-    public AppUserDto createUser(final String appUserJson) {
-        AppUserDto appUserDto = this.userMapper.mapJsonToDto(appUserJson);
+    public StudentDto createUser(final String appUserJson) {
+        StudentDto studentDto = this.userMapper.mapJsonToDto(appUserJson);
 
-        String firstName = appUserDto.getFirstName();
-        String lastName = appUserDto.getLastName();
+        String firstName = studentDto.getFirstName();
+        String lastName = studentDto.getLastName();
         if (!validNames(firstName, lastName)) {
             String message = String.format(
                     "'%s' first name and '%s' last name is already in use!",
@@ -80,10 +86,10 @@ public class AppUserServiceImpl implements AppUserService {
             throw new InvalidUserException(message);
         }
 
-        AppUser userToSave = this.userMapper.mapAppUserDtoToEntity(appUserDto);
+        Student userToSave = this.userMapper.mapAppUserDtoToEntity(studentDto);
         this.userRepository.save(userToSave);
 
-        AppUserDto userDto = this.userMapper.mapAppUserEntityToDto(userToSave);
+        StudentDto userDto = this.userMapper.mapAppUserEntityToDto(userToSave);
         log.info(String.format("Saving user: %s", userDto));
 
         return userDto;
@@ -101,7 +107,7 @@ public class AppUserServiceImpl implements AppUserService {
             final String firstName,
             final String lastName
     ) {
-        Optional<AppUser> appUser = this.userRepository
+        Optional<Student> appUser = this.userRepository
                 .findAppUserByFirstNameAndLastName(firstName, lastName);
         return appUser.isEmpty();
     }
@@ -114,15 +120,15 @@ public class AppUserServiceImpl implements AppUserService {
      * @since 1.0
      */
     @Override
-    public AppUserDto getUserById(final Long id) {
-        Optional<AppUser> userOptional = this.userRepository.findById(id);
+    public StudentDto getUserById(final Long id) {
+        Optional<Student> userOptional = this.userRepository.findById(id);
         if (userOptional.isEmpty()) {
             String message = String.format(
                     "User cant be retrieved! Cause: user not found with id: %d",
                     id
             );
             log.error(message);
-            throw new UserNotFoundException(message, OperationType.READ);
+            throw new StudentNotFoundException(message, OperationType.READ);
         }
         log.info(String.format("User with id %d retrieved successfully!", id));
 
@@ -137,30 +143,30 @@ public class AppUserServiceImpl implements AppUserService {
      * @since 1.0
      */
     @Override
-    public AppUserDto modifyUserById(
+    public StudentDto modifyUserById(
             final String appUserJson,
             final Long userId
     ) {
-        Optional<AppUser> userOptional = this.userRepository.findById(userId);
+        Optional<Student> userOptional = this.userRepository.findById(userId);
         if (userOptional.isEmpty()) {
             String message = String.format(
                     "User cant be modified! Cause: User not found with id: %d",
                     userId
             );
             log.error(message);
-            throw new UserNotFoundException(message, OperationType.UPDATE);
+            throw new StudentNotFoundException(message, OperationType.UPDATE);
         }
-        AppUser userToUpdate = userOptional.get();
-        AppUserDto appUserDto = this.userMapper.mapJsonToDto(appUserJson);
+        Student userToUpdate = userOptional.get();
+        StudentDto studentDto = this.userMapper.mapJsonToDto(appUserJson);
 
-        userToUpdate.setGender(appUserDto.getGender());
-        userToUpdate.setFirstName(appUserDto.getFirstName());
-        userToUpdate.setLastName(appUserDto.getLastName());
+        userToUpdate.setGender(studentDto.getGender());
+        userToUpdate.setFirstName(studentDto.getFirstName());
+        userToUpdate.setLastName(studentDto.getLastName());
         userToUpdate
-                .setCountryOfCitizenship(appUserDto.getCountryOfCitizenship());
-        userToUpdate.setPlaceOfBirth(appUserDto.getPlaceOfBirth());
-        userToUpdate.setBirthDate(appUserDto.getBirthDate());
-        AppUser updatedUser = this.userRepository.save(userToUpdate);
+                .setCountryOfCitizenship(studentDto.getCountryOfCitizenship());
+        userToUpdate.setPlaceOfBirth(studentDto.getPlaceOfBirth());
+        userToUpdate.setBirthDate(studentDto.getBirthDate());
+        Student updatedUser = this.userRepository.save(userToUpdate);
 
         log.info(String.format(
                 "User with id %d modified successfully!", userId)
@@ -176,21 +182,25 @@ public class AppUserServiceImpl implements AppUserService {
      * @since 1.0
      */
     @Override
-    public AppUserDto deleteUserById(final Long id) {
-        Optional<AppUser> userOptional = this.userRepository.findById(id);
+    public StudentDto deleteUserById(final Long id) {
+        Optional<Student> userOptional = this.userRepository.findById(id);
         if (userOptional.isEmpty()) {
             String message = String.format(
                     "User cannot be deleted! Cause: user not found with id: %d",
                     id
             );
             log.error(message);
-            throw new UserNotFoundException(message, OperationType.DELETE);
+            throw new StudentNotFoundException(message, OperationType.DELETE);
         }
-        AppUserDto deletedUser = this.userMapper
+        StudentDto deletedUser = this.userMapper
                 .mapAppUserEntityToDto(userOptional.get());
         this.userRepository.deleteById(id);
         this.formRecognizerService.deletePassportValidationByPassportNumber(
                 deletedUser.getPassportNumber()
+        );
+        this.faceApiService.deleteFacialDataByFirstNameAndLastName(
+                deletedUser.getFirstName(),
+                deletedUser.getLastName()
         );
         log.info(String.format("User with id %d deleted successfully!", id));
 

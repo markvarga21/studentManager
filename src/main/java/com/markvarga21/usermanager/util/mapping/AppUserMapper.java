@@ -1,11 +1,10 @@
 package com.markvarga21.usermanager.util.mapping;
 
 import com.google.gson.Gson;
-import com.markvarga21.usermanager.dto.AppUserDto;
-import com.markvarga21.usermanager.entity.AppUser;
+import com.markvarga21.usermanager.dto.StudentDto;
+import com.markvarga21.usermanager.entity.Student;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,21 +27,21 @@ public class AppUserMapper {
     /**
      * Maps an {@code AppUserDto} to an {@code AppUser} entity.
      *
-     * @param appUserDto the DTO object to be mapped to an entity class.
+     * @param studentDto the DTO object to be mapped to an entity class.
      * @return the converted {@code AppUser} entity.
      */
-    public AppUser mapAppUserDtoToEntity(final AppUserDto appUserDto) {
-        return this.mapper.map(appUserDto, AppUser.class);
+    public Student mapAppUserDtoToEntity(final StudentDto studentDto) {
+        return this.mapper.map(studentDto, Student.class);
     }
 
     /**
      * Maps an {@code AppUser} entity to an {@code AppUserDto}.
      *
-     * @param appUser the entity object to be mapped to a DTO class.
+     * @param student the entity object to be mapped to a DTO class.
      * @return the converted {@code AppUserDto}.
      */
-    public AppUserDto mapAppUserEntityToDto(final AppUser appUser) {
-        return this.mapper.map(appUser, AppUserDto.class);
+    public StudentDto mapAppUserEntityToDto(final Student student) {
+        return this.mapper.map(student, StudentDto.class);
     }
 
     /**
@@ -51,7 +50,7 @@ public class AppUserMapper {
      * @param appUserJson the JSON string to be mapped to a DTO class.
      * @return the converted {@code AppUserDto}.
      */
-    public AppUserDto mapJsonToDto(final String appUserJson) {
-        return this.gson.fromJson(appUserJson, AppUserDto.class);
+    public StudentDto mapJsonToDto(final String appUserJson) {
+        return this.gson.fromJson(appUserJson, StudentDto.class);
     }
 }

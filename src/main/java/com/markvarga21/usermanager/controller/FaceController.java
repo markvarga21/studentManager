@@ -58,14 +58,6 @@ public class FaceController {
         return new ResponseEntity<>(faceApiResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/validateSingleFace")
-    public String getFaceId(
-            @RequestParam("photo") final MultipartFile photo
-    ) {
-        log.info("getFaceId() called");
-        return this.faceApiService.getFaceIdForFile(photo);
-    }
-
     /**
      * Returns all the facial validation data.
      *

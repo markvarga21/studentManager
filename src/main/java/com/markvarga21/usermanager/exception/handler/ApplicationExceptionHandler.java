@@ -1,6 +1,11 @@
 package com.markvarga21.usermanager.exception.handler;
 
-import com.markvarga21.usermanager.exception.*;
+import com.markvarga21.usermanager.exception.ApiError;
+import com.markvarga21.usermanager.exception.InvalidDateFormatException;
+import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
+import com.markvarga21.usermanager.exception.InvalidUserException;
+import com.markvarga21.usermanager.exception.OperationType;
+import com.markvarga21.usermanager.exception.StudentNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -98,9 +103,9 @@ public class ApplicationExceptionHandler {
      * @param ex the exception caused by not founding the user.
      * @return a readable {@code ResponseEntity} containing useful information.
      */
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(StudentNotFoundException.class)
     public ResponseEntity<Object> handleUserNotFoundException(
-            final UserNotFoundException ex
+            final StudentNotFoundException ex
     ) {
         log.error("User not found!");
         ApiError apiError = new ApiError(

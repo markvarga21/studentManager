@@ -1,9 +1,9 @@
 package com.markvarga21.usermanager.service;
 
 import com.google.gson.Gson;
-import com.markvarga21.usermanager.dto.AppUserDto;
-import com.markvarga21.usermanager.entity.AppUser;
-import com.markvarga21.usermanager.exception.UserNotFoundException;
+import com.markvarga21.usermanager.dto.StudentDto;
+import com.markvarga21.usermanager.entity.Student;
+import com.markvarga21.usermanager.exception.StudentNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
 import com.markvarga21.usermanager.service.form.FormRecognizerService;
 import com.markvarga21.usermanager.service.faceapi.FaceApiService;
@@ -36,7 +36,7 @@ import java.util.Optional;
  * The app user service tester class.
  */
 @ExtendWith(MockitoExtension.class)
-class AppUserServiceTest {
+class StudentServiceTest {
     /**
      * The app user service mock object.
      */
@@ -72,16 +72,16 @@ class AppUserServiceTest {
     @Test
     void getAllUsersShouldReturnListOfUsersTest() {
         // Given
-        AppUser appUser = getStaticAppUser();
-        AppUserDto appUserDto = getStaticAppUserDto();
-        List<AppUserDto> expected = List.of(appUserDto);
+        Student student = getStaticAppUser();
+        StudentDto studentDto = getStaticAppUserDto();
+        List<StudentDto> expected = List.of(studentDto);
 
         // When
         when(this.appUserRepository.findAll())
-                .thenReturn(List.of(appUser));
+                .thenReturn(List.of(student));
         when(this.appUserMapper.mapAppUserEntityToDto(any()))
-                .thenReturn(appUserDto);
-        List<AppUserDto> actual = this.appUserService.getAllUsers();
+                .thenReturn(studentDto);
+        List<StudentDto> actual = this.appUserService.getAllUsers();
 
         // Then
         assertEquals(expected, actual);
@@ -90,27 +90,27 @@ class AppUserServiceTest {
     @Test
     void createUserShouldReturnCreatedUsersWhenDataIsValidTest() {
         // Given
-        AppUserDto appUserDto = getStaticAppUserDto();
+        StudentDto studentDto = getStaticAppUserDto();
         String userJson = MOCK_USER_JSON;
-        AppUser appUser = getStaticAppUser();
+        Student student = getStaticAppUser();
         MultipartFile idDocument = getFileForName("huId.jpg");
         MultipartFile selfiePhoto = getFileForName("huFace.png");
 
         // When
-        when(this.gson.fromJson(userJson, AppUserDto.class))
-                .thenReturn(appUserDto);
-        when(this.appUserMapper.mapAppUserDtoToEntity(appUserDto))
-                .thenReturn(appUser);
-        when(this.appUserMapper.mapAppUserEntityToDto(appUser))
-                .thenReturn(appUserDto);
+        when(this.gson.fromJson(userJson, StudentDto.class))
+                .thenReturn(studentDto);
+        when(this.appUserMapper.mapAppUserDtoToEntity(studentDto))
+                .thenReturn(student);
+        when(this.appUserMapper.mapAppUserEntityToDto(student))
+                .thenReturn(studentDto);
 //        doNothing()
 //                .when(this.formRecognizerService)
 //                .validateUser(eq(appUserDto), any(), anyString());
         doNothing()
                 .when(this.faceApiService)
                 .facesAreMatching(any(), any());
-        when(this.appUserRepository.save(appUser))
-                .thenReturn(appUser);
+        when(this.appUserRepository.save(student))
+                .thenReturn(student);
 //        AppUserDto actual = this.appUserService
 //                .createUser(idDocument, selfiePhoto, userJson);
 
@@ -121,20 +121,20 @@ class AppUserServiceTest {
     @Test
     void createUserShouldThrowExceptionWhenNamesAreInvalid() {
         // Given
-        AppUserDto appUserDto = getStaticAppUserDto();
+        StudentDto studentDto = getStaticAppUserDto();
         String userJson = MOCK_USER_JSON;
-        AppUser appUser = getStaticAppUser();
+        Student student = getStaticAppUser();
         MultipartFile idDocument = getFileForName("huId.jpg");
         MultipartFile selfiePhoto = getFileForName("huFace.png");
-        String firstName = appUserDto.getFirstName();
-        String lastName = appUserDto.getLastName();
+        String firstName = studentDto.getFirstName();
+        String lastName = studentDto.getLastName();
 
         // When
-        when(this.gson.fromJson(userJson, AppUserDto.class))
-                .thenReturn(appUserDto);
+        when(this.gson.fromJson(userJson, StudentDto.class))
+                .thenReturn(studentDto);
         when(this.appUserRepository
                 .findAppUserByFirstNameAndLastName(firstName, lastName))
-                .thenReturn(Optional.of(appUser));
+                .thenReturn(Optional.of(student));
 
         // Then
 //        assertThrows(InvalidUserException.class,
@@ -181,32 +181,32 @@ class AppUserServiceTest {
     @Test
     void getUserByIdShouldReturnUserWhenIdIsValidTest() {
         // Given
-        AppUser appUser = getStaticAppUser();
-        AppUserDto appUserDto = getStaticAppUserDto();
-        Long id = appUser.getId();
+        Student student = getStaticAppUser();
+        StudentDto studentDto = getStaticAppUserDto();
+        Long id = student.getId();
 
         // When
         when(this.appUserRepository.findById(id))
-                .thenReturn(Optional.of(appUser));
-        when(this.appUserMapper.mapAppUserEntityToDto(appUser))
-                .thenReturn(appUserDto);
-        AppUserDto actual = this.appUserService.getUserById(id);
+                .thenReturn(Optional.of(student));
+        when(this.appUserMapper.mapAppUserEntityToDto(student))
+                .thenReturn(studentDto);
+        StudentDto actual = this.appUserService.getUserById(id);
 
         // Then
-        assertSame(appUserDto, actual);
+        assertSame(studentDto, actual);
     }
 
     @Test
     void getUserByIdShouldThrowExceptionWhenUserIsNotPresentTest() {
         // Given
-        AppUser appUser = getStaticAppUser();
-        Long id = appUser.getId();
+        Student student = getStaticAppUser();
+        Long id = student.getId();
 
         // When
         when(this.appUserRepository.findById(id)).thenReturn(Optional.empty());
 
         // Then
-        assertThrows(UserNotFoundException.class,
+        assertThrows(StudentNotFoundException.class,
                 () -> this.appUserService.getUserById(id)
         );
     }
@@ -214,18 +214,18 @@ class AppUserServiceTest {
     @Test
     void modifyUserByIdShouldReturnUserIfIdExistsTest() {
         // Given
-        AppUser appUser = getStaticAppUser();
-        String birthAddress = appUser.getPlaceOfBirth();
-        AppUserDto expected = getStaticAppUserDto();
-        Long id = appUser.getId();
+        Student student = getStaticAppUser();
+        String birthAddress = student.getPlaceOfBirth();
+        StudentDto expected = getStaticAppUserDto();
+        Long id = student.getId();
         MultipartFile idDocument = getFileForName("huId.jpg");
         MultipartFile selfiePhoto = getFileForName("huFace.png");
         String userJson = MOCK_USER_JSON;
 
         // When
         when(this.appUserRepository.findById(id))
-                .thenReturn(Optional.of(appUser));
-        when(this.gson.fromJson(userJson, AppUserDto.class))
+                .thenReturn(Optional.of(student));
+        when(this.gson.fromJson(userJson, StudentDto.class))
                 .thenReturn(expected);
 //        doNothing()
 //                .when(this.formRecognizerService)
@@ -237,9 +237,9 @@ class AppUserServiceTest {
 //                expected.getPlaceOfBirth())
 //        )
 //                .thenReturn(birthAddress);
-        when(this.appUserRepository.save(appUser))
-                .thenReturn(appUser);
-        when(this.appUserMapper.mapAppUserEntityToDto(appUser))
+        when(this.appUserRepository.save(student))
+                .thenReturn(student);
+        when(this.appUserMapper.mapAppUserEntityToDto(student))
                 .thenReturn(expected);
 //        AppUserDto actual = this.appUserService
 //                .modifyUserById(idDocument, selfiePhoto, userJson, id);
@@ -251,8 +251,8 @@ class AppUserServiceTest {
     @Test
     void modifyUserByIdShouldThrowExceptionWhenIdIsNotPresentTest() {
         // Given
-        AppUser appUser = getStaticAppUser();
-        Long id = appUser.getId();
+        Student student = getStaticAppUser();
+        Long id = student.getId();
         MultipartFile idDocument = getFileForName("huId.jpg");
         MultipartFile selfiePhoto = getFileForName("huFace.png");
 
@@ -273,19 +273,19 @@ class AppUserServiceTest {
     @Test
     void deleteUserByIdShouldReturnUserWhenIdExistsTest() {
         // Given
-        AppUser appUser = getStaticAppUser();
-        AppUserDto expected = getStaticAppUserDto();
-        Long id = appUser.getId();
+        Student student = getStaticAppUser();
+        StudentDto expected = getStaticAppUserDto();
+        Long id = student.getId();
 
         // When
         when(this.appUserRepository.findById(id))
-                .thenReturn(Optional.of(appUser));
-        when(this.appUserMapper.mapAppUserEntityToDto(appUser))
+                .thenReturn(Optional.of(student));
+        when(this.appUserMapper.mapAppUserEntityToDto(student))
                 .thenReturn(expected);
         doNothing()
                 .when(this.appUserRepository)
                 .deleteById(id);
-        AppUserDto actual = this.appUserService.deleteUserById(id);
+        StudentDto actual = this.appUserService.deleteUserById(id);
 
         // Then
         assertSame(expected, actual);
@@ -294,14 +294,14 @@ class AppUserServiceTest {
     @Test
     void deleteUserByIdShouldThrowExceptionWhenIdNotExistsTest() {
         // Given
-        AppUser appUser = getStaticAppUser();
-        Long id = appUser.getId();
+        Student student = getStaticAppUser();
+        Long id = student.getId();
 
         // When
         when(this.appUserRepository.findById(id)).thenReturn(Optional.empty());
 
         // Then
-        assertThrows(UserNotFoundException.class,
+        assertThrows(StudentNotFoundException.class,
                 () -> this.appUserService.deleteUserById(id)
         );
     }

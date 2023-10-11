@@ -1,7 +1,7 @@
 package com.markvarga21.usermanager.service.form;
 
 import com.azure.ai.formrecognizer.documentanalysis.models.DocumentField;
-import com.markvarga21.usermanager.dto.AppUserDto;
+import com.markvarga21.usermanager.dto.StudentDto;
 import com.markvarga21.usermanager.dto.PassportValidationResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +17,7 @@ public interface FormRecognizerService {
      * @param passport the photo of the passport.
      * @return the extracted {@code AppUserDto} object.
      */
-    AppUserDto extractDataFromPassport(MultipartFile passport);
+    StudentDto extractDataFromPassport(MultipartFile passport);
 
     /**
      * Extracts all the fields from the uploaded ID document.
@@ -45,11 +45,11 @@ public interface FormRecognizerService {
     /**
      * Checks if the user is present in the validation database.
      *
-     * @param appUserDto the user to be checked.
+     * @param studentDto the user to be checked.
      * @return {@code true} if the user is present in the database,
      */
     boolean isUserPresentInValidationDatabase(
-            AppUserDto appUserDto
+            StudentDto studentDto
     );
 
     /**

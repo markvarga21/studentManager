@@ -21,5 +21,5 @@ public class PassportValidationResponse {
      * the entered data is invalid, else it returns
      * an empty or null object.
      */
-    private AppUserDto appUserDto;
+    private StudentDto studentDto;
 }

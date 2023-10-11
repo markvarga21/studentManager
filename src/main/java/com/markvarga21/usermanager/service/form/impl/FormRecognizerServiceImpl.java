@@ -6,7 +6,7 @@ import com.azure.ai.formrecognizer.documentanalysis.models.DocumentField;
 import com.azure.ai.formrecognizer.documentanalysis.models.OperationResult;
 import com.azure.core.util.BinaryData;
 import com.azure.core.util.polling.SyncPoller;
-import com.markvarga21.usermanager.dto.AppUserDto;
+import com.markvarga21.usermanager.dto.StudentDto;
 import com.markvarga21.usermanager.dto.PassportValidationResponse;
 import com.markvarga21.usermanager.entity.Gender;
 import com.markvarga21.usermanager.entity.PassportValidationData;
@@ -104,7 +104,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * @return the extracted {@code AppUserDto} object.
      */
     @Override
-    public AppUserDto extractDataFromPassport(final MultipartFile passport) {
+    public StudentDto extractDataFromPassport(final MultipartFile passport) {
         Map<String, DocumentField> passportFields = this
                 .getFieldsFromDocument(passport);
         String firstName = passportFields.get("FirstName").getContent();
@@ -134,7 +134,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         LocalDate dateOfIssue = this.passportDateFormatter
                 .format(dateOfIssueField);
 
-        return AppUserDto.builder()
+        return StudentDto.builder()
                 .firstName(firstName)
                 .lastName(lastName)
                 .birthDate(birthDate)
@@ -160,7 +160,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             final MultipartFile passport,
             final String appUserJson
     ) {
-        AppUserDto userDataFromUser = this
+        StudentDto userDataFromUser = this
                 .userMapper.mapJsonToDto(appUserJson);
         if (this.isUserPresentInValidationDatabase(userDataFromUser)) {
             log.info("User is present in the validation database.");
@@ -168,7 +168,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                     .isValid(true)
                     .build();
         } else {
-            AppUserDto userDataFromPassport = this
+            StudentDto userDataFromPassport = this
                     .extractDataFromPassport(passport);
             if (userDataFromPassport.equals(userDataFromUser)) {
                 PassportValidationData passportValidationData =
@@ -192,7 +192,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             }
             return PassportValidationResponse.builder()
                     .isValid(false)
-                    .appUserDto(userDataFromPassport)
+                    .studentDto(userDataFromPassport)
                     .build();
         }
     }
@@ -200,35 +200,35 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     /**
      * Checks if the user is present in the validation database.
      *
-     * @param appUserDto the user.
+     * @param studentDto the user.
      * @return an {@code Optional} object.
      */
     @Override
     public boolean isUserPresentInValidationDatabase(
-            final AppUserDto appUserDto
+            final StudentDto studentDto
     ) {
         List<PassportValidationData> passportValidations = this
                 .validationRepository.findAll();
         return !passportValidations.stream()
                 .filter(passportValidationData ->
                     passportValidationData.getFirstName()
-                            .equals(appUserDto.getFirstName())
+                            .equals(studentDto.getFirstName())
                             && passportValidationData.getLastName()
-                            .equals(appUserDto.getLastName())
+                            .equals(studentDto.getLastName())
                             && passportValidationData.getBirthDate()
-                            .equals(appUserDto.getBirthDate())
+                            .equals(studentDto.getBirthDate())
                             && passportValidationData.getPlaceOfBirth()
-                            .equals(appUserDto.getPlaceOfBirth())
+                            .equals(studentDto.getPlaceOfBirth())
                             && passportValidationData.getPassportNumber()
-                            .equals(appUserDto.getPassportNumber())
+                            .equals(studentDto.getPassportNumber())
                             && passportValidationData.getPassportDateOfExpiry()
-                            .equals(appUserDto.getPassportDateOfExpiry())
+                            .equals(studentDto.getPassportDateOfExpiry())
                             && passportValidationData.getPassportDateOfIssue()
-                            .equals(appUserDto.getPassportDateOfIssue())
+                            .equals(studentDto.getPassportDateOfIssue())
                             && passportValidationData.getGender()
-                            .equals(appUserDto.getGender())
+                            .equals(studentDto.getGender())
                             && passportValidationData.getCountryOfCitizenship()
-                            .equals(appUserDto.getCountryOfCitizenship())
+                            .equals(studentDto.getCountryOfCitizenship())
                 )
                 .toList()
                 .isEmpty();

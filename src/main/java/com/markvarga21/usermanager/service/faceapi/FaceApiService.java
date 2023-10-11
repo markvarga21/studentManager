@@ -56,4 +56,15 @@ public interface FaceApiService {
      * @return the face ID for the given file.
      */
     String getFaceIdForFile(MultipartFile file);
+
+    /**
+     * Deletes the facial data by first- and last name.
+     *
+     * @param firstName the first name of the user.
+     * @param lastName the last name of the user.
+     */
+    void deleteFacialDataByFirstNameAndLastName(
+            String firstName,
+            String lastName
+    );
 }

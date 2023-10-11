@@ -54,7 +54,7 @@ public class ApplicationConfiguration {
     }
 
     /**
-     * A bean for setting up the ID document analysis.
+     * A bean for setting up the passport analysis.
      *
      * @return the already sat up {@code DocumentAnalysisClient}.
      */
@@ -82,7 +82,8 @@ public class ApplicationConfiguration {
     }
 
     /**
-     * A bean created for talking with the Face API.
+     * A bean created for talking with the APIs like
+     * Azure's Face API and Rest Countries API.
      *
      * @return the created bean.
      */

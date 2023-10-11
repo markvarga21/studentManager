@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class UserNotFoundException extends RuntimeException {
+public class StudentNotFoundException extends RuntimeException {
     /**
      * The type of the operation the user just did, which caused the exception.
      */
@@ -24,7 +24,7 @@ public class UserNotFoundException extends RuntimeException {
      * @param message a custom message for alerting the lack of a user.
      * @param type the type of the operation.
      */
-    public UserNotFoundException(
+    public StudentNotFoundException(
             final String message,
             final OperationType type
     ) {

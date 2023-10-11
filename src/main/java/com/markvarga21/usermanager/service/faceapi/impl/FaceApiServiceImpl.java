@@ -281,6 +281,35 @@ public class FaceApiServiceImpl implements FaceApiService {
     }
 
     /**
+     * Deletes the facial data by first- and last name.
+     *
+     * @param firstName the first name of the user.
+     * @param lastName the last name of the user.
+     */
+    @Override
+    public void deleteFacialDataByFirstNameAndLastName(
+            final String firstName,
+            final String lastName
+    ) {
+        Optional<FacialValidationData> optionalFacialValidationData
+                = this.facialValidationDataRepository
+                    .findFacialValidationDataByFirstNameAndLastName(
+                        firstName,
+                        lastName
+                );
+        if (optionalFacialValidationData.isEmpty()) {
+            String message = String.format(
+                    "Facial validation data for '%s %s' not found!",
+                    firstName,
+                    lastName
+            );
+            throw new FaceValidationDataNotFoundException(message);
+        }
+        this.facialValidationDataRepository
+                .delete(optionalFacialValidationData.get());
+    }
+
+    /**
      * Returns all the facial validation data.
      *
      * @return all the facial validation data.

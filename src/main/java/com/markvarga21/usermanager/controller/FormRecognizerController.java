@@ -1,7 +1,7 @@
 package com.markvarga21.usermanager.controller;
 
 
-import com.markvarga21.usermanager.dto.AppUserDto;
+import com.markvarga21.usermanager.dto.StudentDto;
 import com.markvarga21.usermanager.dto.PassportValidationResponse;
 import com.markvarga21.usermanager.service.form.FormRecognizerService;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +31,15 @@ public class FormRecognizerController {
      * Extracts and returns the data from the passport.
      *
      * @param passport the photo of the passport.
-     * @return the extracted {@code AppUserDto} object.
+     * @return the extracted {@code StudentDto} object.
      */
     @PostMapping("/extractData")
-    public ResponseEntity<AppUserDto> getDataFromPassport(
+    public ResponseEntity<StudentDto> getDataFromPassport(
             @RequestParam("passport") final MultipartFile passport
     ) {
-        AppUserDto appUserDto = this.formRecognizerService
+        StudentDto studentDto = this.formRecognizerService
                 .extractDataFromPassport(passport);
-        return new ResponseEntity<>(appUserDto, HttpStatus.OK);
+        return new ResponseEntity<>(studentDto, HttpStatus.OK);
     }
 
     /**
@@ -47,18 +47,18 @@ public class FormRecognizerController {
      * which can be found on the passport.
      *
      * @param passport the photo of the passport.
-     * @param appUserJson the user itself in a JSON string.
+     * @param studentJson the student itself in a JSON string.
      * @return a {@code PassportValidationResponse} object.
      */
     @PostMapping("/validate")
     public ResponseEntity<PassportValidationResponse> validatePassport(
             @RequestParam("passport") final MultipartFile passport,
-            @RequestParam("appUserJson") final String appUserJson
+            @RequestParam("studentJson") final String studentJson
     ) {
         PassportValidationResponse passportValidationResponse =
                 this.formRecognizerService.validatePassport(
                         passport,
-                        appUserJson
+                        studentJson
                 );
         return new ResponseEntity<>(passportValidationResponse, HttpStatus.OK);
     }

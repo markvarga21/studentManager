@@ -1,4 +1,4 @@
 /**
- * This package contains the main controller of the application.
+ * This package contains the controllers of the application.
  */
 package com.markvarga21.usermanager.controller;
