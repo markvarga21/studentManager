@@ -33,7 +33,7 @@ public class FaceRectangle {
      * Calculates the area of the rectangle
      * representing the face.
      *
-     * @return the area of the rectangle bounding the face.
+     * @return The area of the rectangle bounding the face.
      */
     public Integer getArea() {
         return this.width * this.height;
