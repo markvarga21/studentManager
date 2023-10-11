@@ -1,7 +1,9 @@
 package com.markvarga21.usermanager.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,47 +35,47 @@ public class PassportValidationData {
     private LocalDateTime timestamp;
 
     /**
-     * The first name of the user.
+     * The first name of the student.
      */
     private String firstName;
 
     /**
-     * The last name of the user.
+     * The last name of the student.
      */
     private String lastName;
 
     /**
-     * The birthdate of the user.
+     * The birthdate of the student.
      */
     private LocalDate birthDate;
 
     /**
-     * The birthplace of the user.
+     * The birthplace of the student.
      */
     private String placeOfBirth;
 
     /**
-     * The nationality of the user.
+     * The nationality of the student.
      */
     private String countryOfCitizenship;
 
     /**
-     * The user's gender.
+     * The student's gender.
      */
     private Gender gender;
 
     /**
-     * The user's passport number.
+     * The student's passport number.
      */
     private String passportNumber;
 
     /**
-     * The user's passports expiry date.
+     * The student's passports expiry date.
      */
     private LocalDate passportDateOfExpiry;
 
     /**
-     * The user's passports issue date.
+     * The student's passports issue date.
      */
     private LocalDate passportDateOfIssue;
 }

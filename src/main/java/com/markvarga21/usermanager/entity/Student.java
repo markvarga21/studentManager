@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
- * Represents a user entity in the application.
+ * Represents a student entity in the application.
  */
 @Entity
 @Data
@@ -21,54 +21,54 @@ import java.time.LocalDate;
 @Builder
 public class Student {
     /**
-     * A unique identifier for the user.
+     * A unique identifier for the student.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     /**
-     * The first name of the user.
+     * The first name of the student.
      */
     private String firstName;
 
     /**
-     * The last name of the user.
+     * The last name of the student.
      */
     private String lastName;
 
     /**
-     * The birthdate of the user.
+     * The birthdate of the student.
      */
     private LocalDate birthDate;
 
     /**
-     * The birthplace of the user.
+     * The birthplace of the student.
      */
     private String placeOfBirth;
 
     /**
-     * The nationality of the user.
+     * The nationality of the student.
      */
     private String countryOfCitizenship;
 
     /**
-     * The user's gender.
+     * The student's gender.
      */
     private Gender gender;
 
     /**
-     * The user's passport number.
+     * The student's passport number.
      */
     private String passportNumber;
 
     /**
-     * The user's passports expiry date.
+     * The student's passports expiry date.
      */
     private LocalDate passportDateOfExpiry;
 
     /**
-     * The user's passports issue date.
+     * The student's passports issue date.
      */
     private LocalDate passportDateOfIssue;
 }
