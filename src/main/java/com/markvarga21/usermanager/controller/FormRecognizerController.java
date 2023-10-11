@@ -30,8 +30,8 @@ public class FormRecognizerController {
     /**
      * Extracts and returns the data from the passport.
      *
-     * @param passport the photo of the passport.
-     * @return the extracted {@code StudentDto} object.
+     * @param passport The photo of the passport.
+     * @return The extracted {@code StudentDto} object.
      */
     @PostMapping("/extractData")
     public ResponseEntity<StudentDto> getDataFromPassport(
@@ -46,9 +46,9 @@ public class FormRecognizerController {
      * Validates the data entered by the user against the data
      * which can be found on the passport.
      *
-     * @param passport the photo of the passport.
-     * @param studentJson the student itself in a JSON string.
-     * @return a {@code PassportValidationResponse} object.
+     * @param passport The photo of the passport.
+     * @param studentJson The student itself in a JSON string.
+     * @return A {@code PassportValidationResponse} object.
      */
     @PostMapping("/validate")
     public ResponseEntity<PassportValidationResponse> validatePassport(

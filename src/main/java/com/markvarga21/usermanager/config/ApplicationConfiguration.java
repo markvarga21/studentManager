@@ -46,7 +46,7 @@ public class ApplicationConfiguration {
      * A method used to create a model mapper bean which
      * then can be used anywhere in the application.
      *
-     * @return a {@code ModelMapper} instance.
+     * @return A {@code ModelMapper} instance.
      */
     @Bean
     public ModelMapper getModelMapper() {
@@ -56,7 +56,7 @@ public class ApplicationConfiguration {
     /**
      * A bean for setting up the passport analysis.
      *
-     * @return the already sat up {@code DocumentAnalysisClient}.
+     * @return The already sat up {@code DocumentAnalysisClient}.
      */
     @Bean
     public DocumentAnalysisClient getDocumentanalysisClient() {
@@ -69,7 +69,7 @@ public class ApplicationConfiguration {
     /**
      * A bean created for deserializing user JSON strings into POJO.
      *
-     * @return the built {@code Gson} object.
+     * @return The built {@code Gson} object.
      */
     @Bean
     public Gson getGsonLocalDateDeserializer() {
@@ -85,7 +85,7 @@ public class ApplicationConfiguration {
      * A bean created for talking with the APIs like
      * Azure's Face API and Rest Countries API.
      *
-     * @return the created bean.
+     * @return The created bean.
      */
     @Bean
     public RestTemplate getRestTemplate() {

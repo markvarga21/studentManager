@@ -34,7 +34,7 @@ public class StudentController {
     /**
      * Retrieves all students which are present in the application.
      *
-     * @return a {@code List} containing all the students.
+     * @return A {@code List} containing all the students.
      */
     @GetMapping
     public List<StudentDto> getAllStudents() {
@@ -44,8 +44,8 @@ public class StudentController {
     /**
      * Saves and validates a student in the database and then returns it.
      *
-     * @param studentJson the student itself in a JSON string.
-     * @return the saved {@code StudentDto}.
+     * @param studentJson The student itself in a JSON string.
+     * @return The saved {@code StudentDto}.
      */
     @PostMapping
     public ResponseEntity<StudentDto> createUser(
@@ -60,8 +60,8 @@ public class StudentController {
      * Retrieves the desired student using its ID,
      * then returns it.
      *
-     * @param id the ID of the student which we want to retrieve.
-     * @return the searched student if present.
+     * @param id The ID of the student which we want to retrieve.
+     * @return The searched student if present.
      */
     @GetMapping("/{id}")
     public ResponseEntity<StudentDto> getStudentById(
@@ -74,9 +74,9 @@ public class StudentController {
     /**
      * Updates a student and then retrieves it.
      *
-     * @param studentJson the student itself in a JSON string.
-     * @param userId the ID of the student which has to be updated.
-     * @return the updated {@code StudentDto}.
+     * @param studentJson The student itself in a JSON string.
+     * @param userId The ID of the student which has to be updated.
+     * @return The updated {@code StudentDto}.
      */
     @PutMapping("/{userId}")
     public ResponseEntity<StudentDto> updateStudentById(
@@ -91,8 +91,8 @@ public class StudentController {
     /**
      * Deletes a student and then retrieves it.
      *
-     * @param id the ID of the student which we want to delete.
-     * @return the recently deleted student DTO object.
+     * @param id The ID of the student which we want to delete.
+     * @return The recently deleted student DTO object.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<StudentDto> deleteStudentById(
