@@ -38,7 +38,7 @@ public class StudentController {
      */
     @GetMapping
     public List<StudentDto> getAllStudents() {
-        return this.userService.getAllUsers();
+        return this.userService.getAllStudents();
     }
 
     /**
@@ -52,7 +52,7 @@ public class StudentController {
             @RequestParam("studentJson") final String studentJson
     ) {
 
-        StudentDto createdStudent = this.userService.createUser(studentJson);
+        StudentDto createdStudent = this.userService.createStudent(studentJson);
         return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
     }
 
@@ -67,7 +67,7 @@ public class StudentController {
     public ResponseEntity<StudentDto> getStudentById(
             @PathVariable final Long id
     ) {
-        StudentDto foundStudent = this.userService.getUserById(id);
+        StudentDto foundStudent = this.userService.getStudentById(id);
         return new ResponseEntity<>(foundStudent, HttpStatus.OK);
     }
 
@@ -84,7 +84,7 @@ public class StudentController {
             @PathVariable("userId") final Long userId
             ) {
         StudentDto updatedStudent = this.userService
-                .modifyUserById(studentJson, userId);
+                .modifyStudentById(studentJson, userId);
         return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
     }
 
@@ -98,7 +98,7 @@ public class StudentController {
     public ResponseEntity<StudentDto> deleteStudentById(
             @PathVariable final Long id
     ) {
-        StudentDto deletedStudent = this.userService.deleteUserById(id);
+        StudentDto deletedStudent = this.userService.deleteStudentById(id);
         return new ResponseEntity<>(deletedStudent, HttpStatus.OK);
     }
 }

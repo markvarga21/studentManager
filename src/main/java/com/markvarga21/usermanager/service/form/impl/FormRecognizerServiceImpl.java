@@ -30,8 +30,8 @@ import java.util.Map;
 
 /**
  * A service which is used to verify the data entered by the user
- * against the data which can be found on either the uploaded
- * ID document or passport. It uses Azure's Form Recognizer.
+ * against the data which can be found on the uploaded passport.
+ * It uses Azure's Form Recognizer.
  */
 @Component
 @RequiredArgsConstructor
@@ -58,7 +58,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     private final CountryNameFetcher countryNameFetcher;
 
     /**
-     * A user mapper.
+     * A student mapper.
      */
     private final AppUserMapper userMapper;
 
@@ -69,18 +69,18 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     private final PassportValidationDataRepository validationRepository;
 
     /**
-     * Extracts all the fields from the uploaded ID document.
+     * Extracts all the fields from the uploaded passport.
      *
-     * @param idDocument the uploaded ID document or passport.
-     * @return the extracted fields stored in a {@code Map}.
+     * @param passport The uploaded passport.
+     * @return The extracted fields stored in a {@code Map}.
      */
     @Override
     public Map<String, DocumentField> getFieldsFromDocument(
-            final MultipartFile idDocument
+            final MultipartFile passport
     ) {
         try {
-            BinaryData binaryData = BinaryData.fromBytes(idDocument.getBytes());
-            String modelId = "prebuilt-idDocument";
+            BinaryData binaryData = BinaryData.fromBytes(passport.getBytes());
+            String modelId = "prebuilt-passport";
             SyncPoller<OperationResult, AnalyzeResult> analyzeDocumentPoller =
                     this.documentAnalysisClient.beginAnalyzeDocument(
                             modelId, binaryData
@@ -91,7 +91,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             var documentResult = analyzeResult.getDocuments().get(0);
             return documentResult.getFields();
         } catch (IOException e) {
-            String message = "ID document not found!";
+            String message = "Passport not found!";
             log.error(message);
             throw new InvalidPassportException(message);
         }
@@ -100,8 +100,8 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     /**
      * Extracts and returns the data from the passport.
      *
-     * @param passport the photo of the passport.
-     * @return the extracted {@code AppUserDto} object.
+     * @param passport The photo of the passport.
+     * @return The extracted {@code StudentDto} object.
      */
     @Override
     public StudentDto extractDataFromPassport(final MultipartFile passport) {
@@ -151,19 +151,19 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * Validates the data entered by the user against the data
      * which can be found on the passport.
      *
-     * @param passport the photo of the passport.
-     * @param appUserJson the user itself in a JSON string.
-     * @return a {@code PassportValidationResponse} object.
+     * @param passport The photo of the passport.
+     * @param studentJson The student itself in a JSON string.
+     * @return A {@code PassportValidationResponse} object.
      */
     @Override
     public PassportValidationResponse validatePassport(
             final MultipartFile passport,
-            final String appUserJson
+            final String studentJson
     ) {
         StudentDto userDataFromUser = this
-                .userMapper.mapJsonToDto(appUserJson);
-        if (this.isUserPresentInValidationDatabase(userDataFromUser)) {
-            log.info("User is present in the validation database.");
+                .userMapper.mapJsonToDto(studentJson);
+        if (this.isStudentPresentInValidationDatabase(userDataFromUser)) {
+            log.info("Student is present in the validation database.");
             return PassportValidationResponse.builder()
                     .isValid(true)
                     .build();
@@ -198,13 +198,13 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     }
 
     /**
-     * Checks if the user is present in the validation database.
+     * Checks if the student is present in the validation database.
      *
-     * @param studentDto the user.
-     * @return an {@code Optional} object.
+     * @param studentDto The student.
+     * @return An {@code Optional} object.
      */
     @Override
-    public boolean isUserPresentInValidationDatabase(
+    public boolean isStudentPresentInValidationDatabase(
             final StudentDto studentDto
     ) {
         List<PassportValidationData> passportValidations = this

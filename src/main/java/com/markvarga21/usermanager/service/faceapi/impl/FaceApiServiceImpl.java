@@ -7,7 +7,6 @@ import com.markvarga21.usermanager.dto.FaceDetectionResponse;
 import com.markvarga21.usermanager.dto.FacialValidationData;
 import com.markvarga21.usermanager.exception.FaceValidationDataNotFoundException;
 import com.markvarga21.usermanager.exception.InvalidPassportException;
-import com.markvarga21.usermanager.exception.InvalidFacesException;
 import com.markvarga21.usermanager.repository.FacialValidationDataRepository;
 import com.markvarga21.usermanager.dto.FaceApiResponse;
 import com.markvarga21.usermanager.service.faceapi.FaceApiService;
@@ -29,9 +28,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A service which uses Deepface to compare two faces.
+ * A service which uses Azure's Face API to compare two faces.
  * It is then used for comparing the face on the
- * ID card/passport and the selfie which the user has uploaded.
+ * passport and the students selfie which has been uploaded.
  */
 @Component
 @RequiredArgsConstructor
@@ -67,49 +66,46 @@ public class FaceApiServiceImpl implements FaceApiService {
     /**
      * Compares two faces.
      *
-     * @param idPhoto the ID photo of the user.
-     * @param selfiePhoto a selfie of the user.
+     * @param passport The ID photo of the student.
+     * @param selfiePhoto A selfie of the student.
      */
     @Override
     public void facesAreMatching(
-            final MultipartFile idPhoto,
+            final MultipartFile passport,
             final MultipartFile selfiePhoto
     ) {
-        if (idPhoto == null || selfiePhoto == null) {
-            String message = "ID photo or selfie file missing!";
+        if (passport == null || selfiePhoto == null) {
+            String message = "Passport or selfie file missing!";
             log.error(message);
             throw new InvalidPassportException(message);
         }
         log.info("Comparing faces...");
-        try {
-            FaceApiResponse faceApiResponse =
-                    this.compareFaces(idPhoto, selfiePhoto);
+        FaceApiResponse faceApiResponse =
+                this.compareFaces(passport, selfiePhoto);
 
-            if (faceApiResponse == null) {
-                String message = "Face api response is NULL!";
-                log.error(message);
-                throw new InvalidPassportException(message);
-            }
-
-            log.info(String.format(
-                "The probability that the faces are the same is %,.2f percent.",
-                PERCENT_MULTIPLIER * faceApiResponse.getConfidence())
-            );
-
-            if (Boolean.FALSE.equals(faceApiResponse.getIsIdentical())) {
-                String message =
-                        "ID document photo is not matching with the selfie!";
-                throw new InvalidPassportException(message);
-            }
-        } catch (IOException exception) {
-            String message = String.format(
-                    "Something went wrong when comparing the photos: %s",
-                    exception.getMessage()
-            );
+        if (faceApiResponse == null) {
+            String message = "Face api response is NULL!";
             log.error(message);
+            throw new InvalidPassportException(message);
+        }
+
+        log.info(String.format(
+            "The probability that the faces are the same is %,.2f percent.",
+            PERCENT_MULTIPLIER * faceApiResponse.getConfidence())
+        );
+
+        if (Boolean.FALSE.equals(faceApiResponse.getIsIdentical())) {
+            String message =
+                    "Passport photo is not matching with the selfie!";
+            throw new InvalidPassportException(message);
         }
     }
 
+    /**
+     * Returns the headers for the API call.
+     *
+     * @return The headers for the API call.
+     */
     private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -171,10 +167,18 @@ public class FaceApiServiceImpl implements FaceApiService {
         return "Face ID not present!";
     }
 
+    /**
+     * Compares the faces found on the passport and the
+     * portrait, and then sends it back to the client.
+     *
+     * @param passport The user's passport.
+     * @param selfiePhoto The portrait of the user.
+     * @return The validity and the percentage of the matching.
+     */
     private FaceApiResponse compareFaces(
             final MultipartFile passport,
             final MultipartFile selfiePhoto
-    ) throws IOException {
+    ) {
         String passportFaceId = this.getFaceIdForFile(passport);
         String selfieFaceId = this.getFaceIdForFile(selfiePhoto);
 
@@ -212,11 +216,11 @@ public class FaceApiServiceImpl implements FaceApiService {
      * Compares the faces found on the passport and the
      * portrait, and then sends it back to the client.
      *
-     * @param passport the user's passport.
-     * @param selfiePhoto the portrait of the user.
-     * @param firstName the first name of the user.
-     * @param lastName the last name of the user.
-     * @return the validity and the percentage of the matching.
+     * @param passport The student's passport.
+     * @param selfiePhoto The portrait of the student.
+     * @param firstName The first name of the student.
+     * @param lastName The last name of the student.
+     * @return The validity and the percentage of the matching.
      */
     @Override
     public FaceApiResponse getValidityOfFaces(
@@ -226,9 +230,9 @@ public class FaceApiServiceImpl implements FaceApiService {
             final String lastName
     ) {
         Optional<FacialValidationData> facialValidationDataOptional =
-                this.isUserPresentInFacialDatabase(firstName, lastName);
+                this.isStudentPresentInFacialDatabase(firstName, lastName);
         if (facialValidationDataOptional.isPresent()) {
-            log.info("User is present in the facial database.");
+            log.info("Student is present in the facial database.");
             return new FaceApiResponse(
                     true,
                     facialValidationDataOptional
@@ -236,40 +240,31 @@ public class FaceApiServiceImpl implements FaceApiService {
                             .getProbabilityOfMatching()
             );
         } else {
-            try {
-                FaceApiResponse faceApiResponse =
-                        this.compareFaces(passport, selfiePhoto);
+            FaceApiResponse faceApiResponse =
+                    this.compareFaces(passport, selfiePhoto);
 
-                FacialValidationData facialValidationData = FacialValidationData
-                        .builder()
-                        .firstName(firstName)
-                        .lastName(lastName)
-                        .probabilityOfMatching(faceApiResponse.getConfidence())
-                        .build();
-                if (faceApiResponse.getIsIdentical()) {
-                    this.facialValidationDataRepository.save(facialValidationData);
-                }
-
-                return faceApiResponse;
-            } catch (IOException exception) {
-                String message = String.format(
-                        "Something went wrong when comparing the photos: %s",
-                        exception.getMessage()
-                );
-                log.error(message);
-                throw new InvalidFacesException(message);
+            FacialValidationData facialValidationData = FacialValidationData
+                    .builder()
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .probabilityOfMatching(faceApiResponse.getConfidence())
+                    .build();
+            if (Boolean.TRUE.equals(faceApiResponse.getIsIdentical())) {
+                this.facialValidationDataRepository.save(facialValidationData);
             }
+
+            return faceApiResponse;
         }
     }
 
     /**
-     * Checks if the user is present in the facial database.
+     * Checks if the students is present in the facial database.
      *
-     * @param firstName the first name of the user.
-     * @param lastName the last name of the user.
-     * @return an optional facial validation data.
+     * @param firstName The first name of the student.
+     * @param lastName The last name of the student.
+     * @return An optional facial validation data.
      */
-    private Optional<FacialValidationData> isUserPresentInFacialDatabase(
+    private Optional<FacialValidationData> isStudentPresentInFacialDatabase(
             final String firstName,
             final String lastName
     ) {
@@ -283,8 +278,8 @@ public class FaceApiServiceImpl implements FaceApiService {
     /**
      * Deletes the facial data by first- and last name.
      *
-     * @param firstName the first name of the user.
-     * @param lastName the last name of the user.
+     * @param firstName the first name of the student.
+     * @param lastName the last name of the student.
      */
     @Override
     public void deleteFacialDataByFirstNameAndLastName(

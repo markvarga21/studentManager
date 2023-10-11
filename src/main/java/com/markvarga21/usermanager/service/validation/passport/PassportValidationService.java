@@ -14,14 +14,14 @@ public interface PassportValidationService {
     /**
      * Retrieves all the passport validation data.
      *
-     * @return all the passport validation data.
+     * @return All the passport validation data.
      */
     List<PassportValidationData> getAllPassportValidationData();
 
     /**
      * Deletes the passport validation data with the given ID.
      *
-     * @param id the ID of the passport validation data.
+     * @param id The ID of the passport validation data.
      */
     void deletePassportValidationData(Long id);
 }

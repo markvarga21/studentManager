@@ -14,41 +14,41 @@ public interface FormRecognizerService {
     /**
      * Extracts and returns the data from the passport.
      *
-     * @param passport the photo of the passport.
-     * @return the extracted {@code AppUserDto} object.
+     * @param passport The photo of the passport.
+     * @return The extracted {@code StudentDto} object.
      */
     StudentDto extractDataFromPassport(MultipartFile passport);
 
     /**
-     * Extracts all the fields from the uploaded ID document.
+     * Extracts all the fields from the uploaded passport.
      *
-     * @param idDocument the uploaded ID document or passport.
-     * @return the extracted fields stored in a {@code Map}.
+     * @param passport The uploaded passport.
+     * @return The extracted fields stored in a {@code Map}.
      */
     Map<String, DocumentField> getFieldsFromDocument(
-            MultipartFile idDocument
+            MultipartFile passport
     );
 
     /**
      * Validates the data entered by the user against the data
      * which can be found on the passport.
      *
-     * @param passport the photo of the passport.
-     * @param appUserJson the user itself in a JSON string.
-     * @return a {@code PassportValidationResponse} object.
+     * @param passport The photo of the passport.
+     * @param studentJson The student itself in a JSON string.
+     * @return A {@code PassportValidationResponse} object.
      */
     PassportValidationResponse validatePassport(
             MultipartFile passport,
-            String appUserJson
+            String studentJson
     );
 
     /**
-     * Checks if the user is present in the validation database.
+     * Checks if the student is present in the validation database.
      *
-     * @param studentDto the user to be checked.
-     * @return {@code true} if the user is present in the database,
+     * @param studentDto The student to be checked.
+     * @return {@code true} if the student is present in the database,
      */
-    boolean isUserPresentInValidationDatabase(
+    boolean isStudentPresentInValidationDatabase(
             StudentDto studentDto
     );
 

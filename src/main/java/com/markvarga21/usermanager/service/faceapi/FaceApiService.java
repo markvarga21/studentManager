@@ -8,26 +8,26 @@ import java.util.List;
 
 /**
  * An interface for validating and comparing the faces on the
- * ID document/passport and the selfie itself.
+ * passport and the selfie itself.
  */
 public interface FaceApiService {
     /**
      * Validates the faces on the ID card against the selfie.
      *
-     * @param idPhoto the ID card file.
-     * @param selfiePhoto the selfie file.
+     * @param passport The passport file.
+     * @param selfiePhoto The selfie file.
      */
-    void facesAreMatching(MultipartFile idPhoto, MultipartFile selfiePhoto);
+    void facesAreMatching(MultipartFile passport, MultipartFile selfiePhoto);
 
     /**
      * Compares the faces found on the passport and the
      * portrait, and then sends it back to the client.
      *
-     * @param passport the user's passport.
-     * @param selfiePhoto the portrait of the user.
-     * @param firstName the first name of the user.
-     * @param lastName the last name of the user.
-     * @return the validity and the percentage of the matching.
+     * @param passport The student's passport.
+     * @param selfiePhoto The portrait of the student.
+     * @param firstName The first name of the student.
+     * @param lastName The last name of the student.
+     * @return The validity and the percentage of the matching.
      */
     FaceApiResponse getValidityOfFaces(
             MultipartFile passport,
@@ -39,29 +39,30 @@ public interface FaceApiService {
     /**
      * Returns all the facial validation data.
      *
-     * @return all the facial validation data.
+     * @return All the facial validation data.
      */
     List<FacialValidationData> fetchAllValidationData();
 
     /**
      * Deletes the facial validation data by ID.
      *
-     * @param id the ID of the facial validation data.
+     * @param id The ID of the facial validation data.
      */
     void deleteFacialValidationData(Long id);
 
     /**
      * Returns the face ID for the given file.
-     * @param file the file to get the face ID for.
-     * @return the face ID for the given file.
+     *
+     * @param file The file to get the face ID for.
+     * @return The face ID for the given file.
      */
     String getFaceIdForFile(MultipartFile file);
 
     /**
      * Deletes the facial data by first- and last name.
      *
-     * @param firstName the first name of the user.
-     * @param lastName the last name of the user.
+     * @param firstName The first name of the student.
+     * @param lastName The last name of the student.
      */
     void deleteFacialDataByFirstNameAndLastName(
             String firstName,

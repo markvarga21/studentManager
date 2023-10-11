@@ -6,46 +6,46 @@ import java.util.List;
 
 /**
  * An interface which contains essential methods
- * for manipulating user information.
+ * for manipulating student information.
  */
 public interface AppUserService {
     /**
-     * A method used for retrieving all the users in the application.
+     * A method used for retrieving all the students from the application.
      *
-     * @return all to users stored in a {@code List}.
+     * @return all to students stored in a {@code List}.
      */
-    List<StudentDto> getAllUsers();
+    List<StudentDto> getAllStudents();
 
     /**
-     * Validates and then persists a user in the database.
+     * Validates and then persists a student in the database.
      *
-     * @param appUserJson the user itself with the new data.
-     * @return the newly modified user.
+     * @param studentJson the student itself with the new data.
+     * @return the newly modified student.
      */
-    StudentDto createUser(String appUserJson);
+    StudentDto createStudent(String studentJson);
 
     /**
-     * Retrieves a user from the application using its id.
+     * Retrieves a student from the application using its ID.
      *
-     * @param id the identifier of the user we want to retrieve.
-     * @return the searched user.
+     * @param id The identifier of the student we want to retrieve.
+     * @return The searched student.
      */
-    StudentDto getUserById(Long id);
+    StudentDto getStudentById(Long id);
 
     /**
-     * Modifies the user identified by its id.
+     * Modifies the student identified by its id.
      *
-     * @param appUserJson the user itself with the new data.
-     * @param userId the id of the user we want to modify.
-     * @return the newly modified user.
+     * @param studentJson The student itself with the new data.
+     * @param userId The id of the student we want to modify.
+     * @return The newly modified student.
      */
-    StudentDto modifyUserById(String appUserJson, Long userId);
+    StudentDto modifyStudentById(String studentJson, Long userId);
 
     /**
-     * Deletes a user by its id.
+     * Deletes a student by its ID.
      *
-     * @param id the identifier used for deleting a user.
-     * @return the recently deleted user's dto.
+     * @param id The identifier used for deleting a student.
+     * @return The recently deleted user's DTO.
      */
-    StudentDto deleteUserById(Long id);
+    StudentDto deleteStudentById(Long id);
 }

@@ -81,7 +81,7 @@ class StudentServiceTest {
                 .thenReturn(List.of(student));
         when(this.appUserMapper.mapAppUserEntityToDto(any()))
                 .thenReturn(studentDto);
-        List<StudentDto> actual = this.appUserService.getAllUsers();
+        List<StudentDto> actual = this.appUserService.getAllStudents();
 
         // Then
         assertEquals(expected, actual);
@@ -190,7 +190,7 @@ class StudentServiceTest {
                 .thenReturn(Optional.of(student));
         when(this.appUserMapper.mapAppUserEntityToDto(student))
                 .thenReturn(studentDto);
-        StudentDto actual = this.appUserService.getUserById(id);
+        StudentDto actual = this.appUserService.getStudentById(id);
 
         // Then
         assertSame(studentDto, actual);
@@ -207,7 +207,7 @@ class StudentServiceTest {
 
         // Then
         assertThrows(StudentNotFoundException.class,
-                () -> this.appUserService.getUserById(id)
+                () -> this.appUserService.getStudentById(id)
         );
     }
 
@@ -285,7 +285,7 @@ class StudentServiceTest {
         doNothing()
                 .when(this.studentRepository)
                 .deleteById(id);
-        StudentDto actual = this.appUserService.deleteUserById(id);
+        StudentDto actual = this.appUserService.deleteStudentById(id);
 
         // Then
         assertSame(expected, actual);
@@ -302,7 +302,7 @@ class StudentServiceTest {
 
         // Then
         assertThrows(StudentNotFoundException.class,
-                () -> this.appUserService.deleteUserById(id)
+                () -> this.appUserService.deleteStudentById(id)
         );
     }
 }

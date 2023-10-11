@@ -27,12 +27,12 @@ import java.util.Optional;
 @Service
 public class AppUserServiceImpl implements AppUserService {
     /**
-     * Repository for app users.
+     * Repository for students.
      */
-    private final StudentRepository userRepository;
+    private final StudentRepository studentRepository;
 
     /**
-     * A user mapper.
+     * A student mapper.
      */
     private final AppUserMapper userMapper;
 
@@ -47,32 +47,33 @@ public class AppUserServiceImpl implements AppUserService {
     private final FaceApiService faceApiService;
 
     /**
-     * Retrieves all the users in the application.
+     * Retrieves all the students from the application.
      *
-     * @return all to users stored in a {@code List}.
+     * @return All to students stored in a {@code List}.
      * @since 1.0
      */
     @Override
-    public List<StudentDto> getAllUsers() {
-        List<StudentDto> userDtoList = userRepository
+    public List<StudentDto> getAllStudents() {
+        List<StudentDto> studentDtoList = studentRepository
                 .findAll()
                 .stream()
                 .map(this.userMapper::mapAppUserEntityToDto)
                 .toList();
-        log.info(String.format("Listing %d users.", userDtoList.size()));
+        log.info(String.format("Listing %d students.", studentDtoList.size()));
 
-        return userDtoList;
+        return studentDtoList;
     }
 
     /**
-     * Validates  and then persists the user into the database.
+     * Validates and then persists the student
+     * into the database.
      *
-     * @param appUserJson the user itself in a JSON string.
-     * @return the updated {@code AppUserDto}.
+     * @param studentJson The student itself in a JSON string.
+     * @return The updated {@code AppUserDto}.
      */
     @Override
-    public StudentDto createUser(final String appUserJson) {
-        StudentDto studentDto = this.userMapper.mapJsonToDto(appUserJson);
+    public StudentDto createStudent(final String studentJson) {
+        StudentDto studentDto = this.userMapper.mapJsonToDto(studentJson);
 
         String firstName = studentDto.getFirstName();
         String lastName = studentDto.getLastName();
@@ -87,123 +88,125 @@ public class AppUserServiceImpl implements AppUserService {
         }
 
         Student userToSave = this.userMapper.mapAppUserDtoToEntity(studentDto);
-        this.userRepository.save(userToSave);
+        this.studentRepository.save(userToSave);
 
-        StudentDto userDto = this.userMapper.mapAppUserEntityToDto(userToSave);
-        log.info(String.format("Saving user: %s", userDto));
+        StudentDto studentDtoToSave = this.userMapper
+                .mapAppUserEntityToDto(userToSave);
+        log.info(String.format("Saving student: %s", studentDtoToSave));
 
-        return userDto;
+        return studentDtoToSave;
     }
 
     /**
-     * Checks if the users first- and last names are available.
+     * Checks if the students first- and last names are available.
      *
-     * @param firstName the first name of the user.
-     * @param lastName the last name of the user.
-     * @return {@code true} if there is no other user
+     * @param firstName The first name of the student.
+     * @param lastName The last name of the student.
+     * @return {@code true} if there is no other student
      * with the same name, else {@code false}.
      */
     public boolean validNames(
             final String firstName,
             final String lastName
     ) {
-        Optional<Student> appUser = this.userRepository
+        Optional<Student> student = this.studentRepository
                 .findStudentByFirstNameAndLastName(firstName, lastName);
-        return appUser.isEmpty();
+        return student.isEmpty();
     }
 
     /**
-     * Retrieves a user from the application using its id.
+     * Retrieves a student from the application using its id.
      *
-     * @param id the identifier of the user we want to retrieve.
-     * @return the searched user.
+     * @param id The identifier of the student we want to retrieve.
+     * @return The searched student.
      * @since 1.0
      */
     @Override
-    public StudentDto getUserById(final Long id) {
-        Optional<Student> userOptional = this.userRepository.findById(id);
-        if (userOptional.isEmpty()) {
+    public StudentDto getStudentById(final Long id) {
+        Optional<Student> studentOptional = this.studentRepository.findById(id);
+        if (studentOptional.isEmpty()) {
             String message = String.format(
-                    "User cant be retrieved! Cause: user not found with id: %d",
+                    "Student cant be retrieved! Cause: user not found with id: %d",
                     id
             );
             log.error(message);
             throw new StudentNotFoundException(message, OperationType.READ);
         }
-        log.info(String.format("User with id %d retrieved successfully!", id));
+        log.info(String.format("Student with id %d retrieved successfully!", id));
 
-        return this.userMapper.mapAppUserEntityToDto(userOptional.get());
+        return this.userMapper.mapAppUserEntityToDto(studentOptional.get());
     }
 
     /**
-     * Validates and then modifies the user's information.
+     * Validates and then modifies the student's information.
      *
-     * @param appUserJson the user itself in a JSON string.
-     * @return the updated {@code AppUserDto}.
+     * @param studentJson The user itself in a JSON string.
+     * @return The updated {@code StudentDto}.
      * @since 1.0
      */
     @Override
-    public StudentDto modifyUserById(
-            final String appUserJson,
-            final Long userId
+    public StudentDto modifyStudentById(
+            final String studentJson,
+            final Long studentId
     ) {
-        Optional<Student> userOptional = this.userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
+        Optional<Student> studentOptional = this.studentRepository
+                .findById(studentId);
+        if (studentOptional.isEmpty()) {
             String message = String.format(
-                    "User cant be modified! Cause: User not found with id: %d",
-                    userId
+                    "Student cant be modified! Cause: Student not found with id: %d",
+                    studentId
             );
             log.error(message);
             throw new StudentNotFoundException(message, OperationType.UPDATE);
         }
-        Student userToUpdate = userOptional.get();
-        StudentDto studentDto = this.userMapper.mapJsonToDto(appUserJson);
+        Student student = studentOptional.get();
+        StudentDto studentDto = this.userMapper.mapJsonToDto(studentJson);
 
-        userToUpdate.setGender(studentDto.getGender());
-        userToUpdate.setFirstName(studentDto.getFirstName());
-        userToUpdate.setLastName(studentDto.getLastName());
-        userToUpdate
+        student.setGender(studentDto.getGender());
+        student.setFirstName(studentDto.getFirstName());
+        student.setLastName(studentDto.getLastName());
+        student
                 .setCountryOfCitizenship(studentDto.getCountryOfCitizenship());
-        userToUpdate.setPlaceOfBirth(studentDto.getPlaceOfBirth());
-        userToUpdate.setBirthDate(studentDto.getBirthDate());
-        Student updatedUser = this.userRepository.save(userToUpdate);
+        student.setPlaceOfBirth(studentDto.getPlaceOfBirth());
+        student.setBirthDate(studentDto.getBirthDate());
+        Student updatedUser = this.studentRepository.save(student);
 
         log.info(String.format(
-                "User with id %d modified successfully!", userId)
+                "Student with id %d modified successfully!", studentId)
         );
         return this.userMapper.mapAppUserEntityToDto(updatedUser);
     }
 
     /**
-     * Deletes a user by its id.
+     * Deletes a student by its ID.
      *
-     * @param id the identifier used for deleting a user.
-     * @return the recently deleted user's dto.
+     * @param id The identifier used for deleting a student.
+     * @return The recently deleted student's DTO.
      * @since 1.0
      */
     @Override
-    public StudentDto deleteUserById(final Long id) {
-        Optional<Student> userOptional = this.userRepository.findById(id);
-        if (userOptional.isEmpty()) {
+    public StudentDto deleteStudentById(final Long id) {
+        Optional<Student> studentOptional = this.studentRepository.findById(id);
+        if (studentOptional.isEmpty()) {
             String message = String.format(
-                    "User cannot be deleted! Cause: user not found with id: %d",
+                    "Student cannot be deleted! Cause: student not found with id: %d",
                     id
             );
             log.error(message);
             throw new StudentNotFoundException(message, OperationType.DELETE);
         }
-        StudentDto deletedUser = this.userMapper
-                .mapAppUserEntityToDto(userOptional.get());
-        this.userRepository.deleteById(id);
+        StudentDto deletedStudent = this.userMapper
+                .mapAppUserEntityToDto(studentOptional.get());
+        this.studentRepository.deleteById(id);
         this.formRecognizerService.deletePassportValidationByPassportNumber(
-                deletedUser.getPassportNumber()
+                deletedStudent.getPassportNumber()
         );
         this.faceApiService.deleteFacialDataByFirstNameAndLastName(
-                deletedUser.getFirstName(),
-                deletedUser.getLastName()
+                deletedStudent.getFirstName(),
+                deletedStudent.getLastName()
         );
-        log.info(String.format("User with id %d deleted successfully!", id));
+        log.info(String.format("Student with id %d deleted successfully!", id));
 
-        return deletedUser;
+        return deletedStudent;
     }
 }
