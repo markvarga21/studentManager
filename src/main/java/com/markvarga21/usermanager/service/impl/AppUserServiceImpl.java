@@ -126,13 +126,16 @@ public class AppUserServiceImpl implements AppUserService {
         Optional<Student> studentOptional = this.studentRepository.findById(id);
         if (studentOptional.isEmpty()) {
             String message = String.format(
-                    "Student cant be retrieved! Cause: user not found with id: %d",
-                    id
+                "Student cant be retrieved! Cause: user not found with id: %d",
+                id
             );
             log.error(message);
             throw new StudentNotFoundException(message, OperationType.READ);
         }
-        log.info(String.format("Student with id %d retrieved successfully!", id));
+        log.info(String.format(
+                "Student with id %d retrieved successfully!",
+                id
+        ));
 
         return this.userMapper.mapStudentEntityToDto(studentOptional.get());
     }
@@ -153,8 +156,8 @@ public class AppUserServiceImpl implements AppUserService {
                 .findById(studentId);
         if (studentOptional.isEmpty()) {
             String message = String.format(
-                    "Student cant be modified! Cause: Student not found with id: %d",
-                    studentId
+                "Student cant be modified! Cause: Student not found with id: %d",
+                studentId
             );
             log.error(message);
             throw new StudentNotFoundException(message, OperationType.UPDATE);
@@ -189,8 +192,8 @@ public class AppUserServiceImpl implements AppUserService {
         Optional<Student> studentOptional = this.studentRepository.findById(id);
         if (studentOptional.isEmpty()) {
             String message = String.format(
-                    "Student cannot be deleted! Cause: student not found with id: %d",
-                    id
+                "Student cannot be deleted! Cause: student not found with id: %d",
+                id
             );
             log.error(message);
             throw new StudentNotFoundException(message, OperationType.DELETE);
@@ -201,11 +204,10 @@ public class AppUserServiceImpl implements AppUserService {
         this.formRecognizerService.deletePassportValidationByPassportNumber(
                 deletedStudent.getPassportNumber()
         );
-        this.faceApiService.deleteFacialDataByFirstNameAndLastName(
-                deletedStudent.getFirstName(),
-                deletedStudent.getLastName()
-        );
-        log.info(String.format("Student with id %d deleted successfully!", id));
+        log.info(String.format(
+                "Student with id %d deleted successfully!",
+                id
+        ));
 
         return deletedStudent;
     }

@@ -1,10 +1,8 @@
 package com.markvarga21.usermanager.service.faceapi;
 
 import com.markvarga21.usermanager.dto.FaceApiResponse;
-import com.markvarga21.usermanager.dto.FacialValidationData;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 
 /**
  * An interface for validating and comparing the faces on the
@@ -37,35 +35,10 @@ public interface FaceApiService {
     );
 
     /**
-     * Returns all the facial validation data.
-     *
-     * @return All the facial validation data.
-     */
-    List<FacialValidationData> fetchAllValidationData();
-
-    /**
-     * Deletes the facial validation data by ID.
-     *
-     * @param id The ID of the facial validation data.
-     */
-    void deleteFacialValidationData(Long id);
-
-    /**
      * Returns the face ID for the given file.
      *
      * @param file The file to get the face ID for.
      * @return The face ID for the given file.
      */
     String getFaceIdForFile(MultipartFile file);
-
-    /**
-     * Deletes the facial data by first- and last name.
-     *
-     * @param firstName The first name of the student.
-     * @param lastName The last name of the student.
-     */
-    void deleteFacialDataByFirstNameAndLastName(
-            String firstName,
-            String lastName
-    );
 }

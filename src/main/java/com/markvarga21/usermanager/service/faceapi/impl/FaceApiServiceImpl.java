@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.markvarga21.usermanager.config.ApplicationConfiguration;
 import com.markvarga21.usermanager.dto.FaceDetectionResponse;
-import com.markvarga21.usermanager.dto.FacialValidationData;
-import com.markvarga21.usermanager.exception.FaceValidationDataNotFoundException;
 import com.markvarga21.usermanager.exception.InvalidPassportException;
-import com.markvarga21.usermanager.repository.FacialValidationDataRepository;
 import com.markvarga21.usermanager.dto.FaceApiResponse;
 import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +22,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * A service which uses Azure's Face API to compare two faces.
@@ -51,11 +47,6 @@ public class FaceApiServiceImpl implements FaceApiService {
      * The rest template used to make API calls.
      */
     private final RestTemplate restTemplate;
-
-    /**
-     * A repository which is used to access facial validation data.
-     */
-    private final FacialValidationDataRepository facialValidationDataRepository;
 
     /**
      * A simple multiplier for converting floating point percentage
@@ -143,11 +134,13 @@ public class FaceApiServiceImpl implements FaceApiService {
                     );
             String detectionString = response.getBody();
             Gson gson = new Gson();
-            Type listType = new TypeToken<List<FaceDetectionResponse>>() { }.getType();
+            Type listType = new TypeToken<List<FaceDetectionResponse>>() { }
+                    .getType();
 
-            ArrayList<FaceDetectionResponse> faceDetectionResponses = gson.fromJson(
-                    detectionString,
-                    listType
+            ArrayList<FaceDetectionResponse> faceDetectionResponses = gson
+                    .fromJson(
+                        detectionString,
+                        listType
             );
             faceDetectionResponses.sort((face1, face2) -> {
                 Integer area1 = face1.getFaceRectangle().getArea();
@@ -201,7 +194,10 @@ public class FaceApiServiceImpl implements FaceApiService {
                 selfieFaceId
         );
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(jsonString, headers);
+        HttpEntity<String> requestEntity = new HttpEntity<>(
+                jsonString,
+                headers
+        );
 
         ResponseEntity<FaceApiResponse> response = this.restTemplate
                 .postForEntity(
@@ -230,96 +226,6 @@ public class FaceApiServiceImpl implements FaceApiService {
             final String lastName
     ) {
 
-        FaceApiResponse faceApiResponse =
-                this.compareFaces(passport, selfiePhoto);
-
-        FacialValidationData facialValidationData = FacialValidationData
-                .builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .probabilityOfMatching(faceApiResponse.getConfidence())
-                .build();
-        if (Boolean.TRUE.equals(faceApiResponse.getIsIdentical())) {
-            this.facialValidationDataRepository.save(facialValidationData);
-        }
-
-        return faceApiResponse;
-    }
-
-    /**
-     * Checks if the students is present in the facial database.
-     *
-     * @param firstName The first name of the student.
-     * @param lastName The last name of the student.
-     * @return An optional facial validation data.
-     */
-    private Optional<FacialValidationData> isStudentPresentInFacialDatabase(
-            final String firstName,
-            final String lastName
-    ) {
-        return this.facialValidationDataRepository
-                .findFacialValidationDataByFirstNameAndLastName(
-                        firstName,
-                        lastName
-                );
-    }
-
-    /**
-     * Deletes the facial data by first- and last name.
-     *
-     * @param firstName the first name of the student.
-     * @param lastName the last name of the student.
-     */
-    @Override
-    public void deleteFacialDataByFirstNameAndLastName(
-            final String firstName,
-            final String lastName
-    ) {
-        Optional<FacialValidationData> optionalFacialValidationData
-                = this.facialValidationDataRepository
-                    .findFacialValidationDataByFirstNameAndLastName(
-                        firstName,
-                        lastName
-                );
-        if (optionalFacialValidationData.isEmpty()) {
-            String message = String.format(
-                    "Facial validation data for '%s %s' not found!",
-                    firstName,
-                    lastName
-            );
-            throw new FaceValidationDataNotFoundException(message);
-        }
-        this.facialValidationDataRepository
-                .delete(optionalFacialValidationData.get());
-    }
-
-    /**
-     * Returns all the facial validation data.
-     *
-     * @return all the facial validation data.
-     */
-    @Override
-    public List<FacialValidationData> fetchAllValidationData() {
-        return this.facialValidationDataRepository.findAll();
-    }
-
-    /**
-     * Deletes the facial validation data by ID.
-     *
-     * @param id the ID of the facial validation data.
-     */
-    @Override
-    public void deleteFacialValidationData(final Long id) {
-        Optional<FacialValidationData> facialValidationDataOptional =
-                this.facialValidationDataRepository.findById(id);
-        if (facialValidationDataOptional.isPresent()) {
-            this.facialValidationDataRepository.deleteById(id);
-            return;
-        }
-        String message = String.format(
-                "Facial validation data with ID %d not found!",
-                id
-        );
-        throw new FaceValidationDataNotFoundException(message);
+        return this.compareFaces(passport, selfiePhoto);
     }
 }
