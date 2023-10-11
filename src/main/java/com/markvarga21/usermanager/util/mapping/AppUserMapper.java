@@ -5,6 +5,7 @@ import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.entity.AppUser;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**

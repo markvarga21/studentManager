@@ -3,7 +3,7 @@ package com.markvarga21.usermanager.controller;
 
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.dto.PassportValidationResponse;
-import com.markvarga21.usermanager.service.azure.FormRecognizerService;
+import com.markvarga21.usermanager.service.form.FormRecognizerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

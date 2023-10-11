@@ -1,4 +1,4 @@
-package com.markvarga21.usermanager.service.azure;
+package com.markvarga21.usermanager.service.form;
 
 import com.azure.ai.formrecognizer.documentanalysis.models.DocumentField;
 import com.markvarga21.usermanager.dto.AppUserDto;

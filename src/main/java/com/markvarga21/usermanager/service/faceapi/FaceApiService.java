@@ -1,6 +1,7 @@
 package com.markvarga21.usermanager.service.faceapi;
 
-import com.markvarga21.usermanager.entity.FacialValidationData;
+import com.markvarga21.usermanager.dto.FaceApiResponse;
+import com.markvarga21.usermanager.dto.FacialValidationData;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -48,4 +49,11 @@ public interface FaceApiService {
      * @param id the ID of the facial validation data.
      */
     void deleteFacialValidationData(Long id);
+
+    /**
+     * Returns the face ID for the given file.
+     * @param file the file to get the face ID for.
+     * @return the face ID for the given file.
+     */
+    String getFaceIdForFile(MultipartFile file);
 }

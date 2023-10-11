@@ -1,4 +1,4 @@
-package com.markvarga21.usermanager.entity;
+package com.markvarga21.usermanager.dto;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,6 +1,5 @@
 package com.markvarga21.usermanager.service.impl;
 
-import com.google.gson.Gson;
 import com.markvarga21.usermanager.dto.AppUserDto;
 import com.markvarga21.usermanager.entity.AppUser;
 import com.markvarga21.usermanager.exception.InvalidUserException;
@@ -8,13 +7,12 @@ import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.UserNotFoundException;
 import com.markvarga21.usermanager.repository.AppUserRepository;
 import com.markvarga21.usermanager.service.AppUserService;
-import com.markvarga21.usermanager.service.azure.FormRecognizerService;
+import com.markvarga21.usermanager.service.form.FormRecognizerService;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;

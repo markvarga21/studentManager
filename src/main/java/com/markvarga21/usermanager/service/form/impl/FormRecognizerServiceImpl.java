@@ -1,4 +1,4 @@
-package com.markvarga21.usermanager.service.azure.impl;
+package com.markvarga21.usermanager.service.form.impl;
 
 import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClient;
 import com.azure.ai.formrecognizer.documentanalysis.models.AnalyzeResult;
@@ -12,7 +12,7 @@ import com.markvarga21.usermanager.entity.Gender;
 import com.markvarga21.usermanager.entity.PassportValidationData;
 import com.markvarga21.usermanager.exception.InvalidIdDocumentException;
 import com.markvarga21.usermanager.repository.PassportValidationDataRepository;
-import com.markvarga21.usermanager.service.azure.FormRecognizerService;
+import com.markvarga21.usermanager.service.form.FormRecognizerService;
 import com.markvarga21.usermanager.util.CountryNameFetcher;
 import com.markvarga21.usermanager.util.PassportDateFormatter;
 import com.markvarga21.usermanager.util.mapping.AppUserMapper;
@@ -27,7 +27,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * A service which is used to verify the data entered by the user

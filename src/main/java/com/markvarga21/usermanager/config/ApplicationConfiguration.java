@@ -22,14 +22,21 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class ApplicationConfiguration {
     /**
+     * The header name used by Azure's Face API
+     * for using its services.
+     */
+    public static final String AZURE_API_KEY_HEADER
+            = "Ocp-Apim-Subscription-Key";
+
+    /**
      * The Azure's Form Recognizer service key.
      */
-    @Value("${form.recognizer.key}")
+    @Value("${knopp.services.key}")
     private String formRecognizerKey;
     /**
      * The Face API URL and endpoint.
      */
-    @Value("${form.recognizer.endpoint}")
+    @Value("${knopp.services.endpoint}")
     private String formRecognizerEndpoint;
     /**
      * A custom {@code LocalDate} deserializer.
@@ -38,7 +45,7 @@ public class ApplicationConfiguration {
     /**
      * A method used to create a model mapper bean which
      * then can be used anywhere in the application.
-     * 
+     *
      * @return a {@code ModelMapper} instance.
      */
     @Bean
@@ -48,7 +55,7 @@ public class ApplicationConfiguration {
 
     /**
      * A bean for setting up the ID document analysis.
-     * 
+     *
      * @return the already sat up {@code DocumentAnalysisClient}.
      */
     @Bean
@@ -61,11 +68,11 @@ public class ApplicationConfiguration {
 
     /**
      * A bean created for deserializing user JSON strings into POJO.
-     * 
+     *
      * @return the built {@code Gson} object.
      */
     @Bean
-    public Gson getGsonDeserializer() {
+    public Gson getGsonLocalDateDeserializer() {
         return new GsonBuilder()
                 .registerTypeAdapter(
                         LocalDate.class,
@@ -76,7 +83,7 @@ public class ApplicationConfiguration {
 
     /**
      * A bean created for talking with the Face API.
-     * 
+     *
      * @return the created bean.
      */
     @Bean

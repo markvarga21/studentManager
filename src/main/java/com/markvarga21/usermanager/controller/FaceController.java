@@ -1,13 +1,20 @@
 package com.markvarga21.usermanager.controller;
 
-import com.markvarga21.usermanager.entity.FacialValidationData;
-import com.markvarga21.usermanager.service.faceapi.FaceApiResponse;
+import com.markvarga21.usermanager.dto.FacialValidationData;
+import com.markvarga21.usermanager.dto.FaceApiResponse;
 import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.JpaRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -19,6 +26,7 @@ import java.util.List;
 @RequestMapping("/api/v1/faces")
 @RequiredArgsConstructor
 @CrossOrigin
+@Slf4j
 public class FaceController {
     /**
      * Face service.
@@ -48,6 +56,14 @@ public class FaceController {
                 );
 
         return new ResponseEntity<>(faceApiResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/validateSingleFace")
+    public String getFaceId(
+            @RequestParam("photo") final MultipartFile photo
+    ) {
+        log.info("getFaceId() called");
+        return this.faceApiService.getFaceIdForFile(photo);
     }
 
     /**
