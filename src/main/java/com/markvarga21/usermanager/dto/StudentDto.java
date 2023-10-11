@@ -2,7 +2,10 @@ package com.markvarga21.usermanager.dto;
 
 import com.markvarga21.usermanager.entity.Gender;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +14,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
- * Represents a user data transfer object in the application.
+ * Represents a student data transfer object in the application.
  */
 @Data
 @AllArgsConstructor
@@ -19,63 +22,63 @@ import java.time.LocalDate;
 @Builder
 public class StudentDto {
     /**
-     * A unique identifier for the user.
+     * A unique identifier for the student.
      */
     private Long id;
 
     /**
-     * The first name of the user.
+     * The first name of the student.
      */
     @NotBlank(message = "First name cannot be null or empty!")
     private String firstName;
 
     /**
-     * The last name of the user.
+     * The last name of the student.
      */
     @NotBlank(message = "Last name cannot be null or empty!")
     private String lastName;
 
     /**
-     * The birthdate name of the user.
+     * The birthdate name of the student.
      */
     @NotNull(message = "Date of birth cannot be null!")
     @PastOrPresent
     private LocalDate birthDate;
 
     /**
-     * The birthplace of the user.
+     * The birthplace of the student.
      */
     @Valid
     @NotNull(message = "Place of birth cannot be null!")
     private String placeOfBirth;
 
     /**
-     * The nationality of the user.
+     * The nationality of the student.
      */
     @NotBlank(message = "Nationality cannot be null or empty!")
     private String countryOfCitizenship;
 
     /**
-     * The user's gender.
+     * The student's gender.
      */
     @NotNull(message = "Gender cannot be null!")
     private Gender gender;
 
     /**
-     * The user's passport number.
+     * The student's passport number.
      */
     @NotBlank(message = "Passport number cannot be empty!")
     private String passportNumber;
 
     /**
-     * The user's passports expiry date.
+     * The student's passports expiry date.
      */
     @NotNull(message = "Passport date of expiry cannot be null!")
     @FutureOrPresent
     private LocalDate passportDateOfExpiry;
 
     /**
-     * The user's passports issue date.
+     * The student's passports issue date.
      */
     @NotNull(message = "Passport date of issue cannot be null!")
     @PastOrPresent

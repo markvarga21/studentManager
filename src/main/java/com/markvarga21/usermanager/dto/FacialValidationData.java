@@ -26,12 +26,12 @@ public class FacialValidationData {
     private Long id;
 
     /**
-     * The first name of the user.
+     * The first name of the student.
      */
     private String firstName;
 
     /**
-     * The last name of the user.
+     * The last name of the student.
      */
     private String lastName;
 
