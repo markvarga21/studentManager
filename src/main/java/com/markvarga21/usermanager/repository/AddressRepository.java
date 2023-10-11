@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * The repository holding the users addresses.
+ * The repository holding the students addresses.
  */
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long> {

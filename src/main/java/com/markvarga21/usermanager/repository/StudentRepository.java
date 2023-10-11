@@ -7,19 +7,19 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
- * The repository holding the applications users.
+ * The repository holding the student in the application.
  */
 @Repository
-public interface AppUserRepository extends JpaRepository<Student, Long> {
+public interface StudentRepository extends JpaRepository<Student, Long> {
     /**
-     * A method which is used to verify whether a user already exists
+     * A method which is used to verify whether a student already exists
      * in the database with the same first name and last name or not.
      *
-     * @param firstName the first name of the user.
-     * @param lastName the last name of the user.
-     * @return an optional {@code AppUser} object.
+     * @param firstName The first name of the student.
+     * @param lastName The last name of the student.
+     * @return An optional {@code Student} object.
      */
-    Optional<Student> findAppUserByFirstNameAndLastName(
+    Optional<Student> findStudentByFirstNameAndLastName(
             String firstName,
             String lastName
     );

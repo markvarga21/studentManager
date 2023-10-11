@@ -5,7 +5,7 @@ import com.markvarga21.usermanager.entity.Student;
 import com.markvarga21.usermanager.exception.InvalidUserException;
 import com.markvarga21.usermanager.exception.OperationType;
 import com.markvarga21.usermanager.exception.StudentNotFoundException;
-import com.markvarga21.usermanager.repository.AppUserRepository;
+import com.markvarga21.usermanager.repository.StudentRepository;
 import com.markvarga21.usermanager.service.AppUserService;
 import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import com.markvarga21.usermanager.service.form.FormRecognizerService;
@@ -29,7 +29,7 @@ public class AppUserServiceImpl implements AppUserService {
     /**
      * Repository for app users.
      */
-    private final AppUserRepository userRepository;
+    private final StudentRepository userRepository;
 
     /**
      * A user mapper.
@@ -108,7 +108,7 @@ public class AppUserServiceImpl implements AppUserService {
             final String lastName
     ) {
         Optional<Student> appUser = this.userRepository
-                .findAppUserByFirstNameAndLastName(firstName, lastName);
+                .findStudentByFirstNameAndLastName(firstName, lastName);
         return appUser.isEmpty();
     }
 

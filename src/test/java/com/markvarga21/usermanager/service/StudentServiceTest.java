@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.markvarga21.usermanager.dto.StudentDto;
 import com.markvarga21.usermanager.entity.Student;
 import com.markvarga21.usermanager.exception.StudentNotFoundException;
-import com.markvarga21.usermanager.repository.AppUserRepository;
+import com.markvarga21.usermanager.repository.StudentRepository;
 import com.markvarga21.usermanager.service.form.FormRecognizerService;
 import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import com.markvarga21.usermanager.service.impl.AppUserServiceImpl;
@@ -46,7 +46,7 @@ class StudentServiceTest {
      * The app user repository.
      */
     @Mock
-    private AppUserRepository appUserRepository;
+    private StudentRepository studentRepository;
     /**
      * The app user mapper.
      */
@@ -77,7 +77,7 @@ class StudentServiceTest {
         List<StudentDto> expected = List.of(studentDto);
 
         // When
-        when(this.appUserRepository.findAll())
+        when(this.studentRepository.findAll())
                 .thenReturn(List.of(student));
         when(this.appUserMapper.mapAppUserEntityToDto(any()))
                 .thenReturn(studentDto);
@@ -109,7 +109,7 @@ class StudentServiceTest {
         doNothing()
                 .when(this.faceApiService)
                 .facesAreMatching(any(), any());
-        when(this.appUserRepository.save(student))
+        when(this.studentRepository.save(student))
                 .thenReturn(student);
 //        AppUserDto actual = this.appUserService
 //                .createUser(idDocument, selfiePhoto, userJson);
@@ -132,8 +132,8 @@ class StudentServiceTest {
         // When
         when(this.gson.fromJson(userJson, StudentDto.class))
                 .thenReturn(studentDto);
-        when(this.appUserRepository
-                .findAppUserByFirstNameAndLastName(firstName, lastName))
+        when(this.studentRepository
+                .findStudentByFirstNameAndLastName(firstName, lastName))
                 .thenReturn(Optional.of(student));
 
         // Then
@@ -151,8 +151,8 @@ class StudentServiceTest {
         boolean expected = false;
 
         // When
-        when(this.appUserRepository
-                .findAppUserByFirstNameAndLastName(firstName, lastName))
+        when(this.studentRepository
+                .findStudentByFirstNameAndLastName(firstName, lastName))
                 .thenReturn(Optional.of(getStaticAppUser()));
         boolean actual = this.appUserService.validNames(firstName, lastName);
 
@@ -168,7 +168,7 @@ class StudentServiceTest {
         boolean expected = true;
 
         // When
-        when(this.appUserRepository.findAppUserByFirstNameAndLastName(
+        when(this.studentRepository.findStudentByFirstNameAndLastName(
                 firstName, lastName
         ))
                 .thenReturn(Optional.empty());
@@ -186,7 +186,7 @@ class StudentServiceTest {
         Long id = student.getId();
 
         // When
-        when(this.appUserRepository.findById(id))
+        when(this.studentRepository.findById(id))
                 .thenReturn(Optional.of(student));
         when(this.appUserMapper.mapAppUserEntityToDto(student))
                 .thenReturn(studentDto);
@@ -203,7 +203,7 @@ class StudentServiceTest {
         Long id = student.getId();
 
         // When
-        when(this.appUserRepository.findById(id)).thenReturn(Optional.empty());
+        when(this.studentRepository.findById(id)).thenReturn(Optional.empty());
 
         // Then
         assertThrows(StudentNotFoundException.class,
@@ -223,7 +223,7 @@ class StudentServiceTest {
         String userJson = MOCK_USER_JSON;
 
         // When
-        when(this.appUserRepository.findById(id))
+        when(this.studentRepository.findById(id))
                 .thenReturn(Optional.of(student));
         when(this.gson.fromJson(userJson, StudentDto.class))
                 .thenReturn(expected);
@@ -237,7 +237,7 @@ class StudentServiceTest {
 //                expected.getPlaceOfBirth())
 //        )
 //                .thenReturn(birthAddress);
-        when(this.appUserRepository.save(student))
+        when(this.studentRepository.save(student))
                 .thenReturn(student);
         when(this.appUserMapper.mapAppUserEntityToDto(student))
                 .thenReturn(expected);
@@ -257,7 +257,7 @@ class StudentServiceTest {
         MultipartFile selfiePhoto = getFileForName("huFace.png");
 
         // When
-        when(this.appUserRepository.findById(id)).thenReturn(Optional.empty());
+        when(this.studentRepository.findById(id)).thenReturn(Optional.empty());
 
         // Then
 //        assertThrows(UserNotFoundException.class,
@@ -278,12 +278,12 @@ class StudentServiceTest {
         Long id = student.getId();
 
         // When
-        when(this.appUserRepository.findById(id))
+        when(this.studentRepository.findById(id))
                 .thenReturn(Optional.of(student));
         when(this.appUserMapper.mapAppUserEntityToDto(student))
                 .thenReturn(expected);
         doNothing()
-                .when(this.appUserRepository)
+                .when(this.studentRepository)
                 .deleteById(id);
         StudentDto actual = this.appUserService.deleteUserById(id);
 
@@ -298,7 +298,7 @@ class StudentServiceTest {
         Long id = student.getId();
 
         // When
-        when(this.appUserRepository.findById(id)).thenReturn(Optional.empty());
+        when(this.studentRepository.findById(id)).thenReturn(Optional.empty());
 
         // Then
         assertThrows(StudentNotFoundException.class,

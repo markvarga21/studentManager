@@ -13,12 +13,12 @@ import java.util.Optional;
 public interface FacialValidationDataRepository
         extends JpaRepository<FacialValidationData, Long> {
     /**
-     * Method signature for verifying if user is present
+     * Method signature for verifying if student is present
      * in the database.
      *
-     * @param firstName the first name of the user.
-     * @param lastName the last name of the user.
-     * @return the facial validation data.
+     * @param firstName The first name of the student.
+     * @param lastName The last name of the student.
+     * @return The facial validation data.
      */
     Optional<FacialValidationData> findFacialValidationDataByFirstNameAndLastName(
             String firstName,
