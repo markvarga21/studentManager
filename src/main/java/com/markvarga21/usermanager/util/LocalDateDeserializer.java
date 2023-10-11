@@ -20,11 +20,11 @@ public class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
     /**
      * Deserializes the {@code String} into a {@code LocalDate}.
      *
-     * @param json the JSON content.
-     * @param typeOfT the type.
-     * @param context the context.
-     * @return the deserialized {@code LocalDate}.
-     * @throws JsonParseException when the format is invalid.
+     * @param json The JSON content.
+     * @param typeOfT The type.
+     * @param context The context.
+     * @return The deserialized {@code LocalDate}.
+     * @throws JsonParseException When the format is invalid.
      */
     @Override
     public LocalDate deserialize(

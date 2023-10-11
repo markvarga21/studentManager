@@ -28,8 +28,8 @@ public class CountryNameFetcher {
     /**
      * Retrieves the name of the country for the given country code.
      *
-     * @param countryCode the country code.
-     * @return the name of the country.
+     * @param countryCode The country code.
+     * @return The name of the country.
      */
     public String getCountryNameForCode(final String countryCode) {
         String queryPart = String.format("/%s?fields=name", countryCode);

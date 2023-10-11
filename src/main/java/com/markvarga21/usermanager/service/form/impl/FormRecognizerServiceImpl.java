@@ -15,7 +15,7 @@ import com.markvarga21.usermanager.repository.PassportValidationDataRepository;
 import com.markvarga21.usermanager.service.form.FormRecognizerService;
 import com.markvarga21.usermanager.util.CountryNameFetcher;
 import com.markvarga21.usermanager.util.PassportDateFormatter;
-import com.markvarga21.usermanager.util.mapping.AppUserMapper;
+import com.markvarga21.usermanager.util.mapping.StudentMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -60,7 +60,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     /**
      * A student mapper.
      */
-    private final AppUserMapper userMapper;
+    private final StudentMapper userMapper;
 
     /**
      * A repository which is used to store the data extracted

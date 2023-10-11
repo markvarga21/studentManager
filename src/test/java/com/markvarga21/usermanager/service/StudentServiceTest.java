@@ -8,7 +8,7 @@ import com.markvarga21.usermanager.repository.StudentRepository;
 import com.markvarga21.usermanager.service.form.FormRecognizerService;
 import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import com.markvarga21.usermanager.service.impl.AppUserServiceImpl;
-import com.markvarga21.usermanager.util.mapping.AppUserMapper;
+import com.markvarga21.usermanager.util.mapping.StudentMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,7 +51,7 @@ class StudentServiceTest {
      * The app user mapper.
      */
     @Mock
-    private AppUserMapper appUserMapper;
+    private StudentMapper studentMapper;
 
     /**
      * The form recognizer service.
@@ -79,7 +79,7 @@ class StudentServiceTest {
         // When
         when(this.studentRepository.findAll())
                 .thenReturn(List.of(student));
-        when(this.appUserMapper.mapAppUserEntityToDto(any()))
+        when(this.studentMapper.mapStudentEntityToDto(any()))
                 .thenReturn(studentDto);
         List<StudentDto> actual = this.appUserService.getAllStudents();
 
@@ -99,9 +99,9 @@ class StudentServiceTest {
         // When
         when(this.gson.fromJson(userJson, StudentDto.class))
                 .thenReturn(studentDto);
-        when(this.appUserMapper.mapAppUserDtoToEntity(studentDto))
+        when(this.studentMapper.mapStudentDtoToEntity(studentDto))
                 .thenReturn(student);
-        when(this.appUserMapper.mapAppUserEntityToDto(student))
+        when(this.studentMapper.mapStudentEntityToDto(student))
                 .thenReturn(studentDto);
 //        doNothing()
 //                .when(this.formRecognizerService)
@@ -188,7 +188,7 @@ class StudentServiceTest {
         // When
         when(this.studentRepository.findById(id))
                 .thenReturn(Optional.of(student));
-        when(this.appUserMapper.mapAppUserEntityToDto(student))
+        when(this.studentMapper.mapStudentEntityToDto(student))
                 .thenReturn(studentDto);
         StudentDto actual = this.appUserService.getStudentById(id);
 
@@ -239,7 +239,7 @@ class StudentServiceTest {
 //                .thenReturn(birthAddress);
         when(this.studentRepository.save(student))
                 .thenReturn(student);
-        when(this.appUserMapper.mapAppUserEntityToDto(student))
+        when(this.studentMapper.mapStudentEntityToDto(student))
                 .thenReturn(expected);
 //        AppUserDto actual = this.appUserService
 //                .modifyUserById(idDocument, selfiePhoto, userJson, id);
@@ -280,7 +280,7 @@ class StudentServiceTest {
         // When
         when(this.studentRepository.findById(id))
                 .thenReturn(Optional.of(student));
-        when(this.appUserMapper.mapAppUserEntityToDto(student))
+        when(this.studentMapper.mapStudentEntityToDto(student))
                 .thenReturn(expected);
         doNothing()
                 .when(this.studentRepository)

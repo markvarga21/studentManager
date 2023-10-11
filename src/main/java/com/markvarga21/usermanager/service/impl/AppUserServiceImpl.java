@@ -9,7 +9,7 @@ import com.markvarga21.usermanager.repository.StudentRepository;
 import com.markvarga21.usermanager.service.AppUserService;
 import com.markvarga21.usermanager.service.faceapi.FaceApiService;
 import com.markvarga21.usermanager.service.form.FormRecognizerService;
-import com.markvarga21.usermanager.util.mapping.AppUserMapper;
+import com.markvarga21.usermanager.util.mapping.StudentMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class AppUserServiceImpl implements AppUserService {
     /**
      * A student mapper.
      */
-    private final AppUserMapper userMapper;
+    private final StudentMapper userMapper;
 
     /**
      * A Form Recognizer service.
@@ -57,7 +57,7 @@ public class AppUserServiceImpl implements AppUserService {
         List<StudentDto> studentDtoList = studentRepository
                 .findAll()
                 .stream()
-                .map(this.userMapper::mapAppUserEntityToDto)
+                .map(this.userMapper::mapStudentEntityToDto)
                 .toList();
         log.info(String.format("Listing %d students.", studentDtoList.size()));
 
@@ -87,11 +87,11 @@ public class AppUserServiceImpl implements AppUserService {
             throw new InvalidUserException(message);
         }
 
-        Student userToSave = this.userMapper.mapAppUserDtoToEntity(studentDto);
+        Student userToSave = this.userMapper.mapStudentDtoToEntity(studentDto);
         this.studentRepository.save(userToSave);
 
         StudentDto studentDtoToSave = this.userMapper
-                .mapAppUserEntityToDto(userToSave);
+                .mapStudentEntityToDto(userToSave);
         log.info(String.format("Saving student: %s", studentDtoToSave));
 
         return studentDtoToSave;
@@ -134,7 +134,7 @@ public class AppUserServiceImpl implements AppUserService {
         }
         log.info(String.format("Student with id %d retrieved successfully!", id));
 
-        return this.userMapper.mapAppUserEntityToDto(studentOptional.get());
+        return this.userMapper.mapStudentEntityToDto(studentOptional.get());
     }
 
     /**
@@ -174,7 +174,7 @@ public class AppUserServiceImpl implements AppUserService {
         log.info(String.format(
                 "Student with id %d modified successfully!", studentId)
         );
-        return this.userMapper.mapAppUserEntityToDto(updatedUser);
+        return this.userMapper.mapStudentEntityToDto(updatedUser);
     }
 
     /**
@@ -196,7 +196,7 @@ public class AppUserServiceImpl implements AppUserService {
             throw new StudentNotFoundException(message, OperationType.DELETE);
         }
         StudentDto deletedStudent = this.userMapper
-                .mapAppUserEntityToDto(studentOptional.get());
+                .mapStudentEntityToDto(studentOptional.get());
         this.studentRepository.deleteById(id);
         this.formRecognizerService.deletePassportValidationByPassportNumber(
                 deletedStudent.getPassportNumber()
