@@ -18,10 +18,10 @@ import java.util.List;
  * validation (face and form) data.
  */
 @RestController
-@RequestMapping("/api/v1/validations")
+@RequestMapping("/api/v1/passports/validations")
 @RequiredArgsConstructor
 @CrossOrigin
-public class ValidationController {
+public class PassportValidationController {
     /**
      * A service which is used to access passport
      * validation data.
@@ -33,7 +33,7 @@ public class ValidationController {
      *
      * @return All the passport validation data.
      */
-    @GetMapping("/passport")
+    @GetMapping
     public List<PassportValidationData> getAllPassportValidationData() {
         return this.passportValidationService
                 .getAllPassportValidationData();
@@ -44,7 +44,7 @@ public class ValidationController {
      *
      * @param id The ID of the passport validation data.
      */
-    @DeleteMapping("/passport/{id}")
+    @DeleteMapping("/{id}")
     public void deletePassportValidationData(
             @PathVariable("id") final Long id
     ) {
