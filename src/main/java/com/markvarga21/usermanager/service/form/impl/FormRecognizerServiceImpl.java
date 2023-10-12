@@ -160,17 +160,37 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             final MultipartFile passport,
             final String studentJson
     ) {
-        StudentDto userDataFromUser = this
+        StudentDto studentDataFromUser = this
                 .userMapper.mapJsonToDto(studentJson);
-        if (this.isStudentPresentInValidationDatabase(userDataFromUser)) {
+
+        if (this.isStudentPresentInValidationDatabase(studentDataFromUser)) {
             log.info("Student is present in the validation database.");
             return PassportValidationResponse.builder()
                     .isValid(true)
                     .build();
         } else {
+            String lowercaseFirstName = studentDataFromUser
+                    .getFirstName()
+                    .toLowerCase();
+            String lowercaseLastName = studentDataFromUser
+                    .getLastName()
+                    .toLowerCase();
+            studentDataFromUser.setFirstName(lowercaseFirstName);
+            studentDataFromUser.setLastName(lowercaseLastName);
+
             StudentDto userDataFromPassport = this
                     .extractDataFromPassport(passport);
-            if (userDataFromPassport.equals(userDataFromUser)) {
+
+            String lowercasePassportFirstName = userDataFromPassport
+                    .getFirstName()
+                    .toLowerCase();
+            String lowercasePassportLastName = userDataFromPassport
+                    .getLastName()
+                    .toLowerCase();
+            userDataFromPassport.setFirstName(lowercasePassportFirstName);
+            userDataFromPassport.setLastName(lowercasePassportLastName);
+
+            if (userDataFromPassport.equals(studentDataFromUser)) {
                 PassportValidationData passportValidationData =
                         PassportValidationData.builder()
                                 .firstName(userDataFromPassport.getFirstName())
@@ -214,9 +234,9 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         return !passportValidations.stream()
                 .filter(passportValidationData ->
                     passportValidationData.getFirstName()
-                            .equals(studentDto.getFirstName())
+                            .equalsIgnoreCase(studentDto.getFirstName())
                             && passportValidationData.getLastName()
-                            .equals(studentDto.getLastName())
+                            .equalsIgnoreCase(studentDto.getLastName())
                             && passportValidationData.getBirthDate()
                             .equals(studentDto.getBirthDate())
                             && passportValidationData.getPlaceOfBirth()
