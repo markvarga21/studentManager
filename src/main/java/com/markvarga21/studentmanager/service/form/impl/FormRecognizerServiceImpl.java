@@ -14,6 +14,7 @@ import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.util.CountryNameFetcher;
+import com.markvarga21.studentmanager.util.ImageCompressor;
 import com.markvarga21.studentmanager.util.PassportDateFormatter;
 import com.markvarga21.studentmanager.util.mapping.StudentMapper;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +70,11 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     private final PassportValidationDataRepository validationRepository;
 
     /**
+     * A util class for compressing images.
+     */
+    private final ImageCompressor imageCompressor;
+
+    /**
      * Extracts all the fields from the uploaded passport.
      *
      * @param passport The uploaded passport.
@@ -78,23 +84,24 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     public Map<String, DocumentField> getFieldsFromDocument(
             final MultipartFile passport
     ) {
-        try {
-            BinaryData binaryData = BinaryData.fromBytes(passport.getBytes());
-            String modelId = "prebuilt-idDocument";
-            SyncPoller<OperationResult, AnalyzeResult> analyzeDocumentPoller =
-                    this.documentAnalysisClient.beginAnalyzeDocument(
-                            modelId, binaryData
-                    );
+        byte[] compressedPassport = this.imageCompressor
+                .compressImage(passport);
+        BinaryData binaryData = BinaryData.fromBytes(compressedPassport);
+        String modelId = "prebuilt-idDocument";
+        SyncPoller<OperationResult, AnalyzeResult> analyzeDocumentPoller =
+                this.documentAnalysisClient.beginAnalyzeDocument(
+                        modelId, binaryData
+                );
 
-            AnalyzeResult analyzeResult =
-                    analyzeDocumentPoller.getFinalResult();
-            var documentResult = analyzeResult.getDocuments().get(0);
-            return documentResult.getFields();
-        } catch (IOException e) {
-            String message = "Passport not found!";
-            log.error(message);
-            throw new InvalidPassportException(message);
+        AnalyzeResult analyzeResult =
+                analyzeDocumentPoller.getFinalResult();
+        var documentResult = analyzeResult.getDocuments();
+        if (documentResult == null) {
+            throw new InvalidPassportException(
+                    "Invalid passport!"
+            );
         }
+        return documentResult.get(0).getFields();
     }
 
     /**
