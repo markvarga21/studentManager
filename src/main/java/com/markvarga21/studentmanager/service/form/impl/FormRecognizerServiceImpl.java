@@ -167,6 +167,34 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     }
 
     /**
+     * Compares the data entered by the user against the data.
+     * It is used due to the inconsistencies (upper- or lower cases)
+     * of the names.
+     *
+     * @param student1 The first student.
+     * @param student2 The second student.
+     * @return {@code true} if the students are equal, {@code false} otherwise.
+     */
+    private boolean studentsAreEqual(
+            final StudentDto student1,
+            final StudentDto student2
+    ) {
+        StudentDto student1Clone = student1.clone();
+        StudentDto student2Clone = student2.clone();
+        student1Clone
+                .setFirstName(student1.getFirstName().toLowerCase());
+        student1Clone
+                .setLastName(student1.getLastName().toLowerCase());
+
+        student2Clone
+                .setFirstName(student2.getFirstName().toLowerCase());
+        student2Clone
+                .setLastName(student2.getLastName().toLowerCase());
+
+        return student1Clone.equals(student2Clone);
+    }
+
+    /**
      * Validates the data entered by the user against the data
      * which can be found on the passport.
      *
@@ -188,28 +216,17 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                     .isValid(true)
                     .build();
         } else {
-            String lowercaseFirstName = studentDataFromUser
-                    .getFirstName()
-                    .toLowerCase();
-            String lowercaseLastName = studentDataFromUser
-                    .getLastName()
-                    .toLowerCase();
-            studentDataFromUser.setFirstName(lowercaseFirstName);
-            studentDataFromUser.setLastName(lowercaseLastName);
+            String firstName = studentDataFromUser
+                    .getFirstName();
+            String lastName = studentDataFromUser
+                    .getLastName();
+            studentDataFromUser.setFirstName(firstName);
+            studentDataFromUser.setLastName(lastName);
 
             StudentDto userDataFromPassport = this
                     .extractDataFromPassport(passport);
 
-            String lowercasePassportFirstName = userDataFromPassport
-                    .getFirstName()
-                    .toLowerCase();
-            String lowercasePassportLastName = userDataFromPassport
-                    .getLastName()
-                    .toLowerCase();
-            userDataFromPassport.setFirstName(lowercasePassportFirstName);
-            userDataFromPassport.setLastName(lowercasePassportLastName);
-
-            if (userDataFromPassport.equals(studentDataFromUser)) {
+            if (studentsAreEqual(userDataFromPassport, studentDataFromUser)) {
                 PassportValidationData passportValidationData =
                         PassportValidationData.builder()
                                 .firstName(userDataFromPassport.getFirstName())

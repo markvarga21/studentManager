@@ -83,4 +83,24 @@ public class StudentDto {
     @NotNull(message = "Passport date of issue cannot be null!")
     @PastOrPresent
     private LocalDate passportDateOfIssue;
+
+    /**
+     * Clone a student.
+     *
+     * @return A clone of the student.
+     */
+    public StudentDto clone() {
+        return StudentDto.builder()
+                .id(this.id)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .birthDate(this.birthDate)
+                .placeOfBirth(this.placeOfBirth)
+                .countryOfCitizenship(this.countryOfCitizenship)
+                .gender(this.gender)
+                .passportNumber(this.passportNumber)
+                .passportDateOfIssue(this.passportDateOfIssue)
+                .passportDateOfExpiry(this.passportDateOfExpiry)
+                .build();
+    }
 }
