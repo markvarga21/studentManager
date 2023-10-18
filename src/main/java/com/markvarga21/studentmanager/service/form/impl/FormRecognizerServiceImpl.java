@@ -41,7 +41,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     /**
      * The default address if the address field is empty.
      */
-    public static final String EMPTY_ADDRESS = "Not known";
+    public static final String EMPTY_FIELD_VALUE = "";
     /**
      * A client which is used to analyze documents.
      */
@@ -107,30 +107,30 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     public StudentDto extractDataFromPassport(final MultipartFile passport) {
         Map<String, DocumentField> passportFields = this
                 .getFieldsFromDocument(passport);
-        String firstName = passportFields.get("FirstName").getContent();
-        String lastName = passportFields.get("LastName").getContent();
-        String birthdateField = passportFields
-                .get("DateOfBirth")
-                .getContent();
+        String firstName = this
+                .getFieldValue(passportFields, "FirstName");
+        String lastName = this
+                .getFieldValue(passportFields, "LastName");
+        String birthdateField = this
+                .getFieldValue(passportFields, "DateOfBirth");
         LocalDate birthDate = this.passportDateFormatter.format(birthdateField);
-        String address = passportFields.get("Address") == null
-                ? EMPTY_ADDRESS
-                : passportFields.get("Address").getContent();
-        String countryCode = passportFields.get("CountryRegion")
-                .getContent();
+        String address = this
+                .getFieldValue(passportFields, "Address");
+        String countryCode = this
+                .getFieldValue(passportFields, "CountryRegion");
         String countryOfCitizenship = this.countryNameFetcher
                 .getCountryNameForCode(countryCode);
-        Gender gender = passportFields.get("Sex").getContent().equals("M")
+        Gender gender = this.getFieldValue(passportFields, "Sex").equals("M")
                 ? Gender.MALE
                 : Gender.FEMALE;
-        String passportNumber = passportFields.get("DocumentNumber")
-                .getContent();
-        String dateOfExpiryField = passportFields.get("DateOfExpiration")
-                .getContent();
+        String passportNumber = this
+                .getFieldValue(passportFields, "DocumentNumber");
+        String dateOfExpiryField = this
+                .getFieldValue(passportFields, "DateOfExpiration");
         LocalDate dateOfExpiry = this.passportDateFormatter
                 .format(dateOfExpiryField);
-        String dateOfIssueField = passportFields.get("DateOfIssue")
-                .getContent();
+        String dateOfIssueField = this
+                .getFieldValue(passportFields, "DateOfIssue");
         LocalDate dateOfIssue = this.passportDateFormatter
                 .format(dateOfIssueField);
 
@@ -145,6 +145,25 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                 .passportDateOfExpiry(dateOfExpiry)
                 .passportDateOfIssue(dateOfIssue)
                 .build();
+    }
+
+    /**
+     * Extracts a field from a document map.
+     *
+     * @param fields The fields {@code Map}.
+     * @param fieldName The name of the field.
+     * @return The extracted field in a {@code String}.
+     */
+    private String getFieldValue(
+            final Map<String, DocumentField> fields,
+            final String fieldName
+    ) {
+        DocumentField value = fields
+                .get(fieldName);
+        if (value == null) {
+            return EMPTY_FIELD_VALUE;
+        }
+        return value.getContent();
     }
 
     /**

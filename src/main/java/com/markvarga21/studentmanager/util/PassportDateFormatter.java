@@ -34,13 +34,11 @@ public class PassportDateFormatter {
         );
 
         try {
-            LocalDate date = formatter
+            return formatter
                     .parse(formattedDate)
                     .toInstant()
                     .atZone(java.time.ZoneId.systemDefault())
                     .toLocalDate();
-            log.info("Date is {}", date);
-            return date;
         } catch (Exception e) {
             log.error("Invalid date format: {}", formattedDate);
             throw new InvalidDateFormatException(formattedDate);

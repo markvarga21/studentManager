@@ -10,8 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class UserManagerApplication {
 	/**
 	 * The entrypoint of the application.
+	 *
+	 * @param args The arguments passed to the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		SpringApplication.run(UserManagerApplication.class, args);
 	}
 
