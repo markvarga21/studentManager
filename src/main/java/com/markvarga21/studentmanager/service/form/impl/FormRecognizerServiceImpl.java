@@ -39,7 +39,7 @@ import java.util.Map;
 @Validated
 public class FormRecognizerServiceImpl implements FormRecognizerService {
     /**
-     * The default address if the address field is empty.
+     * The default value if the field is empty.
      */
     public static final String EMPTY_FIELD_VALUE = "";
     /**
@@ -114,8 +114,8 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         String birthdateField = this
                 .getFieldValue(passportFields, "DateOfBirth");
         LocalDate birthDate = this.passportDateFormatter.format(birthdateField);
-        String address = this
-                .getFieldValue(passportFields, "Address");
+        String placeOfBirth = this
+                .getFieldValue(passportFields, "PlaceOfBirth");
         String countryCode = this
                 .getFieldValue(passportFields, "CountryRegion");
         String countryOfCitizenship = this.countryNameFetcher
@@ -138,7 +138,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                 .firstName(firstName)
                 .lastName(lastName)
                 .birthDate(birthDate)
-                .placeOfBirth(address)
+                .placeOfBirth(placeOfBirth)
                 .countryOfCitizenship(countryOfCitizenship)
                 .gender(gender)
                 .passportNumber(passportNumber)
@@ -185,11 +185,19 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                 .setFirstName(student1.getFirstName().toLowerCase());
         student1Clone
                 .setLastName(student1.getLastName().toLowerCase());
+        student1Clone
+                .setPlaceOfBirth(student1.getPlaceOfBirth().toLowerCase());
+        student1Clone
+                .setCountryOfCitizenship(student1.getCountryOfCitizenship().toLowerCase());
 
         student2Clone
                 .setFirstName(student2.getFirstName().toLowerCase());
         student2Clone
                 .setLastName(student2.getLastName().toLowerCase());
+        student2Clone
+                .setPlaceOfBirth(student2.getPlaceOfBirth().toLowerCase());
+        student2Clone
+                .setCountryOfCitizenship(student2.getCountryOfCitizenship().toLowerCase());
 
         return student1Clone.equals(student2Clone);
     }
@@ -276,7 +284,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                             && passportValidationData.getBirthDate()
                             .equals(studentDto.getBirthDate())
                             && passportValidationData.getPlaceOfBirth()
-                            .equals(studentDto.getPlaceOfBirth())
+                            .equalsIgnoreCase(studentDto.getPlaceOfBirth())
                             && passportValidationData.getPassportNumber()
                             .equals(studentDto.getPassportNumber())
                             && passportValidationData.getPassportDateOfExpiry()
@@ -286,7 +294,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                             && passportValidationData.getGender()
                             .equals(studentDto.getGender())
                             && passportValidationData.getCountryOfCitizenship()
-                            .equals(studentDto.getCountryOfCitizenship())
+                            .equalsIgnoreCase(studentDto.getCountryOfCitizenship())
                 )
                 .toList()
                 .isEmpty();
