@@ -6,7 +6,7 @@ package com.markvarga21.studentmanager.exception;
  */
 public class PassportNotFoundException extends RuntimeException {
     /**
-     * Creates a new passport not found exception
+     * Creates a new passport not found exception.
      *
      * @param message The message of the exception.
      */

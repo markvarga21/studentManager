@@ -214,16 +214,12 @@ public class FaceApiServiceImpl implements FaceApiService {
      *
      * @param passport The student's passport.
      * @param selfiePhoto The selfie of the student.
-     * @param firstName The first name of the student.
-     * @param lastName The last name of the student.
      * @return The validity and the percentage of the matching.
      */
     @Override
     public FaceApiResponse getValidityOfFaces(
             final MultipartFile passport,
-            final MultipartFile selfiePhoto,
-            final String firstName,
-            final String lastName
+            final MultipartFile selfiePhoto
     ) {
 
         return this.compareFaces(passport, selfiePhoto);

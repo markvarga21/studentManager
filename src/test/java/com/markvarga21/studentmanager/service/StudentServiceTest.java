@@ -88,62 +88,6 @@ class StudentServiceTest {
     }
 
     @Test
-    void createUserShouldReturnCreatedUsersWhenDataIsValidTest() {
-        // Given
-        StudentDto studentDto = getStaticAppUserDto();
-        String userJson = MOCK_USER_JSON;
-        Student student = getStaticAppUser();
-        MultipartFile idDocument = getFileForName("huId.jpg");
-        MultipartFile selfiePhoto = getFileForName("huFace.png");
-
-        // When
-        when(this.gson.fromJson(userJson, StudentDto.class))
-                .thenReturn(studentDto);
-        when(this.studentMapper.mapStudentDtoToEntity(studentDto))
-                .thenReturn(student);
-        when(this.studentMapper.mapStudentEntityToDto(student))
-                .thenReturn(studentDto);
-//        doNothing()
-//                .when(this.formRecognizerService)
-//                .validateUser(eq(appUserDto), any(), anyString());
-        doNothing()
-                .when(this.faceApiService)
-                .facesAreMatching(any(), any());
-        when(this.studentRepository.save(student))
-                .thenReturn(student);
-//        AppUserDto actual = this.appUserService
-//                .createUser(idDocument, selfiePhoto, userJson);
-
-        // Then
-//        assertEquals(appUserDto, actual);
-    }
-
-    @Test
-    void createUserShouldThrowExceptionWhenNamesAreInvalid() {
-        // Given
-        StudentDto studentDto = getStaticAppUserDto();
-        String userJson = MOCK_USER_JSON;
-        Student student = getStaticAppUser();
-        MultipartFile idDocument = getFileForName("huId.jpg");
-        MultipartFile selfiePhoto = getFileForName("huFace.png");
-        String firstName = studentDto.getFirstName();
-        String lastName = studentDto.getLastName();
-
-        // When
-        when(this.gson.fromJson(userJson, StudentDto.class))
-                .thenReturn(studentDto);
-        when(this.studentRepository
-                .findStudentByFirstNameAndLastName(firstName, lastName))
-                .thenReturn(Optional.of(student));
-
-        // Then
-//        assertThrows(InvalidUserException.class,
-//                () -> this.appUserService
-//                        .createUser(idDocument, selfiePhoto, userJson)
-//        );
-    }
-
-    @Test
     void validNamesShouldReturnFalseIfNamesAreValidTest() {
         // Given
         String firstName = getStaticAppUser().getFirstName();
@@ -209,65 +153,6 @@ class StudentServiceTest {
         assertThrows(StudentNotFoundException.class,
                 () -> this.appUserService.getStudentById(id)
         );
-    }
-
-    @Test
-    void modifyUserByIdShouldReturnUserIfIdExistsTest() {
-        // Given
-        Student student = getStaticAppUser();
-        String birthAddress = student.getPlaceOfBirth();
-        StudentDto expected = getStaticAppUserDto();
-        Long id = student.getId();
-        MultipartFile idDocument = getFileForName("huId.jpg");
-        MultipartFile selfiePhoto = getFileForName("huFace.png");
-        String userJson = MOCK_USER_JSON;
-
-        // When
-        when(this.studentRepository.findById(id))
-                .thenReturn(Optional.of(student));
-        when(this.gson.fromJson(userJson, StudentDto.class))
-                .thenReturn(expected);
-//        doNothing()
-//                .when(this.formRecognizerService)
-//                .validateUser(eq(expected), any(), anyString());
-//        doNothing()
-//                .when(this.faceApiService)
-//                .facesAreMatching(any(), any());
-//        when(this.addressMapper.mapAddressDtoToEntity(
-//                expected.getPlaceOfBirth())
-//        )
-//                .thenReturn(birthAddress);
-        when(this.studentRepository.save(student))
-                .thenReturn(student);
-        when(this.studentMapper.mapStudentEntityToDto(student))
-                .thenReturn(expected);
-//        AppUserDto actual = this.appUserService
-//                .modifyUserById(idDocument, selfiePhoto, userJson, id);
-//
-//        // Then
-//        assertSame(expected, actual);
-    }
-
-    @Test
-    void modifyUserByIdShouldThrowExceptionWhenIdIsNotPresentTest() {
-        // Given
-        Student student = getStaticAppUser();
-        Long id = student.getId();
-        MultipartFile idDocument = getFileForName("huId.jpg");
-        MultipartFile selfiePhoto = getFileForName("huFace.png");
-
-        // When
-        when(this.studentRepository.findById(id)).thenReturn(Optional.empty());
-
-        // Then
-//        assertThrows(UserNotFoundException.class,
-//                () -> this.appUserService.modifyUserById(
-//                        idDocument,
-//                        selfiePhoto,
-//                        MOCK_USER_JSON,
-//                        id
-//                )
-//        );
     }
 
     @Test

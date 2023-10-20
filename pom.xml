@@ -20,10 +20,10 @@
 		<version>3.1.2</version>
 	</parent>
 	<groupId>com.markvarga21</groupId>
-	<artifactId>usermanager</artifactId>
+	<artifactId>studentmanager</artifactId>
 	<version>1.0</version>
-	<name>usermanager</name>
-	<description>This project lets authorized users to manipulate (add, remove) users from/to the database which includes ID and face verification services.</description>
+	<name>Student manager</name>
+	<description>This project lets authorized users to manipulate (add, remove) students from/to the database which includes passport and face verification services.</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>

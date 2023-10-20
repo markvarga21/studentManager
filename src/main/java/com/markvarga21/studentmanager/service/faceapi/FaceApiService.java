@@ -23,15 +23,11 @@ public interface FaceApiService {
      *
      * @param passport The student's passport.
      * @param selfiePhoto The selfie of the student.
-     * @param firstName The first name of the student.
-     * @param lastName The last name of the student.
      * @return The validity and the percentage of the matching.
      */
     FaceApiResponse getValidityOfFaces(
             MultipartFile passport,
-            MultipartFile selfiePhoto,
-            String firstName,
-            String lastName
+            MultipartFile selfiePhoto
     );
 
     /**

@@ -3,7 +3,6 @@ package com.markvarga21.studentmanager.controller;
 import com.markvarga21.studentmanager.dto.FaceApiResponse;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/faces")
 @RequiredArgsConstructor
 @CrossOrigin
-@Slf4j
 public class FaceController {
     /**
      * Face service.
@@ -33,20 +31,16 @@ public class FaceController {
      *
      * @param passport The user's passport.
      * @param selfiePhoto The selfie of the user.
-     * @param firstName The first name of the user.
-     * @param lastName The last name of the user.
      * @return The validity and the percentage of the matching.
      */
     @PostMapping("/validate")
     public ResponseEntity<FaceApiResponse> getSelfieValidationData(
             @RequestParam("passport") final MultipartFile passport,
-            @RequestParam("selfiePhoto") final MultipartFile selfiePhoto,
-            @RequestParam("firstName") final String firstName,
-            @RequestParam("lastName") final String lastName
+            @RequestParam("selfiePhoto") final MultipartFile selfiePhoto
     ) {
         FaceApiResponse faceApiResponse =
                 this.faceApiService.getValidityOfFaces(
-                        passport, selfiePhoto, firstName, lastName
+                        passport, selfiePhoto
                 );
 
         return new ResponseEntity<>(faceApiResponse, HttpStatus.OK);
