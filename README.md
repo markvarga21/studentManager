@@ -45,15 +45,15 @@
 
 ### - Student manager API -
 
-This Spring Boot application lets you to manage students. It can store their name, address, birthdate, birthplace, phone number, email, gender and nationality.
+This Spring Boot application lets you to manage students. It can store their name, birthdate, birthplace, gender, country of citizenship, passport number and the dates of expiry and issue of the passport.
 
-It also provides accurate validation on the entered data. It allows authorized users to upload a passport and also a selfie. The application uses <a href="https://azure.microsoft.com/en-gb/products/form-recognizer">Azure's Form Recognizer</a> service to validate the entered data against the data on the passport.
+It also provides accurate validation on the entered data. It allows authorized users to upload a passport and also a selfie. The application uses <a href="https://azure.microsoft.com/en-gb/products/form-recognizer">Azure's Form Recognizer</a> service to validate the entered data against the data found on the passport.
 
-In addition, it validates the photo on the ID card against the uploaded selfie taken by the student. For this, it uses [Azure's Face API](https://azure.microsoft.com/en-gb/products/ai-services/ai-vision).
+In addition, it validates the photo on the passport against the uploaded selfie taken by the student. For this, it uses [Azure's Face API](https://azure.microsoft.com/en-gb/products/ai-services/ai-vision).
 
-On the persistence part, the application uses a MySQL database which is being hosted in the cloud, using Azure's services.
+On the persistence part, the application uses a MySQL database which is being hosted locally.
 
-Also, the application follows the styling rules listed in the `checkstyle.xml` file, thus resulting a more readable and extendable codebase. The main service class was also tested using Mockito.
+Also, the application follows the code-styling rules listed in the `checkstyle.xml` file, thus resulting a more readable and extendable codebase. Some parts of the main service class was also tested using Mockito.
 
 Finally, the whole application is fully containerized and can be found in <a href="https://hub.docker.com/r/markvarga21/studentmanager">this</a> Docker repository (more on this later).
 
@@ -63,11 +63,13 @@ The API documentation can be found on this <a href="https://documenter.getpostma
 
 ### - Frontend -
 
-This connects the applications backend with the user. It was built using React JS and for the styling Tailwind CSS was applied. The frontend stores the uploaded selfie and displays it in the student table row. This is achieved using <a href="https://firebase.google.com/docs/storage">Firebases's Storage</a> service.
+This connects the applications backend with the user. It was built using React JS and for the styling Tailwind CSS was used.
 
 The frontend also has the ability to inform the user about an error or exception in a custom error panel.
 
-Finally, there is a minimal authentication service which is also provided by <a href="https://firebase.google.com/docs/auth">Firebase</a>. For accessing the application please reach out to me, for granting you access to the application, because its strictly restricted to the previously added users by me.
+Finally, there is a minimal authentication service which is provided by <a href="https://firebase.google.com/docs/auth">Firebase</a>. For accessing the application please reach out to me, for granting you access to the application, because its strictly restricted to the previously added users by me.
+
+The frontend is also containerized using Docker, and can be found on this repository: <a href="https://hub.docker.com/r/markvarga21/studentmanagerfrontend">link</a>.
 
 <a href="https://github.com/markvarga21/studentManagerFrontend">Link to the frontend repository</a>
 
@@ -81,6 +83,7 @@ Finally, there is a minimal authentication service which is also provided by <a 
 - [Spring Boot](https://spring.io/projects/spring-boot)
 - [Maven](https://maven.apache.org/)
 - [Azure Form Recognizer](https://azure.microsoft.com/en-gb/products/form-recognizer)
+- [Azure Face API](https://azure.microsoft.com/en-gb/products/ai-services/ai-vision)
 - [Azure Database for MySQL](https://azure.microsoft.com/en-us/products/mysql)
 - [Mockito](https://site.mockito.org/)
 - [Docker](https://www.docker.com/)
@@ -127,24 +130,16 @@ Here you can find the only, but the most important one, prerequisity to run the 
 
 1. Install Docker desktop and then open it.
    <br>See: https://docs.docker.com/desktop/install/windows-install/
-2. Pull the main **API** image
-   ```
-   docker pull markvarga21/studentmanager
-   ```
-3. Pull the **Frontend** image
-   ```sh
-   docker pull markvarga21/studentmanagerfrontend
-   ```
-4. Build the docker container using the provided `docker-compose.yaml` with the next command.
+2. Request an admin or me to provide you the `docker-compose.yaml` file.
+3. Build the docker container using the provided `docker-compose.yaml` with the next command.
    ```sh
    docker compose up --detach
    ```
    This file is provided by me or by an admin for safety reasons. Also, make sure you run this command in the same directory you've put the `docker-compose.yaml` file into.
-5. Open the page in any browser using the link below
+4. Open the page in any browser using the link below
    ```
    http://localhost:3000/
    ```
-   It could take some time for the application to start up, so it is adviced to wait a minute or so before opening this link.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -162,12 +157,10 @@ Here you can find the only, but the most important one, prerequisity to run the 
 
 As any application, this contains some bugs and some sensitive parts too which are:
 
-- The application is only tested for romanian passports due to privacy reasons. This means, that there is no legitimate way to test the application with other passports.
+- The application is only tested for romanian and hungarian passports due to privacy reasons. This means, that there is no legitimate way to test the application with other passports.
 - When refreshing the page, the login page comes in for a slight second then dissapears if the user is logged in.
 - If the user does not log out from the app, he/she will be remained logged in.
-- The backend API is not fully tested.
-- The application is not deployed yet in a cloud service provider.
-- There could be UI/UX inconsistencies when using the application.
+- The backend is not fully tested.
 - Lack of registration option and authorization services.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
