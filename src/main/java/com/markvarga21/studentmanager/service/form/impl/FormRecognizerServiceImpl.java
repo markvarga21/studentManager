@@ -177,33 +177,54 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * It is used due to the inconsistencies (upper- or lower cases)
      * of the names.
      *
-     * @param student1 The first student.
-     * @param student2 The second student.
+     * @param studentDataFromPassport The first student.
+     * @param studentDataFromUser The second student.
      * @return {@code true} if the students are equal, {@code false} otherwise.
      */
     private boolean studentsAreEqual(
-            final StudentDto student1,
-            final StudentDto student2
+            final StudentDto studentDataFromPassport,
+            final StudentDto studentDataFromUser
     ) {
-        StudentDto student1Clone = student1.clone();
-        StudentDto student2Clone = student2.clone();
+        StudentDto student1Clone = studentDataFromPassport.clone();
+        StudentDto student2Clone = studentDataFromUser.clone();
         student1Clone
-                .setFirstName(student1.getFirstName().toLowerCase());
+                .setFirstName(studentDataFromPassport.getFirstName().toLowerCase());
         student1Clone
-                .setLastName(student1.getLastName().toLowerCase());
+                .setLastName(studentDataFromPassport.getLastName().toLowerCase());
         student1Clone
-                .setPlaceOfBirth(student1.getPlaceOfBirth().toLowerCase());
+                .setPlaceOfBirth(studentDataFromPassport.getPlaceOfBirth().toLowerCase());
         student1Clone
-                .setCountryOfCitizenship(student1.getCountryOfCitizenship().toLowerCase());
+                .setCountryOfCitizenship(studentDataFromPassport.getCountryOfCitizenship().toLowerCase());
 
         student2Clone
-                .setFirstName(student2.getFirstName().toLowerCase());
+                .setFirstName(studentDataFromUser.getFirstName().toLowerCase());
         student2Clone
-                .setLastName(student2.getLastName().toLowerCase());
+                .setLastName(studentDataFromUser.getLastName().toLowerCase());
         student2Clone
-                .setPlaceOfBirth(student2.getPlaceOfBirth().toLowerCase());
+                .setPlaceOfBirth(studentDataFromUser.getPlaceOfBirth().toLowerCase());
         student2Clone
-                .setCountryOfCitizenship(student2.getCountryOfCitizenship().toLowerCase());
+                .setCountryOfCitizenship(studentDataFromUser.getCountryOfCitizenship().toLowerCase());
+
+        if (studentDataFromPassport.getBirthDate() == null) {
+            if (studentDataFromUser.getBirthDate() == null) {
+                return false;
+            }
+            student2Clone.setBirthDate(null);
+        }
+
+        if (studentDataFromPassport.getPassportDateOfIssue() == null) {
+            if (studentDataFromUser.getPassportDateOfIssue() == null) {
+                return false;
+            }
+            student2Clone.setPassportDateOfIssue(null);
+        }
+
+        if (studentDataFromPassport.getPassportDateOfExpiry() == null) {
+            if (studentDataFromUser.getPassportDateOfExpiry() == null) {
+                return false;
+            }
+            student2Clone.setPassportDateOfExpiry(null);
+        }
 
         return student1Clone.equals(student2Clone);
     }
@@ -237,23 +258,41 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             studentDataFromUser.setFirstName(firstName);
             studentDataFromUser.setLastName(lastName);
 
-            StudentDto userDataFromPassport = this
+            StudentDto studentDataFromPassport = this
                     .extractDataFromPassport(passport);
 
-            if (studentsAreEqual(userDataFromPassport, studentDataFromUser)) {
+            log.info("Student data from passport: {}", studentDataFromPassport);
+            log.info("Student data from user: {}", studentDataFromUser);
+
+            if (studentsAreEqual(studentDataFromPassport, studentDataFromUser)) {
                 PassportValidationData passportValidationData =
                         PassportValidationData.builder()
-                                .firstName(userDataFromPassport.getFirstName())
-                                .lastName(userDataFromPassport.getLastName())
-                                .birthDate(userDataFromPassport.getBirthDate())
-                                .placeOfBirth(userDataFromPassport.getPlaceOfBirth())
-                                .passportNumber(userDataFromPassport.getPassportNumber())
-                                .passportDateOfExpiry(userDataFromPassport.getPassportDateOfExpiry())
-                                .passportDateOfIssue(userDataFromPassport.getPassportDateOfIssue())
-                                .gender(userDataFromPassport.getGender())
-                                .countryOfCitizenship(userDataFromPassport.getCountryOfCitizenship())
+                                .firstName(studentDataFromPassport.getFirstName())
+                                .lastName(studentDataFromPassport.getLastName())
+                                .birthDate(studentDataFromPassport.getBirthDate())
+                                .placeOfBirth(studentDataFromPassport.getPlaceOfBirth())
+                                .passportNumber(studentDataFromPassport.getPassportNumber())
+                                .passportDateOfExpiry(studentDataFromPassport.getPassportDateOfExpiry())
+                                .passportDateOfIssue(studentDataFromPassport.getPassportDateOfIssue())
+                                .gender(studentDataFromPassport.getGender())
+                                .countryOfCitizenship(studentDataFromPassport.getCountryOfCitizenship())
                                 .timestamp(LocalDateTime.now())
                                 .build();
+                if (studentDataFromPassport.getBirthDate() == null) {
+                    passportValidationData
+                            .setBirthDate(studentDataFromUser.getBirthDate());
+                }
+
+                if (studentDataFromPassport.getPassportDateOfExpiry() == null) {
+                    passportValidationData
+                            .setPassportDateOfExpiry(studentDataFromUser.getPassportDateOfExpiry());
+                }
+
+                if (studentDataFromPassport.getPassportDateOfIssue() == null) {
+                    passportValidationData
+                            .setPassportDateOfIssue(studentDataFromUser.getPassportDateOfIssue());
+                }
+
                 this.validationRepository.save(passportValidationData);
 
                 return PassportValidationResponse.builder()
@@ -262,7 +301,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             }
             return PassportValidationResponse.builder()
                     .isValid(false)
-                    .studentDto(userDataFromPassport)
+                    .studentDto(studentDataFromPassport)
                     .build();
         }
     }
