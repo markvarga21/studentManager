@@ -29,8 +29,8 @@ public class FaceController {
      * Compares the faces found on the passport and the
      * selfie, and then sends it back to the client.
      *
-     * @param passport The user's passport.
-     * @param selfiePhoto The selfie of the user.
+     * @param passport The student's passport.
+     * @param selfiePhoto The selfie of the student.
      * @return The validity and the percentage of the matching.
      */
     @PostMapping("/validate")

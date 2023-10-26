@@ -60,7 +60,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     /**
      * A student mapper.
      */
-    private final StudentMapper userMapper;
+    private final StudentMapper studentMapper;
 
     /**
      * A repository which is used to store the data extracted
@@ -204,28 +204,38 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                 .setPlaceOfBirth(studentDataFromUser.getPlaceOfBirth().toLowerCase());
         student2Clone
                 .setCountryOfCitizenship(studentDataFromUser.getCountryOfCitizenship().toLowerCase());
+        
+        student1Clone.setId(null);
+        student2Clone.setId(null);
 
         if (studentDataFromPassport.getBirthDate() == null) {
             if (studentDataFromUser.getBirthDate() == null) {
+                log.info("Both filled and extracted birth dates are null.");
                 return false;
             }
+            log.info("Extracted birth date is null, but filled birth date is not.");
             student2Clone.setBirthDate(null);
         }
 
         if (studentDataFromPassport.getPassportDateOfIssue() == null) {
             if (studentDataFromUser.getPassportDateOfIssue() == null) {
+                log.info("Both filled and extracted passport date of issues are null.");
                 return false;
             }
+            log.info("Extracted passport date of issue is null, but filled passport date of issue is not.");
             student2Clone.setPassportDateOfIssue(null);
         }
 
         if (studentDataFromPassport.getPassportDateOfExpiry() == null) {
             if (studentDataFromUser.getPassportDateOfExpiry() == null) {
+                log.info("Both filled and extracted passport date of expiry are null.");
                 return false;
             }
+            log.info("Extracted passport date of expiry is null, but filled passport date of expiry is not.");
             student2Clone.setPassportDateOfExpiry(null);
         }
-
+        log.info("Student 1 clone: {}", student1Clone);
+        log.info("Student 2 clone: {}", student2Clone);
         return student1Clone.equals(student2Clone);
     }
 
@@ -243,7 +253,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             final String studentJson
     ) {
         StudentDto studentDataFromUser = this
-                .userMapper.mapJsonToDto(studentJson);
+                .studentMapper.mapJsonToDto(studentJson);
 
         if (this.isStudentPresentInValidationDatabase(studentDataFromUser)) {
             log.info("Student is present in the validation database.");
@@ -251,6 +261,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                     .isValid(true)
                     .build();
         } else {
+            log.info("Student is not present in the validation database. Extracting data...");
             String firstName = studentDataFromUser
                     .getFirstName();
             String lastName = studentDataFromUser

@@ -7,17 +7,14 @@ import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentRepository;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
-import com.markvarga21.studentmanager.service.impl.AppUserServiceImpl;
+import com.markvarga21.studentmanager.service.impl.StudentServiceImpl;
 import com.markvarga21.studentmanager.util.mapping.StudentMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.multipart.MultipartFile;
 
-import static com.markvarga21.studentmanager.util.FileFetcher.getFileForName;
-import static com.markvarga21.studentmanager.util.MockDataProvider.MOCK_USER_JSON;
 import static com.markvarga21.studentmanager.util.MockDataProvider.getStaticAppUser;
 import static com.markvarga21.studentmanager.util.MockDataProvider.getStaticAppUserDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,7 +38,7 @@ class StudentServiceTest {
      * The app user service mock object.
      */
     @InjectMocks
-    private AppUserServiceImpl appUserService;
+    private StudentServiceImpl appUserService;
     /**
      * The app user repository.
      */

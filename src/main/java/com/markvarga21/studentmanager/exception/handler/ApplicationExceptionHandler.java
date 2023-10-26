@@ -3,7 +3,7 @@ package com.markvarga21.studentmanager.exception.handler;
 import com.markvarga21.studentmanager.exception.ApiError;
 import com.markvarga21.studentmanager.exception.InvalidDateFormatException;
 import com.markvarga21.studentmanager.exception.InvalidPassportException;
-import com.markvarga21.studentmanager.exception.InvalidUserException;
+import com.markvarga21.studentmanager.exception.InvalidStudentException;
 import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import jakarta.validation.ConstraintViolationException;
@@ -208,9 +208,9 @@ public class ApplicationExceptionHandler {
      * @param ex The exception caused by the invalid field.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
-    @ExceptionHandler(InvalidUserException.class)
+    @ExceptionHandler(InvalidStudentException.class)
     public ResponseEntity<Object> handleInvalidStudentException(
-            final InvalidUserException ex
+            final InvalidStudentException ex
     ) {
         log.error(ex.getMessage());
         ApiError apiError = new ApiError(

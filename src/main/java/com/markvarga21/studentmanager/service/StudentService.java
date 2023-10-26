@@ -8,7 +8,7 @@ import java.util.List;
  * An interface which contains essential methods
  * for manipulating student information.
  */
-public interface AppUserService {
+public interface StudentService {
     /**
      * A method used for retrieving all the students from the application.
      *

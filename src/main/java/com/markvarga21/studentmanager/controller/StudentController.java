@@ -1,7 +1,7 @@
 package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
-import com.markvarga21.studentmanager.service.AppUserService;
+import com.markvarga21.studentmanager.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ public class StudentController {
     /**
      * Student service.
      */
-    private final AppUserService userService;
+    private final StudentService studentService;
 
     /**
      * Retrieves all students which are present in the application.
@@ -38,7 +38,7 @@ public class StudentController {
      */
     @GetMapping
     public List<StudentDto> getAllStudents() {
-        return this.userService.getAllStudents();
+        return this.studentService.getAllStudents();
     }
 
     /**
@@ -48,11 +48,11 @@ public class StudentController {
      * @return The saved {@code StudentDto}.
      */
     @PostMapping
-    public ResponseEntity<StudentDto> createUser(
+    public ResponseEntity<StudentDto> createStudent(
             @RequestParam("studentJson") final String studentJson
     ) {
 
-        StudentDto createdStudent = this.userService.createStudent(studentJson);
+        StudentDto createdStudent = this.studentService.createStudent(studentJson);
         return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
     }
 
@@ -67,7 +67,7 @@ public class StudentController {
     public ResponseEntity<StudentDto> getStudentById(
             @PathVariable final Long id
     ) {
-        StudentDto foundStudent = this.userService.getStudentById(id);
+        StudentDto foundStudent = this.studentService.getStudentById(id);
         return new ResponseEntity<>(foundStudent, HttpStatus.OK);
     }
 
@@ -75,16 +75,16 @@ public class StudentController {
      * Updates a student and then retrieves it.
      *
      * @param studentJson The student itself in a JSON string.
-     * @param userId The ID of the student which has to be updated.
+     * @param studentId The ID of the student which has to be updated.
      * @return The updated {@code StudentDto}.
      */
-    @PutMapping("/{userId}")
+    @PutMapping("/{studentId}")
     public ResponseEntity<StudentDto> updateStudentById(
             @RequestParam("studentJson") final String studentJson,
-            @PathVariable("userId") final Long userId
+            @PathVariable("studentId") final Long studentId
             ) {
-        StudentDto updatedStudent = this.userService
-                .modifyStudentById(studentJson, userId);
+        StudentDto updatedStudent = this.studentService
+                .modifyStudentById(studentJson, studentId);
         return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
     }
 
@@ -98,7 +98,7 @@ public class StudentController {
     public ResponseEntity<StudentDto> deleteStudentById(
             @PathVariable final Long id
     ) {
-        StudentDto deletedStudent = this.userService.deleteStudentById(id);
+        StudentDto deletedStudent = this.studentService.deleteStudentById(id);
         return new ResponseEntity<>(deletedStudent, HttpStatus.OK);
     }
 }

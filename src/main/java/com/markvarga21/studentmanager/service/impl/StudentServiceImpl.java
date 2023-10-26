@@ -2,11 +2,11 @@ package com.markvarga21.studentmanager.service.impl;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Student;
-import com.markvarga21.studentmanager.exception.InvalidUserException;
+import com.markvarga21.studentmanager.exception.InvalidStudentException;
 import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentRepository;
-import com.markvarga21.studentmanager.service.AppUserService;
+import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.util.mapping.StudentMapper;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class AppUserServiceImpl implements AppUserService {
+public class StudentServiceImpl implements StudentService {
     /**
      * Repository for students.
      */
@@ -34,7 +34,7 @@ public class AppUserServiceImpl implements AppUserService {
     /**
      * A student mapper.
      */
-    private final StudentMapper userMapper;
+    private final StudentMapper studentMapper;
 
     /**
      * A Form Recognizer service.
@@ -57,7 +57,7 @@ public class AppUserServiceImpl implements AppUserService {
         List<StudentDto> studentDtoList = studentRepository
                 .findAll()
                 .stream()
-                .map(this.userMapper::mapStudentEntityToDto)
+                .map(this.studentMapper::mapStudentEntityToDto)
                 .toList();
         log.info(String.format("Listing %d students.", studentDtoList.size()));
 
@@ -73,7 +73,7 @@ public class AppUserServiceImpl implements AppUserService {
      */
     @Override
     public StudentDto createStudent(final String studentJson) {
-        StudentDto studentDto = this.userMapper.mapJsonToDto(studentJson);
+        StudentDto studentDto = this.studentMapper.mapJsonToDto(studentJson);
 
         String firstName = studentDto.getFirstName();
         String lastName = studentDto.getLastName();
@@ -84,14 +84,14 @@ public class AppUserServiceImpl implements AppUserService {
                     lastName
             );
             log.error(message);
-            throw new InvalidUserException(message);
+            throw new InvalidStudentException(message);
         }
 
-        Student userToSave = this.userMapper.mapStudentDtoToEntity(studentDto);
-        this.studentRepository.save(userToSave);
+        Student studentToSave = this.studentMapper.mapStudentDtoToEntity(studentDto);
+        this.studentRepository.save(studentToSave);
 
-        StudentDto studentDtoToSave = this.userMapper
-                .mapStudentEntityToDto(userToSave);
+        StudentDto studentDtoToSave = this.studentMapper
+                .mapStudentEntityToDto(studentToSave);
         log.info(String.format("Saving student: %s", studentDtoToSave));
 
         return studentDtoToSave;
@@ -137,7 +137,7 @@ public class AppUserServiceImpl implements AppUserService {
                 id
         ));
 
-        return this.userMapper.mapStudentEntityToDto(studentOptional.get());
+        return this.studentMapper.mapStudentEntityToDto(studentOptional.get());
     }
 
     /**
@@ -163,7 +163,7 @@ public class AppUserServiceImpl implements AppUserService {
             throw new StudentNotFoundException(message, OperationType.UPDATE);
         }
         Student student = studentOptional.get();
-        StudentDto studentDto = this.userMapper.mapJsonToDto(studentJson);
+        StudentDto studentDto = this.studentMapper.mapJsonToDto(studentJson);
 
         student.setGender(studentDto.getGender());
         student.setFirstName(studentDto.getFirstName());
@@ -172,12 +172,15 @@ public class AppUserServiceImpl implements AppUserService {
                 .setCountryOfCitizenship(studentDto.getCountryOfCitizenship());
         student.setPlaceOfBirth(studentDto.getPlaceOfBirth());
         student.setBirthDate(studentDto.getBirthDate());
+        student.setPassportNumber(studentDto.getPassportNumber());
+        student.setPassportDateOfExpiry(studentDto.getPassportDateOfExpiry());
+        student.setPassportDateOfIssue(studentDto.getPassportDateOfIssue());
         Student updatedUser = this.studentRepository.save(student);
 
         log.info(String.format(
                 "Student with id %d modified successfully!", studentId)
         );
-        return this.userMapper.mapStudentEntityToDto(updatedUser);
+        return this.studentMapper.mapStudentEntityToDto(updatedUser);
     }
 
     /**
@@ -198,7 +201,7 @@ public class AppUserServiceImpl implements AppUserService {
             log.error(message);
             throw new StudentNotFoundException(message, OperationType.DELETE);
         }
-        StudentDto deletedStudent = this.userMapper
+        StudentDto deletedStudent = this.studentMapper
                 .mapStudentEntityToDto(studentOptional.get());
         this.studentRepository.deleteById(id);
         this.formRecognizerService.deletePassportValidationByPassportNumber(
