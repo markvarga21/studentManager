@@ -15,6 +15,10 @@ import java.util.Locale;
 @Slf4j
 public class PassportDateFormatter {
     /**
+     * The length of the passport date components.
+     */
+    public static final int PASSPORT_DATE_COMPONENT_LENGTH = 3;
+    /**
      * Formats the passport date.
      *
      * @param passportDate The passport date to be formatted.
@@ -22,6 +26,10 @@ public class PassportDateFormatter {
      */
     public LocalDate format(final String passportDate) {
         String[] birthDateComponents = passportDate.split(" ");
+        if (birthDateComponents.length != PASSPORT_DATE_COMPONENT_LENGTH) {
+            log.error("Invalid date format: {}", passportDate);
+            return null;
+        }
         String formattedDate = String.format(
                 "%s %s %s",
                 birthDateComponents[0],
