@@ -33,15 +33,17 @@ public class FormRecognizerController {
      * Extracts and returns the data from the passport.
      *
      * @param passport The photo of the passport.
+     * @param selfie The selfie of the student.
      * @return The extracted {@code StudentDto} object.
      */
     @PostMapping("/extractData")
     public ResponseEntity<StudentDto> getDataFromPassport(
-            @RequestParam("passport") final MultipartFile passport
+            @RequestParam("passport") final MultipartFile passport,
+            @RequestParam("selfie") final MultipartFile selfie
     ) {
         log.info("Controller extraction method called");
         StudentDto studentDto = this.formRecognizerService
-                .extractDataFromPassport(passport);
+                .extractDataFromPassport(passport, selfie);
         return new ResponseEntity<>(studentDto, HttpStatus.OK);
     }
 

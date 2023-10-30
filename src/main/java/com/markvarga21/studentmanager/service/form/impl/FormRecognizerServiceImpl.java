@@ -10,6 +10,7 @@ import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.dto.PassportValidationResponse;
 import com.markvarga21.studentmanager.entity.Gender;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
+import com.markvarga21.studentmanager.exception.InvalidDocumentException;
 import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
@@ -23,8 +24,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,13 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * The default value if the field is empty.
      */
     public static final String EMPTY_FIELD_VALUE = "";
+
+    /**
+     * The size limit of an image to be
+     * stored in the database.
+     */
+    public static final Long BLOB_SIZE_LIMIT = 65535L;
+
     /**
      * A client which is used to analyze documents.
      */
@@ -56,11 +64,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * the actual name of the country.
      */
     private final CountryNameFetcher countryNameFetcher;
-
-    /**
-     * A student mapper.
-     */
-    private final StudentMapper studentMapper;
 
     /**
      * A repository which is used to store the data extracted
@@ -84,7 +87,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             final MultipartFile passport
     ) {
         byte[] compressedPassport = this.imageCompressor
-                .compressImage(passport);
+                .compressImage(passport, 1000000);
         BinaryData binaryData = BinaryData.fromBytes(compressedPassport);
         String modelId = "prebuilt-idDocument";
         SyncPoller<OperationResult, AnalyzeResult> analyzeDocumentPoller =
@@ -107,10 +110,14 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * Extracts and returns the data from the passport.
      *
      * @param passport The photo of the passport.
+     * @param selfie The selfie of the user.
      * @return The extracted {@code StudentDto} object.
      */
     @Override
-    public StudentDto extractDataFromPassport(final MultipartFile passport) {
+    public StudentDto extractDataFromPassport(
+            final MultipartFile passport,
+            final MultipartFile selfie
+    ) {
         Map<String, DocumentField> passportFields = this
                 .getFieldsFromDocument(passport);
         String firstName = this
@@ -122,10 +129,8 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         LocalDate birthDate = this.passportDateFormatter.format(birthdateField);
         String placeOfBirth = this
                 .getFieldValue(passportFields, "PlaceOfBirth");
-        String countryCode = this
+        String countryOfCitizenship = this
                 .getFieldValue(passportFields, "CountryRegion");
-        String countryOfCitizenship = this.countryNameFetcher
-                .getCountryNameForCode(countryCode);
         Gender gender = this.getFieldValue(passportFields, "Sex").equals("M")
                 ? Gender.MALE
                 : Gender.FEMALE;
@@ -139,6 +144,38 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                 .getFieldValue(passportFields, "DateOfIssue");
         LocalDate dateOfIssue = this.passportDateFormatter
                 .format(dateOfIssueField);
+
+        StudentDto studentDto = StudentDto.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .birthDate(birthDate)
+                .placeOfBirth(placeOfBirth)
+                .countryOfCitizenship(countryOfCitizenship)
+                .gender(gender)
+                .passportNumber(passportNumber)
+                .passportDateOfExpiry(dateOfExpiry)
+                .passportDateOfIssue(dateOfIssue)
+                .build();
+
+        byte[] compressedPassportBytes =
+                this.imageCompressor.compressImage(
+                        passport,
+                        BLOB_SIZE_LIMIT
+                );
+        byte[] compressedSelfieBytes =
+                this.imageCompressor.compressImage(
+                        selfie,
+                        BLOB_SIZE_LIMIT
+                );
+        PassportValidationData passportValidationData =
+                PassportValidationData.createPassportValidationFromStudent(
+                        studentDto,
+                        compressedPassportBytes,
+                        compressedSelfieBytes
+                );
+        log.info("Saving passport validation data for user: {}", passportValidationData.getFirstName());
+        this.validationRepository.save(passportValidationData);
+
 
         return StudentDto.builder()
                 .firstName(firstName)
@@ -234,8 +271,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             log.info("Extracted passport date of expiry is null, but filled passport date of expiry is not.");
             student2Clone.setPassportDateOfExpiry(null);
         }
-        log.info("Student 1 clone: {}", student1Clone);
-        log.info("Student 2 clone: {}", student2Clone);
         return student1Clone.equals(student2Clone);
     }
 
@@ -252,69 +287,69 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             final MultipartFile passport,
             final String studentJson
     ) {
-        StudentDto studentDataFromUser = this
-                .studentMapper.mapJsonToDto(studentJson);
-
-        if (this.isStudentPresentInValidationDatabase(studentDataFromUser)) {
-            log.info("Student is present in the validation database.");
-            return PassportValidationResponse.builder()
-                    .isValid(true)
-                    .build();
-        } else {
-            log.info("Student is not present in the validation database. Extracting data...");
-            String firstName = studentDataFromUser
-                    .getFirstName();
-            String lastName = studentDataFromUser
-                    .getLastName();
-            studentDataFromUser.setFirstName(firstName);
-            studentDataFromUser.setLastName(lastName);
-
-            StudentDto studentDataFromPassport = this
-                    .extractDataFromPassport(passport);
-
-            log.info("Student data from passport: {}", studentDataFromPassport);
-            log.info("Student data from user: {}", studentDataFromUser);
-
-            if (studentsAreEqual(studentDataFromPassport, studentDataFromUser)) {
-                PassportValidationData passportValidationData =
-                        PassportValidationData.builder()
-                                .firstName(studentDataFromPassport.getFirstName())
-                                .lastName(studentDataFromPassport.getLastName())
-                                .birthDate(studentDataFromPassport.getBirthDate())
-                                .placeOfBirth(studentDataFromPassport.getPlaceOfBirth())
-                                .passportNumber(studentDataFromPassport.getPassportNumber())
-                                .passportDateOfExpiry(studentDataFromPassport.getPassportDateOfExpiry())
-                                .passportDateOfIssue(studentDataFromPassport.getPassportDateOfIssue())
-                                .gender(studentDataFromPassport.getGender())
-                                .countryOfCitizenship(studentDataFromPassport.getCountryOfCitizenship())
-                                .timestamp(LocalDateTime.now())
-                                .build();
-                if (studentDataFromPassport.getBirthDate() == null) {
-                    passportValidationData
-                            .setBirthDate(studentDataFromUser.getBirthDate());
-                }
-
-                if (studentDataFromPassport.getPassportDateOfExpiry() == null) {
-                    passportValidationData
-                            .setPassportDateOfExpiry(studentDataFromUser.getPassportDateOfExpiry());
-                }
-
-                if (studentDataFromPassport.getPassportDateOfIssue() == null) {
-                    passportValidationData
-                            .setPassportDateOfIssue(studentDataFromUser.getPassportDateOfIssue());
-                }
-
-                this.validationRepository.save(passportValidationData);
-
-                return PassportValidationResponse.builder()
-                        .isValid(true)
-                        .build();
-            }
+//        StudentDto studentDataFromUser = this
+//                .studentMapper.mapJsonToDto(studentJson);
+//
+//        if (this.isStudentPresentInValidationDatabase(studentDataFromUser)) {
+//            log.info("Student is present in the validation database.");
+//            return PassportValidationResponse.builder()
+//                    .isValid(true)
+//                    .build();
+//        } else {
+//            log.info("Student is not present in the validation database. Extracting data...");
+//            String firstName = studentDataFromUser
+//                    .getFirstName();
+//            String lastName = studentDataFromUser
+//                    .getLastName();
+//            studentDataFromUser.setFirstName(firstName);
+//            studentDataFromUser.setLastName(lastName);
+//
+//            StudentDto studentDataFromPassport = this
+//                    .extractDataFromPassport(passport);
+//
+//            log.info("Student data from passport: {}", studentDataFromPassport);
+//            log.info("Student data from user: {}", studentDataFromUser);
+//
+//            if (studentsAreEqual(studentDataFromPassport, studentDataFromUser)) {
+//                PassportValidationData passportValidationData =
+//                        PassportValidationData.builder()
+//                                .firstName(studentDataFromPassport.getFirstName())
+//                                .lastName(studentDataFromPassport.getLastName())
+//                                .birthDate(studentDataFromPassport.getBirthDate())
+//                                .placeOfBirth(studentDataFromPassport.getPlaceOfBirth())
+//                                .passportNumber(studentDataFromPassport.getPassportNumber())
+//                                .passportDateOfExpiry(studentDataFromPassport.getPassportDateOfExpiry())
+//                                .passportDateOfIssue(studentDataFromPassport.getPassportDateOfIssue())
+//                                .gender(studentDataFromPassport.getGender())
+//                                .countryOfCitizenship(studentDataFromPassport.getCountryOfCitizenship())
+//                                .timestamp(LocalDateTime.now())
+//                                .build();
+//                if (studentDataFromPassport.getBirthDate() == null) {
+//                    passportValidationData
+//                            .setBirthDate(studentDataFromUser.getBirthDate());
+//                }
+//
+//                if (studentDataFromPassport.getPassportDateOfExpiry() == null) {
+//                    passportValidationData
+//                            .setPassportDateOfExpiry(studentDataFromUser.getPassportDateOfExpiry());
+//                }
+//
+//                if (studentDataFromPassport.getPassportDateOfIssue() == null) {
+//                    passportValidationData
+//                            .setPassportDateOfIssue(studentDataFromUser.getPassportDateOfIssue());
+//                }
+//
+//                this.validationRepository.save(passportValidationData);
+//
+//                return PassportValidationResponse.builder()
+//                        .isValid(true)
+//                        .build();
+//            }
             return PassportValidationResponse.builder()
                     .isValid(false)
-                    .studentDto(studentDataFromPassport)
+                    .studentDto(null)
                     .build();
-        }
+//        }
     }
 
     /**

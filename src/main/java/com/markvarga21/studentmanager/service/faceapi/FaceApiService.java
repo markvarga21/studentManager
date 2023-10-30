@@ -10,12 +10,15 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface FaceApiService {
     /**
-     * Validates the faces on the ID card against the selfie.
+     * Compares two faces.
      *
-     * @param passport The passport file.
-     * @param selfiePhoto The selfie file.
+     * @param passport The passport of the student.
+     * @param selfiePhoto A selfie of the student.
      */
-    void facesAreMatching(MultipartFile passport, MultipartFile selfiePhoto);
+    void facesAreMatching(
+            MultipartFile passport,
+            MultipartFile selfiePhoto
+    );
 
     /**
      * Compares the faces found on the passport and the

@@ -57,7 +57,7 @@ public class FaceApiServiceImpl implements FaceApiService {
     /**
      * Compares two faces.
      *
-     * @param passport The ID photo of the student.
+     * @param passport The passport photo of the student.
      * @param selfiePhoto A selfie of the student.
      */
     @Override

@@ -17,7 +17,10 @@ public interface FormRecognizerService {
      * @param passport The photo of the passport.
      * @return The extracted {@code StudentDto} object.
      */
-    StudentDto extractDataFromPassport(MultipartFile passport);
+    StudentDto extractDataFromPassport(
+            MultipartFile passport,
+            MultipartFile selfie
+    );
 
     /**
      * Extracts all the fields from the uploaded passport.

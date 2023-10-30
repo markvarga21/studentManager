@@ -42,11 +42,6 @@ public class StudentServiceImpl implements StudentService {
     private final FormRecognizerService formRecognizerService;
 
     /**
-     * The Face API service.
-     */
-    private final FaceApiService faceApiService;
-
-    /**
      * Retrieves all the students from the application.
      *
      * @return All to students stored in a {@code List}.
