@@ -13,11 +13,10 @@ import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.exception.InvalidDocumentException;
 import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
+import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.util.CountryNameFetcher;
-import com.markvarga21.studentmanager.util.ImageCompressor;
 import com.markvarga21.studentmanager.util.PassportDateFormatter;
-import com.markvarga21.studentmanager.util.mapping.StudentMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -26,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -43,12 +43,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * The default value if the field is empty.
      */
     public static final String EMPTY_FIELD_VALUE = "";
-
-    /**
-     * The size limit of an image to be
-     * stored in the database.
-     */
-    public static final Long BLOB_SIZE_LIMIT = 65535L;
 
     /**
      * A client which is used to analyze documents.
@@ -72,9 +66,9 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     private final PassportValidationDataRepository validationRepository;
 
     /**
-     * A util class for compressing images.
+     * A service which is used to manipulate the image in the database.
      */
-    private final ImageCompressor imageCompressor;
+    private final FileUploadService fileUploadService;
 
     /**
      * Extracts all the fields from the uploaded passport.
@@ -86,24 +80,28 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     public Map<String, DocumentField> getFieldsFromDocument(
             final MultipartFile passport
     ) {
-        byte[] compressedPassport = this.imageCompressor
-                .compressImage(passport, 1000000);
-        BinaryData binaryData = BinaryData.fromBytes(compressedPassport);
-        String modelId = "prebuilt-idDocument";
-        SyncPoller<OperationResult, AnalyzeResult> analyzeDocumentPoller =
-                this.documentAnalysisClient.beginAnalyzeDocument(
-                        modelId, binaryData
-                );
+        try {
+            BinaryData binaryData = BinaryData.fromBytes(passport.getBytes());
+            String modelId = "prebuilt-idDocument";
+            SyncPoller<OperationResult, AnalyzeResult> analyzeDocumentPoller =
+                    this.documentAnalysisClient.beginAnalyzeDocument(
+                            modelId, binaryData
+                    );
 
-        AnalyzeResult analyzeResult =
-                analyzeDocumentPoller.getFinalResult();
-        var documentResult = analyzeResult.getDocuments();
-        if (documentResult == null) {
-            throw new InvalidPassportException(
-                    "Invalid passport!"
+            AnalyzeResult analyzeResult =
+                    analyzeDocumentPoller.getFinalResult();
+            var documentResult = analyzeResult.getDocuments();
+            if (documentResult == null) {
+                throw new InvalidPassportException(
+                        "Invalid passport!"
+                );
+            }
+            return documentResult.get(0).getFields();
+        } catch (IOException e) {
+            throw new InvalidDocumentException(
+                    "Invalid document!"
             );
         }
-        return documentResult.get(0).getFields();
     }
 
     /**
@@ -145,37 +143,28 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         LocalDate dateOfIssue = this.passportDateFormatter
                 .format(dateOfIssueField);
 
-        StudentDto studentDto = StudentDto.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .birthDate(birthDate)
-                .placeOfBirth(placeOfBirth)
-                .countryOfCitizenship(countryOfCitizenship)
-                .gender(gender)
-                .passportNumber(passportNumber)
-                .passportDateOfExpiry(dateOfExpiry)
-                .passportDateOfIssue(dateOfIssue)
-                .build();
-
-        byte[] compressedPassportBytes =
-                this.imageCompressor.compressImage(
-                        passport,
-                        BLOB_SIZE_LIMIT
-                );
-        byte[] compressedSelfieBytes =
-                this.imageCompressor.compressImage(
-                        selfie,
-                        BLOB_SIZE_LIMIT
-                );
         PassportValidationData passportValidationData =
-                PassportValidationData.createPassportValidationFromStudent(
-                        studentDto,
-                        compressedPassportBytes,
-                        compressedSelfieBytes
-                );
-        log.info("Saving passport validation data for user: {}", passportValidationData.getFirstName());
+                PassportValidationData.builder()
+                        .firstName(firstName)
+                        .lastName(lastName)
+                        .birthDate(birthDate)
+                        .placeOfBirth(placeOfBirth)
+                        .passportNumber(passportNumber)
+                        .passportDateOfExpiry(dateOfExpiry)
+                        .passportDateOfIssue(dateOfIssue)
+                        .timestamp(LocalDateTime.now())
+                        .build();
+
         this.validationRepository.save(passportValidationData);
 
+        log.info("Saving passport validation data for user: {}",
+                passportValidationData.getPassportNumber());
+        this.validationRepository.save(passportValidationData);
+        this.fileUploadService.uploadFile(
+                passportNumber,
+                passport,
+                selfie
+        );
 
         return StudentDto.builder()
                 .firstName(firstName)

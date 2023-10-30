@@ -21,13 +21,6 @@ import java.time.LocalDateTime;
 @Data
 public class PassportValidationData {
     /**
-     * The ID of the passport validation entity.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    /**
      * The time of the validation.
      */
     private LocalDateTime timestamp;
@@ -65,6 +58,7 @@ public class PassportValidationData {
     /**
      * The student's passport number.
      */
+    @Id
     private String passportNumber;
 
     /**
@@ -76,59 +70,4 @@ public class PassportValidationData {
      * The student's passports issue date.
      */
     private LocalDate passportDateOfIssue;
-
-    /**
-     * The student's passport photo.
-     */
-    @Lob
-    private byte[] passportPhoto;
-
-    /**
-     * The student's selfie photo.
-     */
-    @Lob
-    private byte[] selfiePhoto;
-
-    /**
-     * Creates a {@code PassportValidationData} object from the
-     * given {@code StudentDto} object and the photos.
-     *
-     * @param studentDto The student itself.
-     * @param passportPhotoFromUser The photo of the passport.
-     * @param selfiePhotoFromUser The selfie of the student.
-     * @return A {@code PassportValidationData} object.
-     */
-    public static PassportValidationData createPassportValidationFromStudent(
-            final StudentDto studentDto,
-            final byte[] passportPhotoFromUser,
-            final byte[] selfiePhotoFromUser
-    ) {
-        PassportValidationData passportValidationData =
-                new PassportValidationData();
-        passportValidationData
-                .setId(studentDto.getId());
-        passportValidationData
-                .setFirstName(studentDto.getFirstName());
-        passportValidationData
-                .setLastName(studentDto.getLastName());
-        passportValidationData
-                .setBirthDate(studentDto.getBirthDate());
-        passportValidationData
-                .setPlaceOfBirth(studentDto.getPlaceOfBirth());
-        passportValidationData
-                .setCountryOfCitizenship(studentDto.getCountryOfCitizenship());
-        passportValidationData
-                .setPassportNumber(studentDto.getPassportNumber());
-        passportValidationData
-                .setPassportDateOfExpiry(studentDto.getPassportDateOfExpiry());
-        passportValidationData
-                .setPassportDateOfIssue(studentDto.getPassportDateOfIssue());
-
-        passportValidationData.setTimestamp(LocalDateTime.now());
-
-        passportValidationData.setPassportPhoto(passportPhotoFromUser);
-        passportValidationData.setSelfiePhoto(selfiePhotoFromUser);
-
-        return passportValidationData;
-    }
 }

@@ -4,6 +4,7 @@ import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.exception.PassportValidationDataNotFoundException;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,21 +39,34 @@ public class PassportValidationServiceImpl
     /**
      * Deletes the passport validation data with the given ID.
      *
-     * @param id The ID of the passport validation data.
+     * @param passportNumber The passport number of the student.
      */
     @Override
-    public void deletePassportValidationData(final Long id) {
+    @Transactional
+    public void deletePassportValidationData(final String passportNumber) {
         Optional<PassportValidationData> passportValidationDataOptional =
                 this.passportValidationDataRepository
-                        .findById(id);
+                        .getPassportValidationDataByPassportNumber(passportNumber);
         if (passportValidationDataOptional.isPresent()) {
-            this.passportValidationDataRepository.deleteById(id);
+            this.passportValidationDataRepository
+                    .deletePassportValidationDataByPassportNumber(passportNumber);
             return;
         }
         String message = String.format(
-                "Passport validation data with ID %d not found.",
-                id
+                "Passport validation data with passport number %s not found.",
+                passportNumber
         );
         throw new PassportValidationDataNotFoundException(message);
+    }
+
+    /**
+     * Retrieves the saved passport image byte array.
+     *
+     * @param passportNumber The unique passport number.
+     * @return The saved passport image byte array.
+     */
+    @Override
+    public byte[] getPassport(final String passportNumber) {
+        return new byte[100];
     }
 }

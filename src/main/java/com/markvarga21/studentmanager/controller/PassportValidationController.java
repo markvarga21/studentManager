@@ -4,12 +4,11 @@ package com.markvarga21.studentmanager.controller;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,13 +41,31 @@ public class PassportValidationController {
     /**
      * Deletes the passport validation data with the given ID.
      *
-     * @param id The ID of the passport validation data.
+     * @param passportNumber The passport number of the student.
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{passportNumber}")
     public void deletePassportValidationData(
-            @PathVariable("id") final Long id
+            @PathVariable("passportNumber") final String passportNumber
     ) {
         this.passportValidationService
-                .deletePassportValidationData(id);
+                .deletePassportValidationData(passportNumber);
+    }
+
+    /**
+     * Retrieves the saved passport image byte array.
+     *
+     * @param passportNumber The ID of the passport validation data.
+     * @return The saved passport image byte array.
+     */
+    @GetMapping("/{passportNumber}/passport")
+    public ResponseEntity<?> getPassport(
+            @PathVariable("passportNumber") final String passportNumber
+    ) {
+        byte[] passport = this.passportValidationService
+                .getPassport(passportNumber);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf(MediaType.IMAGE_PNG_VALUE))
+                .body(passport);
     }
 }

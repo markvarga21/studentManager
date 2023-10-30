@@ -21,7 +21,15 @@ public interface PassportValidationService {
     /**
      * Deletes the passport validation data with the given ID.
      *
-     * @param id The ID of the passport validation data.
+     * @param passportNumber The passport number of the student.
      */
-    void deletePassportValidationData(Long id);
+    void deletePassportValidationData(String passportNumber);
+
+    /**
+     * Retrieves the saved passport image byte array.
+     *
+     * @param passportNumber The unique passport number.
+     * @return The saved passport image byte array.
+     */
+    byte[] getPassport(String passportNumber);
 }
