@@ -129,7 +129,7 @@ public class StudentServiceImpl implements StudentService {
     /**
      * Validates and then modifies the student's information.
      *
-     * @param studentJson The user itself in a JSON string.
+     * @param studentDto The user itself.
      * @return The updated {@code StudentDto}.
      * @since 1.0
      */
