@@ -58,14 +58,12 @@ public class StudentServiceImpl implements StudentService {
      * Validates and then persists the student
      * into the database.
      *
-     * @param studentJson The student itself in a JSON string.
+     * @param studentDto The student itself.
      * @return The updated {@code AppUserDto}.
      */
     @Override
     @Transactional
-    public StudentDto createStudent(final String studentJson) {
-        StudentDto studentDto = this.studentMapper.mapJsonToDto(studentJson);
-
+    public StudentDto createStudent(final StudentDto studentDto) {
         String passportNumber = studentDto.getPassportNumber();
         if (!validPassportNumber(passportNumber)) {
             String message = String.format(
@@ -138,7 +136,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public StudentDto modifyStudentById(
-            final String studentJson,
+            final StudentDto studentDto,
             final Long studentId
     ) {
         Optional<Student> studentOptional = this.studentRepository
@@ -152,7 +150,6 @@ public class StudentServiceImpl implements StudentService {
             throw new StudentNotFoundException(message, OperationType.UPDATE);
         }
         Student student = studentOptional.get();
-        StudentDto studentDto = this.studentMapper.mapJsonToDto(studentJson);
 
         student.setGender(studentDto.getGender());
         student.setFirstName(studentDto.getFirstName());

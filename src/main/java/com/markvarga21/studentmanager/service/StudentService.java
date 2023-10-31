@@ -12,17 +12,17 @@ public interface StudentService {
     /**
      * A method used for retrieving all the students from the application.
      *
-     * @return all to students stored in a {@code List}.
+     * @return All to students stored in a {@code List}.
      */
     List<StudentDto> getAllStudents();
 
     /**
      * Validates and then persists a student in the database.
      *
-     * @param studentJson the student itself with the new data.
-     * @return the newly modified student.
+     * @param studentDto The student itself.
+     * @return The newly modified student.
      */
-    StudentDto createStudent(String studentJson);
+    StudentDto createStudent(StudentDto studentDto);
 
     /**
      * Retrieves a student from the application using its ID.
@@ -35,11 +35,11 @@ public interface StudentService {
     /**
      * Modifies the student identified by its id.
      *
-     * @param studentJson The student itself with the new data.
+     * @param studentDto The student itself.
      * @param userId The id of the student we want to modify.
      * @return The newly modified student.
      */
-    StudentDto modifyStudentById(String studentJson, Long userId);
+    StudentDto modifyStudentById(StudentDto studentDto, Long userId);
 
     /**
      * Deletes a student by its ID.

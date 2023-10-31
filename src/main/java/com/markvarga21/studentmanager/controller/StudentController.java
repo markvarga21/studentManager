@@ -4,18 +4,11 @@ import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -56,15 +49,15 @@ public class StudentController {
     /**
      * Saves and validates a student in the database and then returns it.
      *
-     * @param studentJson The student itself in a JSON string.
+     * @param student The student itself.
      * @return The saved {@code StudentDto}.
      */
     @PostMapping
     public ResponseEntity<StudentDto> createStudent(
-            @RequestParam("studentJson") final String studentJson
+            @RequestBody @Valid final StudentDto student
     ) {
 
-        StudentDto createdStudent = this.studentService.createStudent(studentJson);
+        StudentDto createdStudent = this.studentService.createStudent(student);
         return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
     }
 
@@ -86,17 +79,17 @@ public class StudentController {
     /**
      * Updates a student and then retrieves it.
      *
-     * @param studentJson The student itself in a JSON string.
+     * @param student The student itself.
      * @param studentId The ID of the student which has to be updated.
      * @return The updated {@code StudentDto}.
      */
     @PutMapping("/{studentId}")
     public ResponseEntity<StudentDto> updateStudentById(
-            @RequestParam("studentJson") final String studentJson,
+            @RequestBody @Valid final StudentDto student,
             @PathVariable("studentId") final Long studentId
-            ) {
+    ) {
         StudentDto updatedStudent = this.studentService
-                .modifyStudentById(studentJson, studentId);
+                .modifyStudentById(student, studentId);
         return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
     }
 

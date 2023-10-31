@@ -1,5 +1,6 @@
 package com.markvarga21.studentmanager.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.markvarga21.studentmanager.entity.Gender;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -12,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -51,14 +53,13 @@ public class StudentDto {
     /**
      * The birthplace of the student.
      */
-    @Valid
     @NotNull(message = "Place of birth cannot be null!")
     private String placeOfBirth;
 
     /**
      * The nationality of the student.
      */
-    @NotBlank(message = "Nationality cannot be null or empty!")
+    @NotBlank(message = "Country of citizenship cannot be null or empty!")
     private String countryOfCitizenship;
 
     /**
@@ -76,14 +77,14 @@ public class StudentDto {
     /**
      * The student's passports expiry date.
      */
-    @NotNull(message = "Passport date of expiry cannot be null!")
+    @NotNull(message = "Passport date of expiry cannot be null and has to be either in the present or in the future!")
     @FutureOrPresent
     private LocalDate passportDateOfExpiry;
 
     /**
      * The student's passports issue date.
      */
-    @NotNull(message = "Passport date of issue cannot be null!")
+    @NotNull(message = "Passport date of issue cannot be null and has to be either in the past or in the present!")
     @PastOrPresent
     private LocalDate passportDateOfIssue;
 

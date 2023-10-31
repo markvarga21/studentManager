@@ -32,6 +32,11 @@ import java.util.Map;
 @Slf4j
 public class ApplicationExceptionHandler {
     /**
+     * A bullet point character in unicode.
+     */
+    public static final String POINT_UNICODE = "\u2022";
+
+    /**
      * Handles if the user did not input the information correctly when using
      * the application's endpoints.
      *
@@ -52,8 +57,8 @@ public class ApplicationExceptionHandler {
         });
         log.error(String.format("Invalid field(s): %s", errors));
         String message = String.format(
-                "Invalid field in creating the user! Violations: %s",
-                errors
+                "Invalid field in creating the user!Violations:\n%s",
+                this.formatInvalidFieldsMap(errors)
         );
         ApiError apiError = new ApiError(
                 new Date(),
@@ -67,6 +72,26 @@ public class ApplicationExceptionHandler {
                 new HttpHeaders(),
                 apiError.getStatus()
         );
+    }
+
+    /**
+     * Formats the invalid fields map into a more readable format.
+     *
+     * @param map The map containing the invalid fields.
+     * @return The formatted {@code String}.
+     */
+    private String formatInvalidFieldsMap(final Map<String, String> map) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int counter = 0;
+        for (var entry : map.entrySet()) {
+            String value = POINT_UNICODE + " " + entry.getValue();
+            stringBuilder.append(value);
+            if (counter < map.size() - 1) {
+                stringBuilder.append("\n");
+            }
+            counter++;
+        }
+        return stringBuilder.toString();
     }
 
     /**
@@ -163,18 +188,36 @@ public class ApplicationExceptionHandler {
     ) {
         String message = "Invalid gender! Allowed genders are: MALE or FEMALE";
         log.error(message);
-        ApiError apiError = new ApiError(
-                new Date(),
-                HttpStatus.BAD_REQUEST,
-                message,
-                OperationType.CREATE,
-                getStackTraceAsString(ex)
-        );
-        return new ResponseEntity<>(
-                apiError,
-                new HttpHeaders(),
-                apiError.getStatus()
-        );
+        String stackTraceAsString = getStackTraceAsString(ex);
+        if (stackTraceAsString.contains("LocalDate")) {
+            String invalidDateMessage = "Invalid date format! Allowed format is: YYYY-MM-DD";
+            ApiError apiError = new ApiError(
+                    new Date(),
+                    HttpStatus.BAD_REQUEST,
+                    invalidDateMessage,
+                    OperationType.CREATE,
+                    stackTraceAsString
+            );
+            return new ResponseEntity<>(
+                    apiError,
+                    new HttpHeaders(),
+                    apiError.getStatus()
+            );
+        } else {
+            ApiError apiError = new ApiError(
+                    new Date(),
+                    HttpStatus.BAD_REQUEST,
+                    message,
+                    OperationType.CREATE,
+                    stackTraceAsString
+            );
+            return new ResponseEntity<>(
+                    apiError,
+                    new HttpHeaders(),
+                    apiError.getStatus()
+            );
+        }
+
     }
 
     /**
