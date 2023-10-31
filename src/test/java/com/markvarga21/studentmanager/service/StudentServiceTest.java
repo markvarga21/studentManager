@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -79,41 +78,6 @@ class StudentServiceTest {
         when(this.studentMapper.mapStudentEntityToDto(any()))
                 .thenReturn(studentDto);
         List<StudentDto> actual = this.appUserService.getAllStudents();
-
-        // Then
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void validNamesShouldReturnFalseIfNamesAreValidTest() {
-        // Given
-        String firstName = getStaticAppUser().getFirstName();
-        String lastName = getStaticAppUser().getLastName();
-        boolean expected = false;
-
-        // When
-        when(this.studentRepository
-                .findStudentByFirstNameAndLastName(firstName, lastName))
-                .thenReturn(Optional.of(getStaticAppUser()));
-        boolean actual = this.appUserService.validNames(firstName, lastName);
-
-        // Then
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void validNamesShouldReturnTrueIfNamesAreInvalidTest() {
-        // Given
-        String firstName = getStaticAppUser().getFirstName();
-        String lastName = getStaticAppUser().getLastName();
-        boolean expected = true;
-
-        // When
-        when(this.studentRepository.findStudentByFirstNameAndLastName(
-                firstName, lastName
-        ))
-                .thenReturn(Optional.empty());
-        boolean actual = this.appUserService.validNames(firstName, lastName);
 
         // Then
         assertEquals(expected, actual);

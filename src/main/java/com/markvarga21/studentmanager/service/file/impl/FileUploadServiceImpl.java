@@ -1,10 +1,13 @@
 package com.markvarga21.studentmanager.service.file.impl;
 
 import com.markvarga21.studentmanager.entity.StudentImage;
-import com.markvarga21.studentmanager.exception.*;
+import com.markvarga21.studentmanager.exception.InvalidDocumentException;
+import com.markvarga21.studentmanager.exception.InvalidImageTypeException;
+import com.markvarga21.studentmanager.exception.InvalidPassportException;
+import com.markvarga21.studentmanager.exception.OperationType;
+import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentImageRepository;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
-import com.markvarga21.studentmanager.util.ImageCompressor;
 import com.markvarga21.studentmanager.util.StudentImageType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -104,17 +107,16 @@ public class FileUploadServiceImpl implements FileUploadService {
         Optional<StudentImage> studentImageOptional =
                 this.studentImageRepository.findById(passportNumber);
 
-        if (studentImageOptional.isEmpty()) {
-            String message = String.format(
-                    "Student with passport number: %s does not exist",
+        if (studentImageOptional.isPresent()) {
+            this.studentImageRepository.deleteStudentImagesByPassportNumber(
                     passportNumber
             );
-            throw new StudentNotFoundException(message, OperationType.DELETE);
+        } else {
+            log.error(String.format(
+                    "Student with passport number: %s does not exist",
+                    passportNumber
+            ));
         }
-
-        this.studentImageRepository.deleteStudentImagesByPassportNumber(
-                passportNumber
-        );
     }
 
     /**

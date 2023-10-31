@@ -14,12 +14,12 @@ import com.markvarga21.studentmanager.exception.InvalidDocumentException;
 import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import com.markvarga21.studentmanager.service.StudentService;
-import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import com.markvarga21.studentmanager.util.CountryNameFetcher;
 import com.markvarga21.studentmanager.util.PassportDateFormatter;
 import com.markvarga21.studentmanager.util.mapping.StudentMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -80,11 +80,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     private final PassportValidationDataRepository validationRepository;
 
     /**
-     * A service which is used to manipulate the image in the database.
-     */
-    private final FileUploadService fileUploadService;
-
-    /**
      * A service which is used to manipulate the student data.
      */
     private final StudentService studentService;
@@ -131,6 +126,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * @return The extracted {@code StudentDto} object.
      */
     @Override
+    @Transactional
     public StudentDto extractDataFromPassport(
             final MultipartFile passport,
             final MultipartFile selfie
@@ -146,8 +142,10 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         LocalDate birthDate = this.passportDateFormatter.format(birthdateField);
         String placeOfBirth = this
                 .getFieldValue(passportFields, "PlaceOfBirth");
-        String countryOfCitizenship = this
+        String countryCode = this
                 .getFieldValue(passportFields, "CountryRegion");
+        String countryOfCitizenship = this
+                .countryNameFetcher.getCountryNameForCode(countryCode);
         Gender gender = this.getFieldValue(passportFields, "Sex").equals("M")
                 ? Gender.MALE
                 : Gender.FEMALE;
@@ -218,15 +216,14 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * Validates the data entered by the user against the data
      * which can be found on the passport.
      *
-     * @param studentJson The student itself in a JSON string.
+     * @param studentDataFromUser The student itself in a JSON string.
      * @return A {@code PassportValidationResponse} object.
      */
     @Override
+    @Transactional
     public PassportValidationResponse validatePassport(
-            final String studentJson
+            final StudentDto studentDataFromUser
     ) {
-        StudentDto studentDataFromUser = this.studentMapper
-                .mapJsonToDto(studentJson);
         String passportNumber = studentDataFromUser.getPassportNumber();
         Optional<PassportValidationData> passportValidationDataOptional
                 = this.passportValidationService
@@ -267,12 +264,21 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * @param passportNumber the passport number.
      */
     @Override
+    @Transactional
     public void deletePassportValidationByPassportNumber(
             final String passportNumber
     ) {
-        this.validationRepository.deletePassportValidationDataByPassportNumber(
-                passportNumber
-        );
+        Optional<PassportValidationData> passportValidationData =
+                this.passportValidationService
+                        .getPassportValidationDataByPassportNumber(passportNumber);
+        if (passportValidationData.isPresent()) {
+            this.validationRepository
+                    .deletePassportValidationDataByPassportNumber(
+                    passportNumber
+            );
+        } else {
+            log.error("Passport validation data not found for passport number: {}", passportNumber);
+        }
     }
 
     /**

@@ -37,11 +37,11 @@ public interface FormRecognizerService {
      * Validates the data entered by the user against the data
      * which can be found on the passport.
      *
-     * @param studentJson The student itself in a JSON string.
+     * @param studentDto The student itself.
      * @return A {@code PassportValidationResponse} object.
      */
     PassportValidationResponse validatePassport(
-            String studentJson
+            StudentDto studentDto
     );
 
     /**

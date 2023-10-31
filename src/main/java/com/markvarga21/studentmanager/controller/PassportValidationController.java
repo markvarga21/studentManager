@@ -2,20 +2,15 @@ package com.markvarga21.studentmanager.controller;
 
 
 import com.markvarga21.studentmanager.dto.PassportValidationResponse;
+import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -67,15 +62,15 @@ public class PassportValidationController {
      * Validates the data entered by the user against the data
      * which can be found on the passport.
      *
-     * @param studentJson The student itself in a JSON string.
+     * @param student The student itself.
      * @return A {@code PassportValidationResponse} object.
      */
     @PostMapping("/validate")
     public ResponseEntity<PassportValidationResponse> validatePassport(
-            @RequestParam("studentJson") final String studentJson
+            @RequestBody @Valid final StudentDto student
     ) {
         PassportValidationResponse passportValidationResponse =
-                this.formRecognizerService.validatePassport(studentJson);
+                this.formRecognizerService.validatePassport(student);
         return new ResponseEntity<>(passportValidationResponse, HttpStatus.OK);
     }
 

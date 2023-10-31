@@ -2,10 +2,13 @@ package com.markvarga21.studentmanager.util;
 
 import org.json.JSONObject;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * A util class for converting a country code
@@ -15,15 +18,10 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class CountryNameFetcher {
     /**
-     * A {@code RestTemplate} instance.
+     * The resource loader which is used
+     * to load files from the resources folder.
      */
-    private final RestTemplate restTemplate;
-
-    /**
-     * The URL of the REST API.
-     */
-    @Value("${rest.api.url}")
-    private String restApiUrl;
+    private final ResourceLoader resourceLoader;
 
     /**
      * Retrieves the name of the country for the given country code.
@@ -32,12 +30,23 @@ public class CountryNameFetcher {
      * @return The name of the country.
      */
     public String getCountryNameForCode(final String countryCode) {
-        String queryPart = String.format("/%s?fields=name", countryCode);
-        ResponseEntity<String> responseEntity = this.restTemplate
-                .getForEntity(this.restApiUrl + queryPart, String.class);
-        String body = responseEntity.getBody();
-        JSONObject jsonObject = new JSONObject(body);
-        JSONObject nameObject = jsonObject.getJSONObject("name");
-        return nameObject.getString("official");
+        try {
+            Resource resource = resourceLoader
+                    .getResource("classpath:static/countries.json");
+            String jsonStr = new String(
+                    Files.readAllBytes(Paths.get(resource.getURI()))
+            );
+
+            JSONObject jsonObj = new JSONObject(jsonStr);
+
+            if (jsonObj.has(countryCode)) {
+                return jsonObj.getString(countryCode);
+            } else {
+                return countryCode;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return countryCode;
     }
 }

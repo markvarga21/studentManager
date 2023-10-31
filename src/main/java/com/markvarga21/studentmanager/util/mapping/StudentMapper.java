@@ -43,14 +43,4 @@ public class StudentMapper {
     public StudentDto mapStudentEntityToDto(final Student student) {
         return this.mapper.map(student, StudentDto.class);
     }
-
-    /**
-     * Maps a JSON string to an {@code StudentDto}.
-     *
-     * @param studentJson the JSON string to be mapped to a DTO class.
-     * @return the converted {@code StudentDto}.
-     */
-    public StudentDto mapJsonToDto(final String studentJson) {
-        return this.gson.fromJson(studentJson, StudentDto.class);
-    }
 }
