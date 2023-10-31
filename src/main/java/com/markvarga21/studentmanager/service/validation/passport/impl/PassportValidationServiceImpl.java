@@ -1,6 +1,7 @@
 package com.markvarga21.studentmanager.service.validation.passport.impl;
 
 import com.markvarga21.studentmanager.entity.PassportValidationData;
+import com.markvarga21.studentmanager.entity.Student;
 import com.markvarga21.studentmanager.exception.PassportValidationDataNotFoundException;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
@@ -60,13 +61,16 @@ public class PassportValidationServiceImpl
     }
 
     /**
-     * Retrieves the saved passport image byte array.
+     * Retrieves a student by passport number.
      *
-     * @param passportNumber The unique passport number.
-     * @return The saved passport image byte array.
+     * @param passportNumber The passport number of the student.
+     * @return The student optional.
      */
     @Override
-    public byte[] getPassport(final String passportNumber) {
-        return new byte[100];
+    public Optional<PassportValidationData> getPassportValidationDataByPassportNumber(
+            final String passportNumber
+    ) {
+        return this.passportValidationDataRepository
+                .getPassportValidationDataByPassportNumber(passportNumber);
     }
 }

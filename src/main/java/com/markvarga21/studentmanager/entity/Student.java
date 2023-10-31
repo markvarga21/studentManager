@@ -71,4 +71,11 @@ public class Student {
      * The student's passports issue date.
      */
     private LocalDate passportDateOfIssue;
+
+    /**
+     * The validity of the student's data
+     * which can be set by either an admin
+     * or by an automatic checking procedure.
+     */
+    private boolean valid;
 }

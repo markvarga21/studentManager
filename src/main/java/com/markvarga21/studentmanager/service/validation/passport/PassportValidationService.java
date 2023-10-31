@@ -4,6 +4,7 @@ import com.markvarga21.studentmanager.entity.PassportValidationData;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A service which is used to access passport
@@ -26,10 +27,12 @@ public interface PassportValidationService {
     void deletePassportValidationData(String passportNumber);
 
     /**
-     * Retrieves the saved passport image byte array.
+     * Retrieves a student by passport number.
      *
-     * @param passportNumber The unique passport number.
-     * @return The saved passport image byte array.
+     * @param passportNumber The passport number of the student.
+     * @return The student.
      */
-    byte[] getPassport(String passportNumber);
+    Optional<PassportValidationData> getPassportValidationDataByPassportNumber(
+            String passportNumber
+    );
 }

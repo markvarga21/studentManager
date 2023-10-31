@@ -12,15 +12,10 @@ import java.util.Optional;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
     /**
-     * A method which is used to verify whether a student already exists
-     * in the database with the same first name and last name or not.
+     * Finds a student by passport number.
      *
-     * @param firstName The first name of the student.
-     * @param lastName The last name of the student.
-     * @return An optional {@code Student} object.
+     * @param passportNumber The students passport number.
+     * @return The student.
      */
-    Optional<Student> findStudentByFirstNameAndLastName(
-            String firstName,
-            String lastName
-    );
+    Optional<Student> findByPassportNumber(String passportNumber);
 }

@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.time.LocalDate;
 
@@ -20,6 +22,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Slf4j
 public class StudentDto {
     /**
      * A unique identifier for the student.
@@ -85,6 +88,13 @@ public class StudentDto {
     private LocalDate passportDateOfIssue;
 
     /**
+     * The validity of the student's data
+     * which can be set by either an admin
+     * or by an automatic checking procedure.
+     */
+    private boolean valid;
+
+    /**
      * Clone a student.
      *
      * @return A clone of the student.
@@ -102,5 +112,57 @@ public class StudentDto {
                 .passportDateOfIssue(this.passportDateOfIssue)
                 .passportDateOfExpiry(this.passportDateOfExpiry)
                 .build();
+    }
+
+    /**
+     * Checks if two students are equal.
+     *
+     * @param o The other student.
+     * @return {@code true} if the students are equal,
+     * {@code false} otherwise.
+     */
+    public boolean equals(final Object o) {
+        if (!(o instanceof StudentDto student)) {
+            return false;
+        }
+        return student.getFirstName()
+                    .equalsIgnoreCase(this.firstName)
+                && student.getLastName()
+                    .equalsIgnoreCase(this.lastName)
+                && student.getBirthDate()
+                    .equals(this.birthDate)
+                && student.getPlaceOfBirth()
+                    .equalsIgnoreCase(this.placeOfBirth)
+                && student.getCountryOfCitizenship()
+                    .equalsIgnoreCase(this.countryOfCitizenship)
+                && student.getGender()
+                    .equals(this.gender)
+                && student.getPassportNumber()
+                    .equalsIgnoreCase(this.passportNumber)
+                && student.getPassportDateOfIssue()
+                    .equals(this.passportDateOfIssue)
+                && student.getPassportDateOfExpiry()
+                    .equals(this.passportDateOfExpiry);
+    }
+
+    /**
+     * Generates a hash code for the student.
+     *
+     * @return The hash code.
+     */
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 31)
+                .append(this.id)
+                .append(this.firstName)
+                .append(this.lastName)
+                .append(this.birthDate)
+                .append(this.placeOfBirth)
+                .append(this.countryOfCitizenship)
+                .append(this.gender)
+                .append(this.passportNumber)
+                .append(this.passportDateOfIssue)
+                .append(this.passportDateOfExpiry)
+                .toHashCode();
     }
 }

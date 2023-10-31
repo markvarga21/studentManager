@@ -1,14 +1,21 @@
 package com.markvarga21.studentmanager.controller;
 
 
+import com.markvarga21.studentmanager.dto.PassportValidationResponse;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
+import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -17,7 +24,7 @@ import java.util.List;
  * validation (face and form) data.
  */
 @RestController
-@RequestMapping("/api/v1/passports/validations")
+@RequestMapping("/api/v1/validations")
 @RequiredArgsConstructor
 @CrossOrigin
 public class PassportValidationController {
@@ -26,6 +33,11 @@ public class PassportValidationController {
      * validation data.
      */
     private final PassportValidationService passportValidationService;
+
+    /**
+     * Form recognizer service.
+     */
+    private final FormRecognizerService formRecognizerService;
 
     /**
      * Retrieves all the passport validation data.
@@ -52,20 +64,48 @@ public class PassportValidationController {
     }
 
     /**
-     * Retrieves the saved passport image byte array.
+     * Validates the data entered by the user against the data
+     * which can be found on the passport.
      *
-     * @param passportNumber The ID of the passport validation data.
-     * @return The saved passport image byte array.
+     * @param studentJson The student itself in a JSON string.
+     * @return A {@code PassportValidationResponse} object.
      */
-    @GetMapping("/{passportNumber}/passport")
-    public ResponseEntity<?> getPassport(
+    @PostMapping("/validate")
+    public ResponseEntity<PassportValidationResponse> validatePassport(
+            @RequestParam("studentJson") final String studentJson
+    ) {
+        PassportValidationResponse passportValidationResponse =
+                this.formRecognizerService.validatePassport(studentJson);
+        return new ResponseEntity<>(passportValidationResponse, HttpStatus.OK);
+    }
+
+    /**
+     * Validates the passport manually (usually by an admin).
+     *
+     * @param passportNumber The passport number.
+     * @return {@code HttpStatus.OK} if the validation was successful,
+     */
+    @PostMapping("/validateManually")
+    public ResponseEntity<Void> validatePassportManually(
+            @RequestParam("passportNumber") final String passportNumber
+    ) {
+        this.formRecognizerService.validatePassportManually(passportNumber);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * Checks if the user is valid.
+     *
+     * @param passportNumber The passport number.
+     * @return {@code HttpStatus.OK} if the user is valid.
+     */
+    @GetMapping("/isUserValid/{passportNumber}")
+    public ResponseEntity<Boolean> isUserValid(
             @PathVariable("passportNumber") final String passportNumber
     ) {
-        byte[] passport = this.passportValidationService
-                .getPassport(passportNumber);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf(MediaType.IMAGE_PNG_VALUE))
-                .body(passport);
+        return new ResponseEntity<>(
+                this.formRecognizerService.isUserValid(passportNumber),
+                HttpStatus.OK
+        );
     }
 }

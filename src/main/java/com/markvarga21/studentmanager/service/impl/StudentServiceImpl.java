@@ -7,7 +7,7 @@ import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentRepository;
 import com.markvarga21.studentmanager.service.StudentService;
-import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
+import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.util.mapping.StudentMapper;
 import jakarta.transaction.Transactional;
@@ -37,11 +37,6 @@ public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
 
     /**
-     * A Form Recognizer service.
-     */
-    private final FormRecognizerService formRecognizerService;
-
-    /**
      * Retrieves all the students from the application.
      *
      * @return All to students stored in a {@code List}.
@@ -67,22 +62,22 @@ public class StudentServiceImpl implements StudentService {
      * @return The updated {@code AppUserDto}.
      */
     @Override
+    @Transactional
     public StudentDto createStudent(final String studentJson) {
         StudentDto studentDto = this.studentMapper.mapJsonToDto(studentJson);
 
-        String firstName = studentDto.getFirstName();
-        String lastName = studentDto.getLastName();
-        if (!validNames(firstName, lastName)) {
+        String passportNumber = studentDto.getPassportNumber();
+        if (!validPassportNumber(passportNumber)) {
             String message = String.format(
-                    "'%s' first name and '%s' last name is already in use!",
-                    firstName,
-                    lastName
+                    "Passport number '%s' is already in use!",
+                    passportNumber
             );
             log.error(message);
             throw new InvalidStudentException(message);
         }
 
         Student studentToSave = this.studentMapper.mapStudentDtoToEntity(studentDto);
+        studentToSave.setValid(false);
         this.studentRepository.save(studentToSave);
 
         StudentDto studentDtoToSave = this.studentMapper
@@ -93,19 +88,17 @@ public class StudentServiceImpl implements StudentService {
     }
 
     /**
-     * Checks if the students first- and last names are available.
+     * Checks if the passport number is already in use.
      *
-     * @param firstName The first name of the student.
-     * @param lastName The last name of the student.
-     * @return {@code true} if there is no other student
-     * with the same name, else {@code false}.
+     * @param passportNumber The passport number to check.
+     * @return {@code true} if the passport number is valid,
+     * {@code false} otherwise.
      */
-    public boolean validNames(
-            final String firstName,
-            final String lastName
+    public boolean validPassportNumber(
+            final String passportNumber
     ) {
         Optional<Student> student = this.studentRepository
-                .findStudentByFirstNameAndLastName(firstName, lastName);
+                .findByPassportNumber(passportNumber);
         return student.isEmpty();
     }
 
@@ -143,6 +136,7 @@ public class StudentServiceImpl implements StudentService {
      * @since 1.0
      */
     @Override
+    @Transactional
     public StudentDto modifyStudentById(
             final String studentJson,
             final Long studentId
@@ -170,6 +164,7 @@ public class StudentServiceImpl implements StudentService {
         student.setPassportNumber(studentDto.getPassportNumber());
         student.setPassportDateOfExpiry(studentDto.getPassportDateOfExpiry());
         student.setPassportDateOfIssue(studentDto.getPassportDateOfIssue());
+        student.setValid(false);
         Student updatedUser = this.studentRepository.save(student);
 
         log.info(String.format(
@@ -186,6 +181,7 @@ public class StudentServiceImpl implements StudentService {
      * @since 1.0
      */
     @Override
+    @Transactional
     public StudentDto deleteStudentById(final Long id) {
         Optional<Student> studentOptional = this.studentRepository.findById(id);
         if (studentOptional.isEmpty()) {
@@ -199,14 +195,37 @@ public class StudentServiceImpl implements StudentService {
         StudentDto deletedStudent = this.studentMapper
                 .mapStudentEntityToDto(studentOptional.get());
         this.studentRepository.deleteById(id);
-        this.formRecognizerService.deletePassportValidationByPassportNumber(
-                deletedStudent.getPassportNumber()
-        );
         log.info(String.format(
                 "Student with id %d deleted successfully!",
                 id
         ));
 
         return deletedStudent;
+    }
+
+    /**
+     * Validates the passport manually (usually by an admin).
+     *
+     * @param passportNumber The passport number.
+     * @param valid The validity of the passport.
+     */
+    @Override
+    public void setValidity(
+            final String passportNumber,
+            final boolean valid
+    ) {
+        Optional<Student> studentOptional = this.studentRepository
+                .findByPassportNumber(passportNumber);
+        if (studentOptional.isEmpty()) {
+            String message = String.format(
+                "Student cant be modified! Cause: Student not found with passport number: %s",
+                passportNumber
+            );
+            log.error(message);
+            throw new StudentNotFoundException(message, OperationType.UPDATE);
+        }
+        Student student = studentOptional.get();
+        student.setValid(valid);
+        this.studentRepository.save(student);
     }
 }

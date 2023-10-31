@@ -48,4 +48,16 @@ public interface StudentService {
      * @return The recently deleted user's DTO.
      */
     StudentDto deleteStudentById(Long id);
+
+    /**
+     * Sets the validity of a passport.
+     *
+     * @param passportNumber The passport number.
+     * @param valid {@code true} if the passport is valid,
+     * {@code false} otherwise.
+     */
+    void setValidity(
+            String passportNumber,
+            boolean valid
+    );
 }

@@ -1,7 +1,9 @@
 package com.markvarga21.studentmanager.entity;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
-import jakarta.persistence.*;
+import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -70,4 +72,27 @@ public class PassportValidationData {
      * The student's passports issue date.
      */
     private LocalDate passportDateOfIssue;
+
+    /**
+     * Creates a new passport {@code StudentDto} object from
+     * the provided {@code PassportValidationData}.
+     *
+     * @param passportValidationData The passport validation data.
+     * @return A new {@code StudentDto} object.
+     */
+    public static StudentDto getStudentDtoFromValidationData(
+            final PassportValidationData passportValidationData
+    ) {
+        return StudentDto.builder()
+                .passportNumber(passportValidationData.passportNumber)
+                .firstName(passportValidationData.firstName)
+                .lastName(passportValidationData.lastName)
+                .gender(passportValidationData.gender)
+                .passportDateOfIssue(passportValidationData.passportDateOfIssue)
+                .passportDateOfExpiry(passportValidationData.passportDateOfExpiry)
+                .birthDate(passportValidationData.birthDate)
+                .placeOfBirth(passportValidationData.placeOfBirth)
+                .countryOfCitizenship(passportValidationData.countryOfCitizenship)
+                .build();
+    }
 }

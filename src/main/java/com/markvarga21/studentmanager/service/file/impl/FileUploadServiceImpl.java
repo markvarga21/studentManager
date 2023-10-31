@@ -1,9 +1,7 @@
 package com.markvarga21.studentmanager.service.file.impl;
 
 import com.markvarga21.studentmanager.entity.StudentImage;
-import com.markvarga21.studentmanager.exception.InvalidDocumentException;
-import com.markvarga21.studentmanager.exception.OperationType;
-import com.markvarga21.studentmanager.exception.StudentNotFoundException;
+import com.markvarga21.studentmanager.exception.*;
 import com.markvarga21.studentmanager.repository.StudentImageRepository;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.util.ImageCompressor;
@@ -43,6 +41,22 @@ public class FileUploadServiceImpl implements FileUploadService {
             final MultipartFile passportImage,
             final MultipartFile selfieImage
     ) {
+        if (passportImage.isEmpty() || passportNumber == null) {
+            String message = "Passport number not provided!";
+            log.error(message);
+            throw new InvalidDocumentException(message);
+        }
+        if (passportImage.isEmpty()) {
+            String message = "Passport image is empty";
+            log.error(message);
+            throw new InvalidDocumentException(message);
+        }
+        if (selfieImage.isEmpty()) {
+            String message = "Selfie image is empty";
+            log.error(message);
+            throw new InvalidDocumentException(message);
+        }
+
         try {
             StudentImage studentImage = StudentImage.builder()
                     .passportNumber(passportNumber)
@@ -82,6 +96,22 @@ public class FileUploadServiceImpl implements FileUploadService {
     public void deleteImage(
             final String passportNumber
     ) {
+        if (passportNumber == null) {
+            String message = "Passport number not provided!";
+            log.error(message);
+            throw new InvalidPassportException(message);
+        }
+        Optional<StudentImage> studentImageOptional =
+                this.studentImageRepository.findById(passportNumber);
+
+        if (studentImageOptional.isEmpty()) {
+            String message = String.format(
+                    "Student with passport number: %s does not exist",
+                    passportNumber
+            );
+            throw new StudentNotFoundException(message, OperationType.DELETE);
+        }
+
         this.studentImageRepository.deleteStudentImagesByPassportNumber(
                 passportNumber
         );
@@ -100,6 +130,16 @@ public class FileUploadServiceImpl implements FileUploadService {
             final String passportNumber,
             final StudentImageType type
     ) {
+        if (passportNumber == null) {
+            String message = "Passport number not provided!";
+            log.error(message);
+            throw new InvalidPassportException(message);
+        }
+        if (type == null || !type.equals(StudentImageType.PASSPORT) && !type.equals(StudentImageType.SELFIE)) {
+            String message = "Image type not provided or not valid!\nValid image types are: PASSPORT, SELFIE";
+            log.error(message);
+            throw new InvalidImageTypeException(message);
+        }
         Optional<StudentImage> studentImageOptional =
                 this.studentImageRepository.findById(passportNumber);
         if (studentImageOptional.isEmpty()) {

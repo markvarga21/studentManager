@@ -2,6 +2,8 @@ package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.service.StudentService;
+import com.markvarga21.studentmanager.service.file.FileUploadService;
+import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,16 @@ public class StudentController {
      * Student service.
      */
     private final StudentService studentService;
+
+    /**
+     * Form recognizer service.
+     */
+    private final FormRecognizerService formRecognizerService;
+
+    /**
+     * File upload service.
+     */
+    private final FileUploadService fileUploadService;
 
     /**
      * Retrieves all students which are present in the application.
@@ -99,6 +111,11 @@ public class StudentController {
             @PathVariable final Long id
     ) {
         StudentDto deletedStudent = this.studentService.deleteStudentById(id);
+        String passportNumber = deletedStudent.getPassportNumber();
+        this.fileUploadService.deleteImage(passportNumber);
+        this.formRecognizerService.deletePassportValidationByPassportNumber(
+                passportNumber
+        );
         return new ResponseEntity<>(deletedStudent, HttpStatus.OK);
     }
 }

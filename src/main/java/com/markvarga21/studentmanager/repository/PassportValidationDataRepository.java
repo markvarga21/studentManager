@@ -12,7 +12,7 @@ import java.util.Optional;
  */
 @Repository
 public interface PassportValidationDataRepository extends
-        JpaRepository<PassportValidationData, Long> {
+        JpaRepository<PassportValidationData, String> {
     /**
      * Deletes the passport validation data by the passport number.
      *
@@ -26,5 +26,7 @@ public interface PassportValidationDataRepository extends
      * @param passportNumber The passport number.
      * @return The passport validation data.
      */
-    Optional<PassportValidationData> getPassportValidationDataByPassportNumber(String passportNumber);
+    Optional<PassportValidationData> getPassportValidationDataByPassportNumber(
+            String passportNumber
+    );
 }

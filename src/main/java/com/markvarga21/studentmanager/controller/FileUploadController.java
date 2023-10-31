@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -69,5 +70,24 @@ public class FileUploadController {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(image);
+    }
+
+    /**
+     * The uploadImage method is used to upload
+     * the image(s) to the database.
+     *
+     * @param passportNumber The students passport number.
+     * @param passport The passport image.
+     * @param selfie The selfie image.
+     * @return A response entity.
+     */
+    @PostMapping("/upload/{passportNumber}")
+    public ResponseEntity<?> uploadImage(
+            @PathVariable("passportNumber") final String passportNumber,
+            @RequestParam("passport") final MultipartFile passport,
+            @RequestParam("selfie") final MultipartFile selfie
+    ) {
+        this.fileUploadService.uploadFile(passportNumber, passport, selfie);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
