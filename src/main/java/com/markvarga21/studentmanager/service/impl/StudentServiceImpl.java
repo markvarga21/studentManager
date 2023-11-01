@@ -49,8 +49,6 @@ public class StudentServiceImpl implements StudentService {
                 .stream()
                 .map(this.studentMapper::mapStudentEntityToDto)
                 .toList();
-        log.info(String.format("Listing %d students.", studentDtoList.size()));
-
         return studentDtoList;
     }
 

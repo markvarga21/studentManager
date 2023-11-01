@@ -35,4 +35,14 @@ public interface PassportValidationService {
     Optional<PassportValidationData> getPassportValidationDataByPassportNumber(
             String passportNumber
     );
+
+    /**
+     * Creates a new passport validation data.
+     *
+     * @param data The passport validation data.
+     * @return The newly created passport validation data.
+     */
+    PassportValidationData createPassportValidationData(
+            PassportValidationData data
+    );
 }

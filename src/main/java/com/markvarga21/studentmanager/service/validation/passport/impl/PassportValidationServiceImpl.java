@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,5 +73,21 @@ public class PassportValidationServiceImpl
     ) {
         return this.passportValidationDataRepository
                 .getPassportValidationDataByPassportNumber(passportNumber);
+    }
+
+    /**
+     * Creates a new passport validation data.
+     *
+     * @param data The passport validation data.
+     * @return The newly created passport validation data.
+     */
+    @Override
+    @Transactional
+    public PassportValidationData createPassportValidationData(
+            final PassportValidationData data
+    ) {
+        data.setTimestamp(LocalDateTime.now());
+        return this.passportValidationDataRepository
+                .save(data);
     }
 }

@@ -103,4 +103,23 @@ public class PassportValidationController {
                 HttpStatus.OK
         );
     }
+
+    /**
+     * Creates a new passport validation data.
+     *
+     * @param passportValidationData The passport validation data itself.
+     * @return The created passport validation data.
+     */
+    @PostMapping
+    public ResponseEntity<PassportValidationData> createPassportValidationData(
+            @RequestBody @Valid final PassportValidationData passportValidationData
+    ) {
+        PassportValidationData createdPassportValidationData =
+                this.passportValidationService
+                        .createPassportValidationData(passportValidationData);
+        return new ResponseEntity<>(
+                createdPassportValidationData,
+                HttpStatus.CREATED
+        );
+    }
 }

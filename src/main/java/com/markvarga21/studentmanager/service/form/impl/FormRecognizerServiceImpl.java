@@ -69,11 +69,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     private final CountryNameFetcher countryNameFetcher;
 
     /**
-     * A mapper which is used to map the JSON string to a DTO.
-     */
-    private final StudentMapper studentMapper;
-
-    /**
      * A repository which is used to store the data extracted
      * from the passport while validation.
      */
@@ -122,14 +117,12 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * Extracts and returns the data from the passport.
      *
      * @param passport The photo of the passport.
-     * @param selfie The selfie of the user.
      * @return The extracted {@code StudentDto} object.
      */
     @Override
     @Transactional
     public StudentDto extractDataFromPassport(
-            final MultipartFile passport,
-            final MultipartFile selfie
+            final MultipartFile passport
     ) {
         Map<String, DocumentField> passportFields = this
                 .getFieldsFromDocument(passport);
@@ -173,12 +166,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                         .passportDateOfIssue(dateOfIssue)
                         .timestamp(LocalDateTime.now())
                         .build();
-
-        this.validationRepository.save(passportValidationData);
-
-        log.info("Saving passport validation data for user: {}",
-                passportValidationData.getPassportNumber());
-        this.validationRepository.save(passportValidationData);
 
         return StudentDto.builder()
                 .firstName(firstName)

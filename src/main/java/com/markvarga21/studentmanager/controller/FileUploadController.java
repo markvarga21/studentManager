@@ -61,7 +61,7 @@ public class FileUploadController {
      * @return The image for the specified type.
      */
     @GetMapping("/{passportNumber}")
-    public ResponseEntity<?> getImageForType(
+    public ResponseEntity<byte[]> getImageForType(
             @PathVariable("passportNumber") final String passportNumber,
             @QueryParam("imageType") final StudentImageType imageType
             ) {

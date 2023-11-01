@@ -57,7 +57,7 @@ public class ApplicationExceptionHandler {
         });
         log.error(String.format("Invalid field(s): %s", errors));
         String message = String.format(
-                "Invalid field in creating the user!Violations:\n%s",
+                "Invalid field in creating the user!\nViolations:\n%s",
                 this.formatInvalidFieldsMap(errors)
         );
         ApiError apiError = new ApiError(
