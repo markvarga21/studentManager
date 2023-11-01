@@ -5,6 +5,8 @@ import com.markvarga21.studentmanager.entity.StudentImage;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.util.StudentImageType;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -61,12 +63,13 @@ public class FileUploadController {
      * @return The image for the specified type.
      */
     @GetMapping("/{passportNumber}")
-    public ResponseEntity<byte[]> getImageForType(
+    public ResponseEntity<?> getImageForType(
             @PathVariable("passportNumber") final String passportNumber,
             @QueryParam("imageType") final StudentImageType imageType
             ) {
         byte[] image = this.fileUploadService
                 .getImageForType(passportNumber, imageType);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(image);

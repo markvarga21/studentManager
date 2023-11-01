@@ -25,11 +25,13 @@ public class StudentImage {
      * The image of the student.
      */
     @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] passportImage;
 
     /**
      * The selfie of the student.
      */
     @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] selfieImage;
 }

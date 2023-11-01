@@ -14,6 +14,7 @@ import com.markvarga21.studentmanager.exception.InvalidDocumentException;
 import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import com.markvarga21.studentmanager.service.StudentService;
+import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import com.markvarga21.studentmanager.util.CountryNameFetcher;
@@ -28,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,7 +40,6 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class FormRecognizerServiceImpl implements FormRecognizerService {
     /**
      * The default value if the field is empty.
@@ -78,6 +77,11 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * A service which is used to manipulate the student data.
      */
     private final StudentService studentService;
+
+    /**
+     * A service which is used to manipulate the face data.
+     */
+    private final FaceApiService faceApiService;
 
     /**
      * Extracts all the fields from the uploaded passport.
@@ -153,20 +157,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         LocalDate dateOfIssue = this.passportDateFormatter
                 .format(dateOfIssueField);
 
-        PassportValidationData passportValidationData =
-                PassportValidationData.builder()
-                        .firstName(firstName)
-                        .lastName(lastName)
-                        .birthDate(birthDate)
-                        .placeOfBirth(placeOfBirth)
-                        .countryOfCitizenship(countryOfCitizenship)
-                        .passportNumber(passportNumber)
-                        .gender(gender)
-                        .passportDateOfExpiry(dateOfExpiry)
-                        .passportDateOfIssue(dateOfIssue)
-                        .timestamp(LocalDateTime.now())
-                        .build();
-
         return StudentDto.builder()
                 .firstName(firstName)
                 .lastName(lastName)
@@ -211,6 +201,12 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     public PassportValidationResponse validatePassport(
             final StudentDto studentDataFromUser
     ) {
+        // Validating face data
+        this.faceApiService.validateFacesForPassportNumber(
+                studentDataFromUser.getPassportNumber()
+        );
+
+        log.info("Validating passport for user: {}", studentDataFromUser);
         String passportNumber = studentDataFromUser.getPassportNumber();
         Optional<PassportValidationData> passportValidationDataOptional
                 = this.passportValidationService
@@ -218,27 +214,25 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                         passportNumber
                 );
         if (passportValidationDataOptional.isEmpty()) {
-            this.studentService.setValidity(passportNumber, false);
             log.error("Passport validation data not found for user: {}", passportNumber);
             return PassportValidationResponse.builder()
                     .isValid(false)
                     .studentDto(studentDataFromUser)
                     .build();
         }
+        log.info("Passport validation data found for user in the database: {}", passportNumber);
         StudentDto studentDataFromPassport =
             PassportValidationData.getStudentDtoFromValidationData(
                     passportValidationDataOptional.get()
             );
         if (studentDataFromUser.equals(studentDataFromPassport)) {
-            this.studentService.setValidity(passportNumber, true);
-            log.info("Passport validation data found for user: {}", passportNumber);
+            log.info("Passport validation data valid!");
             return PassportValidationResponse.builder()
                     .isValid(true)
                     .studentDto(null)
                     .build();
         }
         log.error("Passport validation not valid for user: {}", studentDataFromUser);
-        this.studentService.setValidity(passportNumber, false);
         return PassportValidationResponse.builder()
                 .isValid(false)
                 .studentDto(studentDataFromPassport)

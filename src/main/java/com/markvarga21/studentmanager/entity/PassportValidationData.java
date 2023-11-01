@@ -3,11 +3,14 @@ package com.markvarga21.studentmanager.entity;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.checkerframework.common.aliasing.qual.Unique;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +25,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 public class PassportValidationData {
+    /**
+     * The ID of the passport validation data.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
     /**
      * The time of the validation.
      */
@@ -60,7 +70,7 @@ public class PassportValidationData {
     /**
      * The student's passport number.
      */
-    @Id
+    @Unique
     private String passportNumber;
 
     /**

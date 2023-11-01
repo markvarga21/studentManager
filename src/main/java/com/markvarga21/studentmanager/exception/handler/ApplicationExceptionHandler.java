@@ -1,11 +1,8 @@
 package com.markvarga21.studentmanager.exception.handler;
 
-import com.markvarga21.studentmanager.exception.ApiError;
-import com.markvarga21.studentmanager.exception.InvalidDateFormatException;
-import com.markvarga21.studentmanager.exception.InvalidPassportException;
-import com.markvarga21.studentmanager.exception.InvalidStudentException;
-import com.markvarga21.studentmanager.exception.OperationType;
-import com.markvarga21.studentmanager.exception.StudentNotFoundException;
+import com.markvarga21.studentmanager.exception.*;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.InvalidFacesApiError;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -243,6 +240,29 @@ public class ApplicationExceptionHandler {
                 new HttpHeaders(),
                 apiError.getStatus()
         );
+    }
+
+    /**
+     * Handles the exception if the faces are not identical.
+     *
+     * @param ex The exception caused by the faces not being identical.
+     * @return A readable {@code ResponseEntity} containing useful information.
+     */
+    @ExceptionHandler(InvalidFacesException.class)
+    public ResponseEntity<Object> handleInvalidFacesException(
+            final InvalidFacesException ex
+    ) {
+        log.error(ex.getMessage());
+        InvalidFacesApiError invalidFacesApiError = new InvalidFacesApiError(
+                ex.getMessage(),
+                ex.getPercentage()
+        );
+        return new ResponseEntity<>(
+                invalidFacesApiError,
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST
+        );
+
     }
 
     /**

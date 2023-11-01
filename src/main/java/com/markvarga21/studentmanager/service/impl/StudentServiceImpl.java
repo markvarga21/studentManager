@@ -44,12 +44,11 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public List<StudentDto> getAllStudents() {
-        List<StudentDto> studentDtoList = studentRepository
+        return studentRepository
                 .findAll()
                 .stream()
                 .map(this.studentMapper::mapStudentEntityToDto)
                 .toList();
-        return studentDtoList;
     }
 
     /**
@@ -94,7 +93,7 @@ public class StudentServiceImpl implements StudentService {
             final String passportNumber
     ) {
         Optional<Student> student = this.studentRepository
-                .findByPassportNumber(passportNumber);
+                .findStudentByPassportNumber(passportNumber);
         return student.isEmpty();
     }
 
@@ -210,14 +209,14 @@ public class StudentServiceImpl implements StudentService {
             final boolean valid
     ) {
         Optional<Student> studentOptional = this.studentRepository
-                .findByPassportNumber(passportNumber);
+                .findStudentByPassportNumber(passportNumber);
         if (studentOptional.isEmpty()) {
             String message = String.format(
-                "Student cant be modified! Cause: Student not found with passport number: %s",
+                "Student validity cannot be set! Cause: Student not found with passport number: %s",
                 passportNumber
             );
             log.error(message);
-            throw new StudentNotFoundException(message, OperationType.UPDATE);
+            return;
         }
         Student student = studentOptional.get();
         student.setValid(valid);

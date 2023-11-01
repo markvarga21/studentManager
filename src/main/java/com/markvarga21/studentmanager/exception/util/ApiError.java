@@ -1,5 +1,6 @@
-package com.markvarga21.studentmanager.exception;
+package com.markvarga21.studentmanager.exception.util;
 
+import com.markvarga21.studentmanager.exception.OperationType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;

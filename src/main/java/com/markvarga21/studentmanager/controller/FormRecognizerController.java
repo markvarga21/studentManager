@@ -2,10 +2,8 @@ package com.markvarga21.studentmanager.controller;
 
 
 import com.markvarga21.studentmanager.dto.StudentDto;
-import com.markvarga21.studentmanager.dto.PassportValidationResponse;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/form")
 @RequiredArgsConstructor
 @CrossOrigin
-@Slf4j
 public class FormRecognizerController {
     /**
      * Form recognizer service.

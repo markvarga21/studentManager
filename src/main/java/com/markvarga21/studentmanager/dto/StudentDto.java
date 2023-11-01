@@ -126,6 +126,34 @@ public class StudentDto {
         if (!(o instanceof StudentDto student)) {
             return false;
         }
+        if (this.firstName == null || student.getFirstName() == null) {
+            return false;
+        }
+        if (this.lastName == null || student.getLastName() == null) {
+            return false;
+        }
+        if (this.birthDate == null || student.getBirthDate() == null) {
+            return false;
+        }
+        if (this.placeOfBirth == null || student.getPlaceOfBirth() == null) {
+            return false;
+        }
+        if (this.countryOfCitizenship == null || student.getCountryOfCitizenship() == null) {
+            return false;
+        }
+        if (this.gender == null || student.getGender() == null) {
+            return false;
+        }
+        if (this.passportNumber == null || student.getPassportNumber() == null) {
+            return false;
+        }
+        if (this.passportDateOfIssue == null || student.getPassportDateOfIssue() == null) {
+            return false;
+        }
+        if (this.passportDateOfExpiry == null || student.getPassportDateOfExpiry() == null) {
+            return false;
+        }
+
         return student.getFirstName()
                     .equalsIgnoreCase(this.firstName)
                 && student.getLastName()

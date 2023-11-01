@@ -1,12 +1,14 @@
 package com.markvarga21.studentmanager.service.validation.passport.impl;
 
 import com.markvarga21.studentmanager.entity.PassportValidationData;
-import com.markvarga21.studentmanager.entity.Student;
+import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.exception.PassportValidationDataNotFoundException;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +21,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PassportValidationServiceImpl
         implements PassportValidationService {
     /**
@@ -71,6 +74,8 @@ public class PassportValidationServiceImpl
     public Optional<PassportValidationData> getPassportValidationDataByPassportNumber(
             final String passportNumber
     ) {
+        log.info("Retrieving passport validation data with passport number: {}",
+                passportNumber);
         return this.passportValidationDataRepository
                 .getPassportValidationDataByPassportNumber(passportNumber);
     }
@@ -87,6 +92,16 @@ public class PassportValidationServiceImpl
             final PassportValidationData data
     ) {
         data.setTimestamp(LocalDateTime.now());
+        Optional<PassportValidationData> passportValidationDataOptional
+                = this.passportValidationDataRepository
+                        .getPassportValidationDataByPassportNumber(
+                                data.getPassportNumber()
+                        );
+        if (passportValidationDataOptional.isPresent()) {
+            String message = "Passport validation data with passport number %s already exists.";
+            throw new InvalidPassportException(message);
+        }
+        log.info("Saving passport validation data: {}", data);
         return this.passportValidationDataRepository
                 .save(data);
     }

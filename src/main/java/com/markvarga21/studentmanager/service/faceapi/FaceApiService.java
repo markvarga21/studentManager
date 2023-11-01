@@ -40,4 +40,11 @@ public interface FaceApiService {
      * @return The face ID for the given file.
      */
     String getFaceIdForFile(MultipartFile file);
+
+    /**
+     * Validates the faces for the given passport number.
+     *
+     * @param passportNumber The passport number.
+     */
+    void validateFacesForPassportNumber(String passportNumber);
 }

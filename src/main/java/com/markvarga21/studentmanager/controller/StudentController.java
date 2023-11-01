@@ -4,6 +4,7 @@ import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
+import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,11 @@ public class StudentController {
      * File upload service.
      */
     private final FileUploadService fileUploadService;
+
+    /**
+     * Facial validation service.
+     */
+    private final FacialValidationService facialValidationService;
 
     /**
      * Retrieves all students which are present in the application.
@@ -108,6 +114,9 @@ public class StudentController {
 
         this.fileUploadService.deleteImage(passportNumber);
         this.formRecognizerService.deletePassportValidationByPassportNumber(
+                passportNumber
+        );
+        this.facialValidationService.deleteFacialValidationDataByPassportNumber(
                 passportNumber
         );
 

@@ -17,5 +17,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
      * @param passportNumber The students passport number.
      * @return The student.
      */
-    Optional<Student> findByPassportNumber(String passportNumber);
+    Optional<Student> findStudentByPassportNumber(String passportNumber);
 }
