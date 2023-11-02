@@ -103,7 +103,7 @@ public class FileUploadController {
      * @param file The file to be changed.
      * @return A response entity.
      */
-    @PostMapping("changeImage/{passportNumber}/{imageType}")
+    @PostMapping("/changeImage/{passportNumber}/{imageType}")
     public ResponseEntity<?> changeImage(
             @PathVariable("passportNumber") final String passportNumber,
             @PathVariable("imageType") final StudentImageType imageType,

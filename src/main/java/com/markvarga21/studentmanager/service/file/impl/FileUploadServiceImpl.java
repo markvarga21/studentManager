@@ -193,8 +193,16 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         try {
             switch (imageType) {
-                case SELFIE -> studentImage.setSelfieImage(file.getBytes());
-                case PASSPORT -> studentImage.setPassportImage(file.getBytes());
+                case SELFIE -> {
+                    log.info("Changing selfie image for student with passport number: {}", passportNumber);
+                    studentImage.setSelfieImage(file.getBytes());
+                    this.studentImageRepository.save(studentImage);
+                }
+                case PASSPORT -> {
+                    log.info("Changing passport image for student with passport number: {}", passportNumber);
+                    studentImage.setPassportImage(file.getBytes());
+                    this.studentImageRepository.save(studentImage);
+                }
                 default -> {
                     String message = "Image type not provided or not valid!\nValid image types are: PASSPORT, SELFIE";
                     log.error(message);
