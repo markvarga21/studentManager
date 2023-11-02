@@ -5,6 +5,7 @@ import com.markvarga21.studentmanager.repository.FacialValidationDataRepository;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,6 +16,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FacialValidationServiceImpl implements FacialValidationService {
     /**
      * A repository which is used to access facial
@@ -67,5 +69,32 @@ public class FacialValidationServiceImpl implements FacialValidationService {
     ) {
         this.repository
                 .deleteFacialValidationDataByPassportNumber(passportNumber);
+    }
+
+    /**
+     * Sets the facial validity by passport number.
+     *
+     * @param passportNumber The passport number of the facial validation data.
+     */
+    @Override
+    @Transactional
+    public void setFacialValidationToValid(
+            final String passportNumber
+    ) {
+        FacialValidationData data =
+            this.getFacialValidationDataByPassportNumber(passportNumber);
+        if (data == null) {
+            log.info("Facial validation data not found, creating new one.");
+            data = new FacialValidationData();
+            data.setPassportNumber(passportNumber);
+            data.setIsValid(true);
+            data.setPercentage(1.0);
+            this.repository.save(data);
+            return;
+        }
+        log.info("Setting facial validation data to valid.");
+        data.setIsValid(true);
+        data.setPercentage(1.0);
+        this.repository.save(data);
     }
 }

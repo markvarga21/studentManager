@@ -5,8 +5,10 @@ import com.markvarga21.studentmanager.dto.PassportValidationResponse;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
+import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,6 +31,7 @@ import java.util.List;
 @RequestMapping("/api/v1/validations")
 @RequiredArgsConstructor
 @CrossOrigin
+@Slf4j
 public class PassportValidationController {
     /**
      * A service which is used to access passport
@@ -40,6 +43,11 @@ public class PassportValidationController {
      * Form recognizer service.
      */
     private final FormRecognizerService formRecognizerService;
+
+    /**
+     * Facial validation service.
+     */
+    private final FacialValidationService facialValidationService;
 
     /**
      * Retrieves all the passport validation data.
@@ -91,6 +99,7 @@ public class PassportValidationController {
     public ResponseEntity<Void> validatePassportManually(
             @RequestParam("passportNumber") final String passportNumber
     ) {
+        log.info("Manually validating passport with passport number: {}", passportNumber);
         this.formRecognizerService.validatePassportManually(passportNumber);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -93,4 +93,23 @@ public class FileUploadController {
         this.fileUploadService.uploadFile(passportNumber, passport, selfie);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    /**
+     * The changeImage method is used to change
+     * the image(s) in the database.
+     *
+     * @param passportNumber The students passport number.
+     * @param imageType The type of image.
+     * @param file The file to be changed.
+     * @return A response entity.
+     */
+    @PostMapping("changeImage/{passportNumber}/{imageType}")
+    public ResponseEntity<?> changeImage(
+            @PathVariable("passportNumber") final String passportNumber,
+            @PathVariable("imageType") final StudentImageType imageType,
+            @RequestParam("file") final MultipartFile file
+    ) {
+        this.fileUploadService.changeImage(passportNumber, imageType, file);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }

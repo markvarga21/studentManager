@@ -201,7 +201,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     public PassportValidationResponse validatePassport(
             final StudentDto studentDataFromUser
     ) {
-        // Validating face data
         this.faceApiService.validateFacesForPassportNumber(
                 studentDataFromUser.getPassportNumber()
         );

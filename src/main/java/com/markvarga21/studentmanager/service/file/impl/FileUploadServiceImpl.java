@@ -160,4 +160,54 @@ public class FileUploadServiceImpl implements FileUploadService {
                                     .getSelfieImage();
         };
     }
+
+    /**
+     * The changeImage method is used to change
+     * the image for the given type.
+     *
+     * @param passportNumber The students passport number.
+     * @param imageType The image type.
+     * @param file The new image.
+     */
+    @Override
+    public void changeImage(
+            final String passportNumber,
+            final StudentImageType imageType,
+            final MultipartFile file
+    ) {
+        if (file == null) {
+            String message = "File not provided!";
+            log.error(message);
+            throw new InvalidDocumentException(message);
+        }
+
+        StudentImage studentImage = this.studentImageRepository
+                .findById(passportNumber)
+                .orElseThrow(() -> new StudentNotFoundException(
+                        String.format(
+                                "Student with passport number: %s does not exist",
+                                passportNumber
+                        ),
+                        OperationType.UPDATE
+                ));
+
+        try {
+            switch (imageType) {
+                case SELFIE -> studentImage.setSelfieImage(file.getBytes());
+                case PASSPORT -> studentImage.setPassportImage(file.getBytes());
+                default -> {
+                    String message = "Image type not provided or not valid!\nValid image types are: PASSPORT, SELFIE";
+                    log.error(message);
+                    throw new InvalidImageTypeException(message);
+                }
+            }
+        } catch (IOException e) {
+            String message = String.format(
+                    "Error occurred while uploading image for student with passport number: %s",
+                    passportNumber
+            );
+            log.error(message);
+            throw new InvalidDocumentException(message);
+        }
+    }
 }

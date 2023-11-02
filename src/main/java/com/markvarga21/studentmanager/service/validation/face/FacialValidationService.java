@@ -34,4 +34,13 @@ public interface FacialValidationService {
     void deleteFacialValidationDataByPassportNumber(
             String passportNumber
     );
+
+    /**
+     * Sets the facial validity by passport number.
+     *
+     * @param passportNumber The passport number of the facial validation data.
+     */
+    void setFacialValidationToValid(
+            String passportNumber
+    );
 }

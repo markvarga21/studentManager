@@ -52,4 +52,14 @@ public interface FileUploadService {
      * @return The image.
      */
     byte[] getImageForType(String passportNumber, StudentImageType type);
+
+    /**
+     * The changeImage method is used to change
+     * the image for the given type.
+     *
+     * @param passportNumber The students passport number.
+     * @param imageType The image type.
+     * @param file The new image.
+     */
+    void changeImage(String passportNumber, StudentImageType imageType, MultipartFile file);
 }
