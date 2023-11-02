@@ -19,12 +19,10 @@ import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import com.markvarga21.studentmanager.util.CountryNameFetcher;
 import com.markvarga21.studentmanager.util.PassportDateFormatter;
-import com.markvarga21.studentmanager.util.mapping.StudentMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -94,6 +92,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             final MultipartFile passport
     ) {
         try {
+            log.info("Inside getFieldsFromDocument method!");
             BinaryData binaryData = BinaryData.fromBytes(passport.getBytes());
             String modelId = "prebuilt-idDocument";
             SyncPoller<OperationResult, AnalyzeResult> analyzeDocumentPoller =
@@ -128,8 +127,10 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     public StudentDto extractDataFromPassport(
             final MultipartFile passport
     ) {
+        log.info("Passport is null: " + (passport == null));
         Map<String, DocumentField> passportFields = this
                 .getFieldsFromDocument(passport);
+        log.info("Inside extract data and after getFieldsFromDocument method!");
         String firstName = this
                 .getFieldValue(passportFields, "FirstName");
         String lastName = this

@@ -30,23 +30,11 @@ public class CountryNameFetcher {
      * @return The name of the country.
      */
     public String getCountryNameForCode(final String countryCode) {
-        try {
-            Resource resource = resourceLoader
-                    .getResource("classpath:static/countries.json");
-            String jsonStr = new String(
-                    Files.readAllBytes(Paths.get(resource.getURI()))
-            );
-
-            JSONObject jsonObj = new JSONObject(jsonStr);
-
-            if (jsonObj.has(countryCode)) {
-                return jsonObj.getString(countryCode);
-            } else {
-                return countryCode;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        JSONObject jsonObj = new JSONObject(CountryNames.COUNTRIES);
+        if (jsonObj.has(countryCode)) {
+            return jsonObj.getString(countryCode);
+        } else {
+            return countryCode;
         }
-        return countryCode;
     }
 }
