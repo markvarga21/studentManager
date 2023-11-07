@@ -349,15 +349,17 @@ public class FaceApiServiceImpl implements FaceApiService {
      * Validates the faces for the given passport number.
      *
      * @param passportNumber The passport number.
+     * @param studentId The id of the student.
      */
     @Override
     public void validateFacesForPassportNumber(
-            final String passportNumber
+            final String passportNumber,
+            final Long studentId
     ) {
         byte[] passportBytes = this.fileUploadService
-                .getImageForType(passportNumber, StudentImageType.PASSPORT);
+                .getImageForType(studentId, StudentImageType.PASSPORT);
         byte[] selfieBytes = this.fileUploadService
-                .getImageForType(passportNumber, StudentImageType.SELFIE);
+                .getImageForType(studentId, StudentImageType.SELFIE);
         log.info(passportBytes.length + " " + selfieBytes.length);
         FaceApiResponse validityOfFaces = this
                 .getValidityOfFaces(passportBytes, selfieBytes);

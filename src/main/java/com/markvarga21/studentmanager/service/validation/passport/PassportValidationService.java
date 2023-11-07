@@ -1,5 +1,6 @@
 package com.markvarga21.studentmanager.service.validation.passport;
 
+import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
 import org.springframework.stereotype.Service;
 
@@ -45,4 +46,13 @@ public interface PassportValidationService {
     PassportValidationData createPassportValidationData(
             PassportValidationData data
     );
+
+    /**
+     * Retrieves {@code StudentDto} object from
+     * the validation data by passport number.
+     *
+     * @param passportNumber The passport number of the student.
+     * @return The {@code StudentDto} object.
+     */
+    StudentDto getPassportValidationByPassportNumber(String passportNumber);
 }

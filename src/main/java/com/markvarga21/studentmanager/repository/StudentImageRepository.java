@@ -9,13 +9,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface StudentImageRepository
-        extends JpaRepository<StudentImage, String> {
+        extends JpaRepository<StudentImage, Long> {
     /**
      * Deletes images using the passport number.
      *
-     * @param passportNumber The passport number.
+     * @param studentId The id of the student.
      */
-    void deleteStudentImagesByPassportNumber(
-            String passportNumber
-    );
+    void deleteStudentImageByStudentId(Long studentId);
 }

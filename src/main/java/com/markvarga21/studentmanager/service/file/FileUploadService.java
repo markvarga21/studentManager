@@ -17,12 +17,12 @@ public interface FileUploadService {
      * The uploadFile method is used to store
      * the image in the database.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The id of the student.
      * @param passportFile The passport file.
      * @param selfieFile The selfie file.
      */
     void uploadFile(
-            String passportNumber,
+            Long studentId,
             MultipartFile passportFile,
             MultipartFile selfieFile
     );
@@ -39,27 +39,27 @@ public interface FileUploadService {
      * The deleteImage method is used to delete
      * the image from the database.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The id of the student.
      */
-    void deleteImage(String passportNumber);
+    void deleteImage(Long studentId);
 
     /**
      * The getImageForType method is used to get
      * the image for the given type.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The id of the student.
      * @param type The image type.
      * @return The image.
      */
-    byte[] getImageForType(String passportNumber, StudentImageType type);
+    byte[] getImageForType(Long studentId, StudentImageType type);
 
     /**
      * The changeImage method is used to change
      * the image for the given type.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The id of the student.
      * @param imageType The image type.
      * @param file The new image.
      */
-    void changeImage(String passportNumber, StudentImageType imageType, MultipartFile file);
+    void changeImage(Long studentId, StudentImageType imageType, MultipartFile file);
 }

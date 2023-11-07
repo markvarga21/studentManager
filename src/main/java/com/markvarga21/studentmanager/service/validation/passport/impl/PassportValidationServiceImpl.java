@@ -1,5 +1,6 @@
 package com.markvarga21.studentmanager.service.validation.passport.impl;
 
+import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.exception.PassportValidationDataNotFoundException;
@@ -104,5 +105,28 @@ public class PassportValidationServiceImpl
         log.info("Saving passport validation data: {}", data);
         return this.passportValidationDataRepository
                 .save(data);
+    }
+
+    /**
+     * Retrieves {@code StudentDto} object from
+     * the validation data by passport number.
+     *
+     * @param passportNumber The passport number of the student.
+     * @return The {@code StudentDto} object.
+     */
+    @Override
+    public StudentDto getPassportValidationByPassportNumber(
+            final String passportNumber
+    ) {
+        Optional<PassportValidationData> dataOptional =
+                this.passportValidationDataRepository
+                        .getPassportValidationDataByPassportNumber(passportNumber);
+        if (dataOptional.isEmpty()) {
+            log.error("Passport validation data with passport number {} not found.",
+                    passportNumber);
+        }
+        PassportValidationData data = dataOptional.get();
+        return PassportValidationData
+                .getStudentDtoFromValidationData(data);
     }
 }

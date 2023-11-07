@@ -19,7 +19,7 @@ public class StudentImage {
      * The passport number of the student.
      */
     @Id
-    private String passportNumber;
+    private Long studentId;
 
     /**
      * The image of the student.

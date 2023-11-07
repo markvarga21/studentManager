@@ -54,9 +54,9 @@ public interface FormRecognizerService {
     /**
      * Validates the passport manually (usually by an admin).
      *
-     * @param passportNumber The passport number.
+     * @param studentId The id of the student.
      */
-    void validatePassportManually(String passportNumber);
+    void validatePassportManually(Long studentId);
 
     /**
      * Checks if the user is valid.
