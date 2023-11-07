@@ -1,11 +1,19 @@
 package com.markvarga21.studentmanager.controller;
 
 import com.azure.core.annotation.QueryParam;
+import com.markvarga21.studentmanager.dto.StudentDto;
+import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.entity.StudentImage;
+import com.markvarga21.studentmanager.service.StudentService;
+import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
+import com.markvarga21.studentmanager.service.form.FormRecognizerService;
+import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import com.markvarga21.studentmanager.util.StudentImageType;
+import com.markvarga21.studentmanager.util.mapping.StudentMapper;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,12 +31,37 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin
 @RequestMapping("/api/v1/files")
+@Slf4j
 public class FileUploadController {
     /**
      * The FileUploadService is used to manipulate
      * the image in the database.
      */
     private final FileUploadService fileUploadService;
+
+    /**
+     * The StudentService is used to manipulate
+     * the student in the database.
+     */
+    private final StudentService studentService;
+
+    /**
+     * The FaceApiService is used to manipulate
+     * face related data.
+     */
+    private final FaceApiService faceApiService;
+
+    /**
+     * The FormRecognizerService is used to
+     * extract data from the passport.
+     */
+    private final FormRecognizerService formRecognizerService;
+
+    /**
+     * The PassportValidationService is used to
+     * validate the passport.
+     */
+    private final PassportValidationService passportValidationService;
 
     /**
      * The getAllImages method is used to get all
@@ -110,6 +143,21 @@ public class FileUploadController {
             @RequestParam("file") final MultipartFile file
     ) {
         this.fileUploadService.changeImage(passportNumber, imageType, file);
+        this.studentService.setValidity(passportNumber, false);
+        switch (imageType) {
+            case PASSPORT -> {
+                this.passportValidationService.deletePassportValidationData(passportNumber);
+                // Extract new validation data
+                StudentDto studentDto = this.formRecognizerService
+                        .extractDataFromPassport(file);
+                // Save new validation data
+                PassportValidationData data = PassportValidationData
+                        .createPassportValidationDataForStudent(studentDto);
+                this.passportValidationService.createPassportValidationData(data);
+            }
+            case SELFIE -> this.faceApiService.deleteFace(passportNumber);
+            default -> log.error("Invalid image type");
+        }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

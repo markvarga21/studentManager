@@ -47,4 +47,11 @@ public interface FaceApiService {
      * @param passportNumber The passport number.
      */
     void validateFacesForPassportNumber(String passportNumber);
+
+    /**
+     * Deletes the face with the given passport number.
+     *
+     * @param passportNumber The passport number.
+     */
+    void deleteFace(String passportNumber);
 }

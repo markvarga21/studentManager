@@ -372,4 +372,17 @@ public class FaceApiServiceImpl implements FaceApiService {
         this.facialValidationService
                 .saveFacialValidationData(facialValidationData);
     }
+
+    /**
+     * Deletes the facial validation data for the given passport number.
+     *
+     * @param passportNumber The passport number.
+     */
+    @Override
+    public void deleteFace(
+            final String passportNumber
+    ) {
+        this.facialValidationService
+                .deleteFacialValidationDataByPassportNumber(passportNumber);
+    }
 }

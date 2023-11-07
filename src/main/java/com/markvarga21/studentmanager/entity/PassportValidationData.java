@@ -105,4 +105,28 @@ public class PassportValidationData {
                 .countryOfCitizenship(passportValidationData.countryOfCitizenship)
                 .build();
     }
+
+    /**
+     * Creates a new passport validation data from the provided
+     * {@code StudentDto}.
+     *
+     * @param studentDto The student DTO.
+     * @return A new {@code PassportValidationData} object.
+     */
+    public static PassportValidationData createPassportValidationDataForStudent(
+            final StudentDto studentDto
+    ) {
+        return PassportValidationData.builder()
+                .passportNumber(studentDto.getPassportNumber())
+                .firstName(studentDto.getFirstName())
+                .lastName(studentDto.getLastName())
+                .gender(studentDto.getGender())
+                .passportDateOfIssue(studentDto.getPassportDateOfIssue())
+                .passportDateOfExpiry(studentDto.getPassportDateOfExpiry())
+                .birthDate(studentDto.getBirthDate())
+                .placeOfBirth(studentDto.getPlaceOfBirth())
+                .countryOfCitizenship(studentDto.getCountryOfCitizenship())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
 }

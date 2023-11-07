@@ -1,5 +1,7 @@
 package com.markvarga21.studentmanager.service.file.impl;
 
+import com.markvarga21.studentmanager.dto.StudentDto;
+import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.entity.StudentImage;
 import com.markvarga21.studentmanager.exception.InvalidDocumentException;
 import com.markvarga21.studentmanager.exception.InvalidImageTypeException;
@@ -7,7 +9,10 @@ import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentImageRepository;
+import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
+import com.markvarga21.studentmanager.service.form.FormRecognizerService;
+import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import com.markvarga21.studentmanager.util.StudentImageType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -202,6 +207,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                     log.info("Changing passport image for student with passport number: {}", passportNumber);
                     studentImage.setPassportImage(file.getBytes());
                     this.studentImageRepository.save(studentImage);
+
                 }
                 default -> {
                     String message = "Image type not provided or not valid!\nValid image types are: PASSPORT, SELFIE";
