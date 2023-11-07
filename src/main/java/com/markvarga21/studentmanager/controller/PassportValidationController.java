@@ -2,7 +2,6 @@ package com.markvarga21.studentmanager.controller;
 
 
 import com.markvarga21.studentmanager.dto.PassportValidationResponse;
-import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -77,15 +77,17 @@ public class PassportValidationController {
      * Validates the data entered by the user against the data
      * which can be found on the passport.
      *
-     * @param student The student itself.
+     * @param studentJson The student itself.
+     * @param passport The photo of the passport.
      * @return A {@code PassportValidationResponse} object.
      */
     @PostMapping("/validate")
     public ResponseEntity<PassportValidationResponse> validatePassport(
-            @RequestBody final StudentDto student
+            @RequestParam final String studentJson,
+            @RequestParam("passport") final MultipartFile passport
     ) {
         PassportValidationResponse passportValidationResponse =
-                this.formRecognizerService.validatePassport(student);
+                this.formRecognizerService.validatePassport(studentJson, passport);
         return new ResponseEntity<>(passportValidationResponse, HttpStatus.OK);
     }
 

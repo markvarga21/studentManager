@@ -150,11 +150,6 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentOptional.get();
 
         String updatedStudentPassport = studentDto.getPassportNumber();
-        if (!student.getPassportNumber().equalsIgnoreCase(updatedStudentPassport)) {
-            String message = String.format("Passport number '%s' already in use!", updatedStudentPassport);
-            log.error(message);
-            throw new InvalidPassportException(message);
-        }
 
         student.setGender(studentDto.getGender());
         student.setFirstName(studentDto.getFirstName());

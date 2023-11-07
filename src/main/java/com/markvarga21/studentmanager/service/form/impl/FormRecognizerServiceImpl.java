@@ -19,6 +19,7 @@ import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import com.markvarga21.studentmanager.util.CountryNameFetcher;
 import com.markvarga21.studentmanager.util.PassportDateFormatter;
+import com.markvarga21.studentmanager.util.mapping.StudentMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -80,6 +81,12 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * A service which is used to manipulate the face data.
      */
     private final FaceApiService faceApiService;
+
+    /**
+     * A mapper which is used to map the student data
+     * from JSON string to POJO.
+     */
+    private final StudentMapper studentMapper;
 
     /**
      * Extracts all the fields from the uploaded passport.
@@ -194,14 +201,18 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * Validates the data entered by the user against the data
      * which can be found on the passport.
      *
-     * @param studentDataFromUser The student itself in a JSON string.
+     * @param studentJson The student itself in a JSON string.
+     * @param passport The passport file.
      * @return A {@code PassportValidationResponse} object.
      */
     @Override
     @Transactional
     public PassportValidationResponse validatePassport(
-            final StudentDto studentDataFromUser
+            final String studentJson,
+            final MultipartFile passport
     ) {
+        StudentDto studentDataFromUser = this.studentMapper
+                .mapJsonToDto(studentJson);
         this.faceApiService.validateFacesForPassportNumber(
                 studentDataFromUser.getPassportNumber()
         );
@@ -213,13 +224,48 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                 .getPassportValidationDataByPassportNumber(
                         passportNumber
                 );
-        if (passportValidationDataOptional.isEmpty()) {
+        if (passportValidationDataOptional.isEmpty() && passport == null) {
             log.error("Passport validation data not found for user: {}", passportNumber);
             return PassportValidationResponse.builder()
                     .isValid(false)
                     .studentDto(studentDataFromUser)
                     .build();
         }
+
+        PassportValidationData validationForStudentPassport =
+                this.validationRepository.getPassportValidationDataByPassportNumber(
+                        studentDataFromUser.getPassportNumber()
+                ).orElse(null);
+        if (validationForStudentPassport == null && passport != null) {
+            // Extract new validation data
+            StudentDto studentFromPassport = this.extractDataFromPassport(passport);
+            Optional<PassportValidationData> dataOptional = this.validationRepository
+                    .getPassportValidationDataByPassportNumber(studentFromPassport.getPassportNumber());
+            if (dataOptional.isEmpty()) {
+                log.error("Passport validation data not found for user: {}", passportNumber);
+                return PassportValidationResponse.builder()
+                        .isValid(false)
+                        .studentDto(studentDataFromUser)
+                        .build();
+            }
+
+            StudentDto studentFromValidationDatabase =
+                    PassportValidationData.getStudentDtoFromValidationData(
+                            dataOptional.get()
+                    );
+            if (studentFromPassport.equals(studentFromValidationDatabase)) {
+                log.info("Passport validation data valid!");
+                return PassportValidationResponse.builder()
+                        .isValid(true)
+                        .studentDto(null)
+                        .build();
+            }
+            return PassportValidationResponse.builder()
+                    .isValid(false)
+                    .studentDto(studentFromPassport)
+                    .build();
+        }
+
         log.info("Passport validation data found for user in the database: {}", passportNumber);
         StudentDto studentDataFromPassport =
             PassportValidationData.getStudentDtoFromValidationData(

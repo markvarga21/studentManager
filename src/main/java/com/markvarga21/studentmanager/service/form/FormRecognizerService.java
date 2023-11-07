@@ -34,10 +34,12 @@ public interface FormRecognizerService {
      * which can be found on the passport.
      *
      * @param studentDto The student itself.
+     * @param passport The photo of the passport.
      * @return A {@code PassportValidationResponse} object.
      */
     PassportValidationResponse validatePassport(
-            StudentDto studentDto
+            String studentDto,
+            MultipartFile passport
     );
 
     /**
