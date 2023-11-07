@@ -2,6 +2,7 @@ package com.markvarga21.studentmanager.controller;
 
 
 import com.markvarga21.studentmanager.dto.PassportValidationResponse;
+import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
@@ -43,11 +44,6 @@ public class PassportValidationController {
      * Form recognizer service.
      */
     private final FormRecognizerService formRecognizerService;
-
-    /**
-     * Facial validation service.
-     */
-    private final FacialValidationService facialValidationService;
 
     /**
      * Retrieves all the passport validation data.
@@ -139,5 +135,21 @@ public class PassportValidationController {
                 createdPassportValidationData,
                 HttpStatus.CREATED
         );
+    }
+
+    /**
+     * Retrieves {@code StudentDto} object from
+     * the validation data by passport number.
+     *
+     * @param passportNumber The passport number of the student.
+     * @return The {@code StudentDto} object.
+     */
+    @GetMapping("/{passportNumber}")
+    public ResponseEntity<StudentDto> getPassportValidationByPassportNumber(
+            @PathVariable("passportNumber") final String passportNumber
+    ) {
+        StudentDto studentDto = this.passportValidationService
+                .getPassportValidationByPassportNumber(passportNumber);
+        return new ResponseEntity<>(studentDto, HttpStatus.OK);
     }
 }

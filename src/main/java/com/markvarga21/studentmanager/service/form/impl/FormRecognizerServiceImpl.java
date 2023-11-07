@@ -233,34 +233,22 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                     .build();
         }
 
-        PassportValidationData validationForStudentPassport =
-                this.validationRepository.getPassportValidationDataByPassportNumber(
+        Optional<PassportValidationData> passportValidationData
+                = this.passportValidationService.getPassportValidationDataByPassportNumber(
                         studentDataFromUser.getPassportNumber()
-                ).orElse(null);
-        if (validationForStudentPassport == null && passport != null) {
-            // Extract new validation data
+        );
+        if (passportValidationData.isEmpty()) {
             StudentDto studentFromPassport = this.extractDataFromPassport(passport);
-            Optional<PassportValidationData> dataOptional = this.validationRepository
-                    .getPassportValidationDataByPassportNumber(studentFromPassport.getPassportNumber());
-            if (dataOptional.isEmpty()) {
-                log.error("Passport validation data not found for user: {}", passportNumber);
-                return PassportValidationResponse.builder()
-                        .isValid(false)
-                        .studentDto(studentDataFromUser)
-                        .build();
+            Optional<PassportValidationData> data =
+                    this.passportValidationService.getPassportValidationDataByPassportNumber(
+                            studentFromPassport.getPassportNumber()
+                    );
+            if (data.isEmpty()) {
+                String message = String.format("Passport validation data not found for passport number: '%s'", passportNumber);
+                log.error(message);
+                throw new InvalidPassportException(message);
             }
 
-            StudentDto studentFromValidationDatabase =
-                    PassportValidationData.getStudentDtoFromValidationData(
-                            dataOptional.get()
-                    );
-            if (studentFromPassport.equals(studentFromValidationDatabase)) {
-                log.info("Passport validation data valid!");
-                return PassportValidationResponse.builder()
-                        .isValid(true)
-                        .studentDto(null)
-                        .build();
-            }
             return PassportValidationResponse.builder()
                     .isValid(false)
                     .studentDto(studentFromPassport)
