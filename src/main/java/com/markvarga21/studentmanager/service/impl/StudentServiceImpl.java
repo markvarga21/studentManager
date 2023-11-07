@@ -2,6 +2,7 @@ package com.markvarga21.studentmanager.service.impl;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Student;
+import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.exception.InvalidStudentException;
 import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
@@ -148,6 +149,13 @@ public class StudentServiceImpl implements StudentService {
         }
         Student student = studentOptional.get();
 
+        String updatedStudentPassport = studentDto.getPassportNumber();
+        if (!student.getPassportNumber().equalsIgnoreCase(updatedStudentPassport)) {
+            String message = String.format("Passport number '%s' already in use!", updatedStudentPassport);
+            log.error(message);
+            throw new InvalidPassportException(message);
+        }
+
         student.setGender(studentDto.getGender());
         student.setFirstName(studentDto.getFirstName());
         student.setLastName(studentDto.getLastName());
@@ -155,7 +163,7 @@ public class StudentServiceImpl implements StudentService {
                 .setCountryOfCitizenship(studentDto.getCountryOfCitizenship());
         student.setPlaceOfBirth(studentDto.getPlaceOfBirth());
         student.setBirthDate(studentDto.getBirthDate());
-        student.setPassportNumber(studentDto.getPassportNumber());
+        student.setPassportNumber(updatedStudentPassport);
         student.setPassportDateOfExpiry(studentDto.getPassportDateOfExpiry());
         student.setPassportDateOfIssue(studentDto.getPassportDateOfIssue());
         student.setValid(false);

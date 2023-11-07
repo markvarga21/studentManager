@@ -1,10 +1,14 @@
 package com.markvarga21.studentmanager.util;
 
+import com.markvarga21.studentmanager.exception.PassportNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
+import java.io.IOException;
 
 /**
  * A class which is used to compress images.
@@ -14,53 +18,88 @@ public final class ImageCompressor {
     private ImageCompressor() { }
 
     /**
-     * Compresses the given image.
-     *
-     * @param data The image to be compressed.
-     * @return The compressed image.
+     * The scale of which the scale of the image is decreased.
      */
-    public static byte[] compressImage(final byte[] data) {
-        log.info("Compressing image...");
-        Deflater deflater = new Deflater();
-        deflater.setLevel(Deflater.BEST_COMPRESSION);
-        deflater.setInput(data);
-        deflater.finish();
+    public static final float SCALE_DECREASE_STEP = 0.1F;
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[1024];
-        while (!deflater.finished()) {
-            int size = deflater.deflate(tmp);
-            outputStream.write(tmp, 0, size);
-        }
-        try {
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return outputStream.toByteArray();
+    /**
+     * The maximum file size accepted by the database.
+     */
+    public static final int DEFAULT_SIZE_LIMIT = 4_194_304;
+
+    /**
+     * Converts the given image to a byte array.
+     *
+     * @param bi The image to convert.
+     * @param format The format of the image.
+     * @return The byte array of the image.
+     * @throws IOException If the image could not be converted.
+     */
+    public static byte[] toByteArray(
+            final BufferedImage bi,
+            final String format
+    )
+            throws IOException {
+
+        ByteArrayOutputStream byteArrayOutputStream =
+                new ByteArrayOutputStream();
+        ImageIO.write(bi, format, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
     }
 
     /**
-     * Decompresses the given image.
+     * Compresses the given image.
      *
-     * @param data The image to be decompressed.
-     * @return The decompressed image.
+     * @param image The image to compress.
+     * @return The compressed image.
      */
-    public static byte[] decompressImage(final byte[] data) {
-        log.info("Decompressing image...");
-        Inflater inflater = new Inflater();
-        inflater.setInput(data);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[1024];
+    public static byte[] compressImage(final MultipartFile image) {
         try {
-            while (!inflater.finished()) {
-                int count = inflater.inflate(tmp);
-                outputStream.write(tmp, 0, count);
+            byte[] imageBytes = image.getBytes();
+            long sizeInBytes = imageBytes.length;
+            log.info(
+                    "File size before compression: {}B",
+                    getFileSize(imageBytes)
+            );
+            if (sizeInBytes <= DEFAULT_SIZE_LIMIT) {
+                return imageBytes;
             }
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            log.error("File size is too big, compressing...");
+            float scale = 1.0F;
+            while (sizeInBytes > DEFAULT_SIZE_LIMIT) {
+                log.info(
+                        "Current file size: {}MB",
+                        getFileSize(imageBytes)
+                );
+                BufferedImage bufferedImage = Thumbnails
+                        .of(image.getInputStream())
+                        .scale(scale)
+                        .asBufferedImage();
+                imageBytes = toByteArray(bufferedImage, "jpg");
+                sizeInBytes = imageBytes.length;
+                scale -= SCALE_DECREASE_STEP;
+            }
+
+            log.info(
+                    "File size after compression: {}B",
+                    getFileSize(imageBytes)
+            );
+
+            return imageBytes;
+        } catch (IOException e) {
+            String message = "The file could not be found.";
+            throw new PassportNotFoundException(message);
         }
-        return outputStream.toByteArray();
+    }
+
+    /**
+     * Returns the size of the given file in MB.
+     *
+     * @param file The file to get the size of.
+     * @return The size of the given file in MB.
+     */
+    private static String getFileSize(final byte[] file) {
+        return String.format(String.valueOf(file.length));
     }
 }

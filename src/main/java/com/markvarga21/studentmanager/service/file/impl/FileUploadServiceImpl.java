@@ -1,7 +1,5 @@
 package com.markvarga21.studentmanager.service.file.impl;
 
-import com.markvarga21.studentmanager.dto.StudentDto;
-import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.entity.StudentImage;
 import com.markvarga21.studentmanager.exception.InvalidDocumentException;
 import com.markvarga21.studentmanager.exception.InvalidImageTypeException;
@@ -9,10 +7,8 @@ import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentImageRepository;
-import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
-import com.markvarga21.studentmanager.service.form.FormRecognizerService;
-import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
+import com.markvarga21.studentmanager.util.ImageCompressor;
 import com.markvarga21.studentmanager.util.StudentImageType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -65,21 +61,12 @@ public class FileUploadServiceImpl implements FileUploadService {
             throw new InvalidDocumentException(message);
         }
 
-        try {
-            StudentImage studentImage = StudentImage.builder()
-                    .passportNumber(passportNumber)
-                    .passportImage(passportImage.getBytes())
-                    .selfieImage(selfieImage.getBytes())
-                    .build();
-            this.studentImageRepository.save(studentImage);
-        } catch (IOException e) {
-            String message = String.format(
-                    "Error occurred while uploading image for student with passport number: %s",
-                    passportNumber
-            );
-            log.error(message);
-            throw new InvalidDocumentException(message);
-        }
+        StudentImage studentImage = StudentImage.builder()
+                .passportNumber(passportNumber)
+                .passportImage(ImageCompressor.compressImage(passportImage))
+                .selfieImage(ImageCompressor.compressImage(selfieImage))
+                .build();
+        this.studentImageRepository.save(studentImage);
     }
 
     /**
@@ -196,32 +183,23 @@ public class FileUploadServiceImpl implements FileUploadService {
                         OperationType.UPDATE
                 ));
 
-        try {
-            switch (imageType) {
-                case SELFIE -> {
-                    log.info("Changing selfie image for student with passport number: {}", passportNumber);
-                    studentImage.setSelfieImage(file.getBytes());
-                    this.studentImageRepository.save(studentImage);
-                }
-                case PASSPORT -> {
-                    log.info("Changing passport image for student with passport number: {}", passportNumber);
-                    studentImage.setPassportImage(file.getBytes());
-                    this.studentImageRepository.save(studentImage);
-
-                }
-                default -> {
-                    String message = "Image type not provided or not valid!\nValid image types are: PASSPORT, SELFIE";
-                    log.error(message);
-                    throw new InvalidImageTypeException(message);
-                }
+        switch (imageType) {
+            case SELFIE -> {
+                log.info("Changing selfie image for student with passport number: {}", passportNumber);
+                studentImage.setSelfieImage(ImageCompressor.compressImage(file));
+                this.studentImageRepository.save(studentImage);
             }
-        } catch (IOException e) {
-            String message = String.format(
-                    "Error occurred while uploading image for student with passport number: %s",
-                    passportNumber
-            );
-            log.error(message);
-            throw new InvalidDocumentException(message);
+            case PASSPORT -> {
+                log.info("Changing passport image for student with passport number: {}", passportNumber);
+                studentImage.setPassportImage(ImageCompressor.compressImage(file));
+                this.studentImageRepository.save(studentImage);
+
+            }
+            default -> {
+                String message = "Image type not provided or not valid!\nValid image types are: PASSPORT, SELFIE";
+                log.error(message);
+                throw new InvalidImageTypeException(message);
+            }
         }
     }
 }
