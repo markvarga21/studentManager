@@ -214,7 +214,8 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
         StudentDto studentDataFromUser = this.studentMapper
                 .mapJsonToDto(studentJson);
         this.faceApiService.validateFacesForPassportNumber(
-                studentDataFromUser.getPassportNumber()
+                studentDataFromUser.getPassportNumber(),
+                studentDataFromUser.getId()
         );
 
         log.info("Validating passport for user: {}", studentDataFromUser);
@@ -311,11 +312,11 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     /**
      * Validates the passport manually (usually by an admin).
      *
-     * @param passportNumber The passport number.
+     * @param studentId The id of the student.
      */
     @Override
-    public void validatePassportManually(final String passportNumber) {
-        this.studentService.setValidity(passportNumber, true);
+    public void validatePassportManually(final Long studentId) {
+        this.studentService.setValidity(studentId, true);
     }
 
     /**

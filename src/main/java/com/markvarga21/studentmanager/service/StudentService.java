@@ -52,12 +52,12 @@ public interface StudentService {
     /**
      * Sets the validity of a passport.
      *
-     * @param passportNumber The passport number.
+     * @param studentId The id of the student.
      * @param valid {@code true} if the passport is valid,
      * {@code false} otherwise.
      */
     void setValidity(
-            String passportNumber,
+            Long studentId,
             boolean valid
     );
 }

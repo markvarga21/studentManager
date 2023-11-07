@@ -203,20 +203,20 @@ public class StudentServiceImpl implements StudentService {
     /**
      * Validates the passport manually (usually by an admin).
      *
-     * @param passportNumber The passport number.
+     * @param studentId The id of the student.
      * @param valid The validity of the passport.
      */
     @Override
     public void setValidity(
-            final String passportNumber,
+            final Long studentId,
             final boolean valid
     ) {
         Optional<Student> studentOptional = this.studentRepository
-                .findStudentByPassportNumber(passportNumber);
+                .findById(studentId);
         if (studentOptional.isEmpty()) {
             String message = String.format(
-                "Student validity cannot be set! Cause: Student not found with passport number: %s",
-                passportNumber
+                "Student validity cannot be set! Cause: Student not found with ID '%s'",
+                studentId
             );
             log.error(message);
             return;

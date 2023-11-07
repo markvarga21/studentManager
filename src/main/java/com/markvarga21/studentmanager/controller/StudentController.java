@@ -112,7 +112,7 @@ public class StudentController {
         StudentDto deletedStudent = this.studentService.deleteStudentById(id);
         String passportNumber = deletedStudent.getPassportNumber();
 
-        this.fileUploadService.deleteImage(passportNumber);
+        this.fileUploadService.deleteImage(id);
         this.formRecognizerService.deletePassportValidationByPassportNumber(
                 passportNumber
         );

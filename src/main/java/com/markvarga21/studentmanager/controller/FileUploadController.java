@@ -3,6 +3,7 @@ package com.markvarga21.studentmanager.controller;
 import com.azure.core.annotation.QueryParam;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
+import com.markvarga21.studentmanager.entity.Student;
 import com.markvarga21.studentmanager.entity.StudentImage;
 import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
@@ -10,11 +11,9 @@ import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import com.markvarga21.studentmanager.util.StudentImageType;
-import com.markvarga21.studentmanager.util.mapping.StudentMapper;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -78,30 +77,30 @@ public class FileUploadController {
      * The deleteImage method is used to delete
      * the image from the database.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The id of the student.
      */
-    @DeleteMapping("/{passportNumber}")
+    @DeleteMapping("/{studentId}")
     public void deleteImage(
-            @PathVariable("passportNumber") final String passportNumber
+            @PathVariable("studentId") final Long studentId
     ) {
-        this.fileUploadService.deleteImage(passportNumber);
+        this.fileUploadService.deleteImage(studentId);
     }
 
     /**
      * The getImageForType method is used to get
      * the image for the specified type.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The if of the student.
      * @param imageType The type of image.
      * @return The image for the specified type.
      */
-    @GetMapping("/{passportNumber}")
+    @GetMapping("/{studentId}")
     public ResponseEntity<?> getImageForType(
-            @PathVariable("passportNumber") final String passportNumber,
+            @PathVariable("studentId") final Long studentId,
             @QueryParam("imageType") final StudentImageType imageType
             ) {
         byte[] image = this.fileUploadService
-                .getImageForType(passportNumber, imageType);
+                .getImageForType(studentId, imageType);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.IMAGE_JPEG)
@@ -112,18 +111,18 @@ public class FileUploadController {
      * The uploadImage method is used to upload
      * the image(s) to the database.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The id of the student.
      * @param passport The passport image.
      * @param selfie The selfie image.
      * @return A response entity.
      */
-    @PostMapping("/upload/{passportNumber}")
+    @PostMapping("/upload/{studentId}")
     public ResponseEntity<?> uploadImage(
-            @PathVariable("passportNumber") final String passportNumber,
+            @PathVariable("studentId") final Long studentId,
             @RequestParam("passport") final MultipartFile passport,
             @RequestParam("selfie") final MultipartFile selfie
     ) {
-        this.fileUploadService.uploadFile(passportNumber, passport, selfie);
+        this.fileUploadService.uploadFile(studentId, passport, selfie);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -131,19 +130,21 @@ public class FileUploadController {
      * The changeImage method is used to change
      * the image(s) in the database.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The id of the student.
      * @param imageType The type of image.
      * @param file The file to be changed.
      * @return A response entity.
      */
-    @PostMapping("/changeImage/{passportNumber}/{imageType}")
+    @PostMapping("/changeImage/{studentId}/{imageType}")
     public ResponseEntity<?> changeImage(
-            @PathVariable("passportNumber") final String passportNumber,
+            @PathVariable("studentId") final Long studentId,
             @PathVariable("imageType") final StudentImageType imageType,
             @RequestParam("file") final MultipartFile file
     ) {
-        this.fileUploadService.changeImage(passportNumber, imageType, file);
-        this.studentService.setValidity(passportNumber, false);
+        StudentDto student = this.studentService.getStudentById(studentId);
+        this.fileUploadService.changeImage(studentId, imageType, file);
+        this.studentService.setValidity(studentId, false);
+        final String passportNumber = student.getPassportNumber();
         switch (imageType) {
             case PASSPORT -> {
                 this.passportValidationService.deletePassportValidationData(passportNumber);

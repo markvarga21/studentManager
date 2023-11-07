@@ -94,15 +94,15 @@ public class PassportValidationController {
     /**
      * Validates the passport manually (usually by an admin).
      *
-     * @param passportNumber The passport number.
+     * @param studentId The id of the student.
      * @return {@code HttpStatus.OK} if the validation was successful,
      */
     @PostMapping("/validateManually")
     public ResponseEntity<Void> validatePassportManually(
-            @RequestParam("passportNumber") final String passportNumber
+            @RequestParam("studentId") final Long studentId
     ) {
-        log.info("Manually validating passport with passport number: {}", passportNumber);
-        this.formRecognizerService.validatePassportManually(passportNumber);
+        log.info("Manually validating passport for user with ID '{}'", studentId);
+        this.formRecognizerService.validatePassportManually(studentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

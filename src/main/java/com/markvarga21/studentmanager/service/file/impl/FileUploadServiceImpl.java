@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,22 +33,17 @@ public class FileUploadServiceImpl implements FileUploadService {
      * The uploadFile method is used to store the
      * image in the database.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The id of the student.
      * @param passportImage The passport file.
      * @param selfieImage The selfie file.
      */
     @Override
     @Transactional
     public void uploadFile(
-            final String passportNumber,
+            final Long studentId,
             final MultipartFile passportImage,
             final MultipartFile selfieImage
     ) {
-        if (passportImage.isEmpty() || passportNumber == null) {
-            String message = "Passport number not provided!";
-            log.error(message);
-            throw new InvalidDocumentException(message);
-        }
         if (passportImage.isEmpty()) {
             String message = "Passport image is empty";
             log.error(message);
@@ -62,10 +56,11 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
 
         StudentImage studentImage = StudentImage.builder()
-                .passportNumber(passportNumber)
+                .studentId(studentId)
                 .passportImage(ImageCompressor.compressImage(passportImage))
                 .selfieImage(ImageCompressor.compressImage(selfieImage))
                 .build();
+        log.info("Saving images for studentId " + studentId);
         this.studentImageRepository.save(studentImage);
     }
 
@@ -84,29 +79,24 @@ public class FileUploadServiceImpl implements FileUploadService {
      * A method is used to delete
      * the images from the database.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The id of the student.
      */
     @Override
     @Transactional
     public void deleteImage(
-            final String passportNumber
+            final Long studentId
     ) {
-        if (passportNumber == null) {
-            String message = "Passport number not provided!";
-            log.error(message);
-            throw new InvalidPassportException(message);
-        }
         Optional<StudentImage> studentImageOptional =
-                this.studentImageRepository.findById(passportNumber);
+                this.studentImageRepository.findById(studentId);
 
         if (studentImageOptional.isPresent()) {
-            this.studentImageRepository.deleteStudentImagesByPassportNumber(
-                    passportNumber
+            this.studentImageRepository.deleteStudentImageByStudentId(
+                    studentId
             );
         } else {
             log.error(String.format(
-                    "Student with passport number: %s does not exist",
-                    passportNumber
+                    "Student with ID '%s' does not exist",
+                    studentId
             ));
         }
     }
@@ -115,31 +105,26 @@ public class FileUploadServiceImpl implements FileUploadService {
      * The getImageForType method is used to get
      * the image for the given type.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The id of the student.
      * @param type The image type.
      * @return The image.
      */
     @Override
     public byte[] getImageForType(
-            final String passportNumber,
+            final Long studentId,
             final StudentImageType type
     ) {
-        if (passportNumber == null) {
-            String message = "Passport number not provided!";
-            log.error(message);
-            throw new InvalidPassportException(message);
-        }
         if (type == null || !type.equals(StudentImageType.PASSPORT) && !type.equals(StudentImageType.SELFIE)) {
             String message = "Image type not provided or not valid!\nValid image types are: PASSPORT, SELFIE";
             log.error(message);
             throw new InvalidImageTypeException(message);
         }
         Optional<StudentImage> studentImageOptional =
-                this.studentImageRepository.findById(passportNumber);
+                this.studentImageRepository.findById(studentId);
         if (studentImageOptional.isEmpty()) {
             String message = String.format(
-                    "Student with passport number: %s does not exist",
-                    passportNumber
+                    "Student with ID '%s' does not exist",
+                    studentId
             );
             throw new StudentNotFoundException(message, OperationType.READ);
         }
@@ -157,13 +142,13 @@ public class FileUploadServiceImpl implements FileUploadService {
      * The changeImage method is used to change
      * the image for the given type.
      *
-     * @param passportNumber The students passport number.
+     * @param studentId The id of the student.
      * @param imageType The image type.
      * @param file The new image.
      */
     @Override
     public void changeImage(
-            final String passportNumber,
+            final Long studentId,
             final StudentImageType imageType,
             final MultipartFile file
     ) {
@@ -174,23 +159,23 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
 
         StudentImage studentImage = this.studentImageRepository
-                .findById(passportNumber)
+                .findById(studentId)
                 .orElseThrow(() -> new StudentNotFoundException(
                         String.format(
-                                "Student with passport number: %s does not exist",
-                                passportNumber
+                                "Student with id '%s' does not exist",
+                                studentId
                         ),
                         OperationType.UPDATE
                 ));
 
         switch (imageType) {
             case SELFIE -> {
-                log.info("Changing selfie image for student with passport number: {}", passportNumber);
+                log.info("Changing selfie image for student with ID: {}", studentId);
                 studentImage.setSelfieImage(ImageCompressor.compressImage(file));
                 this.studentImageRepository.save(studentImage);
             }
             case PASSPORT -> {
-                log.info("Changing passport image for student with passport number: {}", passportNumber);
+                log.info("Changing passport image for student with ID: {}", studentId);
                 studentImage.setPassportImage(ImageCompressor.compressImage(file));
                 this.studentImageRepository.save(studentImage);
 
