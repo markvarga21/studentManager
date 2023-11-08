@@ -3,6 +3,8 @@ package com.markvarga21.studentmanager.service.validation.face;
 import com.markvarga21.studentmanager.entity.FacialValidationData;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * The FacialValidationService interface is used to manipulate
  * facial validation data.
@@ -43,4 +45,11 @@ public interface FacialValidationService {
     void setFacialValidationToValid(
             String passportNumber
     );
+
+    /**
+     * Retrieves all the facial validation data.
+     *
+     * @return All the facial validation data.
+     */
+    List<FacialValidationData> getAllFacialValidationData();
 }

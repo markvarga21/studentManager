@@ -174,6 +174,31 @@ public class ApplicationExceptionHandler {
     }
 
     /**
+     * Handles if the date is invalid.
+     *
+     * @param ex The exception caused by the invalid date.
+     * @return A readable {@code ResponseEntity} containing useful information about the error.
+     */
+    @ExceptionHandler(InvalidDateException.class)
+    public ResponseEntity<Object> handleInvalidDateException(
+            final InvalidDateException ex
+    ) {
+        log.error("Invalid date!");
+        ApiError apiError = new ApiError(
+                new Date(),
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                OperationType.CREATE,
+                getStackTraceAsString(ex)
+        );
+        return new ResponseEntity<>(
+                apiError,
+                new HttpHeaders(),
+                apiError.getStatus()
+        );
+    }
+
+    /**
      * Handles the exception if the inputted gender is invalid.
      *
      * @param ex The exception caused by the invalid gender.

@@ -47,8 +47,7 @@ public class StudentDto {
      * The birthdate name of the student.
      */
     @NotNull(message = "Date of birth cannot be null!")
-    @PastOrPresent
-    private LocalDate birthDate;
+    private String birthDate;
 
     /**
      * The birthplace of the student.
@@ -78,15 +77,13 @@ public class StudentDto {
      * The student's passports expiry date.
      */
     @NotNull(message = "Passport date of expiry cannot be null and has to be either in the present or in the future!")
-    @FutureOrPresent
-    private LocalDate passportDateOfExpiry;
+    private String passportDateOfExpiry;
 
     /**
      * The student's passports issue date.
      */
     @NotNull(message = "Passport date of issue cannot be null and has to be either in the past or in the present!")
-    @PastOrPresent
-    private LocalDate passportDateOfIssue;
+    private String passportDateOfIssue;
 
     /**
      * The validity of the student's data

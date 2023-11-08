@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/facialValidations")
 @RequiredArgsConstructor
@@ -19,6 +21,16 @@ public class FacialValidationController {
      * validation data.
      */
     private final FacialValidationService facialValidationService;
+
+    /**
+     * Retrieves all the facial validation data.
+     *
+     * @return All the facial validation data.
+     */
+    @GetMapping
+    public List<FacialValidationData> getAllFacialValidationData() {
+        return this.facialValidationService.getAllFacialValidationData();
+    }
 
     /**
      * Retrieves the facial validation data with the given passport number.
@@ -36,6 +48,19 @@ public class FacialValidationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(facialValidationData, HttpStatus.OK);
+    }
+
+    /**
+     * Deletes the facial validation data with the given passport number.
+     *
+     * @param passportNumber The passport number of the student.
+     */
+    @DeleteMapping("/{passportNumber}")
+    public void deleteFacialValidationDataByPassportNumber(
+            @PathVariable final String passportNumber
+    ) {
+        this.facialValidationService
+                .deleteFacialValidationDataByPassportNumber(passportNumber);
     }
 
     /**

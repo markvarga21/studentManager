@@ -18,7 +18,7 @@ import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import com.markvarga21.studentmanager.util.CountryNameFetcher;
-import com.markvarga21.studentmanager.util.PassportDateFormatter;
+import com.markvarga21.studentmanager.util.DateDeserializer;
 import com.markvarga21.studentmanager.util.mapping.StudentMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -49,10 +49,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * A client which is used to analyze documents.
      */
     private final DocumentAnalysisClient documentAnalysisClient;
-    /**
-     * The passport date formatter.
-     */
-    private final PassportDateFormatter passportDateFormatter;
 
     /**
      * A service which is used to access passport
@@ -99,7 +95,6 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             final MultipartFile passport
     ) {
         try {
-            log.info("Inside getFieldsFromDocument method!");
             BinaryData binaryData = BinaryData.fromBytes(passport.getBytes());
             String modelId = "prebuilt-idDocument";
             SyncPoller<OperationResult, AnalyzeResult> analyzeDocumentPoller =
@@ -134,17 +129,16 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     public StudentDto extractDataFromPassport(
             final MultipartFile passport
     ) {
-        log.info("Passport is null: " + (passport == null));
+        log.info("Extracting data from passport!");
         Map<String, DocumentField> passportFields = this
                 .getFieldsFromDocument(passport);
-        log.info("Inside extract data and after getFieldsFromDocument method!");
         String firstName = this
                 .getFieldValue(passportFields, "FirstName");
         String lastName = this
                 .getFieldValue(passportFields, "LastName");
         String birthdateField = this
                 .getFieldValue(passportFields, "DateOfBirth");
-        LocalDate birthDate = this.passportDateFormatter.format(birthdateField);
+        LocalDate birthDate = DateDeserializer.mapDateStringToLocalDate(birthdateField);
         String placeOfBirth = this
                 .getFieldValue(passportFields, "PlaceOfBirth");
         String countryCode = this
@@ -158,23 +152,23 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                 .getFieldValue(passportFields, "DocumentNumber");
         String dateOfExpiryField = this
                 .getFieldValue(passportFields, "DateOfExpiration");
-        LocalDate dateOfExpiry = this.passportDateFormatter
-                .format(dateOfExpiryField);
+        LocalDate dateOfExpiry = DateDeserializer
+                .mapDateStringToLocalDate(dateOfExpiryField);
         String dateOfIssueField = this
                 .getFieldValue(passportFields, "DateOfIssue");
-        LocalDate dateOfIssue = this.passportDateFormatter
-                .format(dateOfIssueField);
+        LocalDate dateOfIssue = DateDeserializer
+                .mapDateStringToLocalDate(dateOfIssueField);
 
         return StudentDto.builder()
                 .firstName(firstName)
                 .lastName(lastName)
-                .birthDate(birthDate)
+                .birthDate(DateDeserializer.mapLocalDateToDateString(birthDate))
                 .placeOfBirth(placeOfBirth)
                 .countryOfCitizenship(countryOfCitizenship)
                 .gender(gender)
                 .passportNumber(passportNumber)
-                .passportDateOfExpiry(dateOfExpiry)
-                .passportDateOfIssue(dateOfIssue)
+                .passportDateOfExpiry(DateDeserializer.mapLocalDateToDateString(dateOfExpiry))
+                .passportDateOfIssue(DateDeserializer.mapLocalDateToDateString(dateOfIssue))
                 .build();
     }
 

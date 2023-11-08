@@ -42,16 +42,6 @@ public class ApplicationConfiguration {
      * A custom {@code LocalDate} deserializer.
      */
     private final LocalDateDeserializer localDateDeserializer;
-    /**
-     * A method used to create a model mapper bean which
-     * then can be used anywhere in the application.
-     *
-     * @return A {@code ModelMapper} instance.
-     */
-    @Bean
-    public ModelMapper getModelMapper() {
-        return new ModelMapper();
-    }
 
     /**
      * A bean for setting up the passport analysis.

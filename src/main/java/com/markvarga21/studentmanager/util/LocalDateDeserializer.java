@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 /**
  * A custom mapper for mapping the {@code String} representation
@@ -33,10 +31,8 @@ public class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
             final JsonDeserializationContext context
     )
             throws JsonParseException {
-        return LocalDate.parse(
-                json.getAsString(),
-                DateTimeFormatter
-                        .ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)
+        return DateDeserializer.mapDateStringToLocalDate(
+                json.getAsString()
         );
     }
 }

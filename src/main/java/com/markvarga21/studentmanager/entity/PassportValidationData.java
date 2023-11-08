@@ -2,6 +2,7 @@ package com.markvarga21.studentmanager.entity;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
+import com.markvarga21.studentmanager.util.DateDeserializer;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -98,9 +99,9 @@ public class PassportValidationData {
                 .firstName(passportValidationData.firstName)
                 .lastName(passportValidationData.lastName)
                 .gender(passportValidationData.gender)
-                .passportDateOfIssue(passportValidationData.passportDateOfIssue)
-                .passportDateOfExpiry(passportValidationData.passportDateOfExpiry)
-                .birthDate(passportValidationData.birthDate)
+                .passportDateOfIssue(DateDeserializer.mapLocalDateToDateString(passportValidationData.passportDateOfIssue))
+                .passportDateOfExpiry(DateDeserializer.mapLocalDateToDateString(passportValidationData.passportDateOfExpiry))
+                .birthDate(DateDeserializer.mapLocalDateToDateString(passportValidationData.birthDate))
                 .placeOfBirth(passportValidationData.placeOfBirth)
                 .countryOfCitizenship(passportValidationData.countryOfCitizenship)
                 .build();
@@ -121,9 +122,9 @@ public class PassportValidationData {
                 .firstName(studentDto.getFirstName())
                 .lastName(studentDto.getLastName())
                 .gender(studentDto.getGender())
-                .passportDateOfIssue(studentDto.getPassportDateOfIssue())
-                .passportDateOfExpiry(studentDto.getPassportDateOfExpiry())
-                .birthDate(studentDto.getBirthDate())
+                .passportDateOfIssue(DateDeserializer.mapDateStringToLocalDate(studentDto.getPassportDateOfIssue()))
+                .passportDateOfExpiry(DateDeserializer.mapDateStringToLocalDate(studentDto.getPassportDateOfExpiry()))
+                .birthDate(DateDeserializer.mapDateStringToLocalDate(studentDto.getBirthDate()))
                 .placeOfBirth(studentDto.getPlaceOfBirth())
                 .countryOfCitizenship(studentDto.getCountryOfCitizenship())
                 .timestamp(LocalDateTime.now())

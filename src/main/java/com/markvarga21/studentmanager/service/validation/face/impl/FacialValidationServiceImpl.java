@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -55,6 +56,16 @@ public class FacialValidationServiceImpl implements FacialValidationService {
         Optional<FacialValidationData> facialValidationDataOptional = this.repository
                 .getFacialValidationDataByPassportNumber(passportNumber);
         return facialValidationDataOptional.orElse(null);
+    }
+
+    /**
+     * Retrieves all the facial validation data.
+     *
+     * @return All the facial validation data.
+     */
+    @Override
+    public List<FacialValidationData> getAllFacialValidationData() {
+        return this.repository.findAll();
     }
 
     /**

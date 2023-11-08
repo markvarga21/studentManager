@@ -10,6 +10,7 @@ import com.markvarga21.studentmanager.repository.StudentRepository;
 import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
+import com.markvarga21.studentmanager.util.DateDeserializer;
 import com.markvarga21.studentmanager.util.mapping.StudentMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -157,10 +158,10 @@ public class StudentServiceImpl implements StudentService {
         student
                 .setCountryOfCitizenship(studentDto.getCountryOfCitizenship());
         student.setPlaceOfBirth(studentDto.getPlaceOfBirth());
-        student.setBirthDate(studentDto.getBirthDate());
+        student.setBirthDate(DateDeserializer.mapDateStringToLocalDate(studentDto.getBirthDate()));
         student.setPassportNumber(updatedStudentPassport);
-        student.setPassportDateOfExpiry(studentDto.getPassportDateOfExpiry());
-        student.setPassportDateOfIssue(studentDto.getPassportDateOfIssue());
+        student.setPassportDateOfExpiry(DateDeserializer.mapDateStringToLocalDate(studentDto.getPassportDateOfExpiry()));
+        student.setPassportDateOfIssue(DateDeserializer.mapDateStringToLocalDate(studentDto.getPassportDateOfIssue()));
         student.setValid(false);
         Student updatedUser = this.studentRepository.save(student);
 
