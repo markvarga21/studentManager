@@ -54,7 +54,7 @@ public class ApplicationExceptionHandler {
         });
         log.error(String.format("Invalid field(s): %s", errors));
         String message = String.format(
-                "Invalid field in creating the user!\nViolations:\n%s",
+                "The data you've entered is not valid!\nCauses:\n%s",
                 this.formatInvalidFieldsMap(errors)
         );
         ApiError apiError = new ApiError(
@@ -81,7 +81,7 @@ public class ApplicationExceptionHandler {
         StringBuilder stringBuilder = new StringBuilder();
         int counter = 0;
         for (var entry : map.entrySet()) {
-            String value = POINT_UNICODE + " " + entry.getValue();
+            String value = POINT_UNICODE + " " + getErrorMessageForFieldViolation(entry.getKey());
             stringBuilder.append(value);
             if (counter < map.size() - 1) {
                 stringBuilder.append("\n");
@@ -89,6 +89,29 @@ public class ApplicationExceptionHandler {
             counter++;
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * Convert a field violation into a more readable format.
+     *
+     * @param violation The field violation.
+     * @return The readable {@code String} representation of the violation.
+     */
+    private String getErrorMessageForFieldViolation(
+            final String violation
+    ) {
+        return switch (violation) {
+            case "firstName" -> "First name cannot be empty!";
+            case "lastName" -> "Last name cannot be empty!";
+            case "birthDate" -> "Birth date cannot be empty!";
+            case "placeOfBirth" -> "Birthplace cannot be empty!";
+            case "countryOfCitizenship" -> "Country of citizenship cannot be empty!";
+            case "gender" -> "Gender cannot be empty!";
+            case "passportNumber" -> "Passport number cannot be empty!";
+            case "passportDateOfExpiry" -> "Passport date of expiry cannot be empty!";
+            case "passportDateOfIssue" -> "Passport date of issue cannot be empty!";
+            default -> "";
+        };
     }
 
     /**
