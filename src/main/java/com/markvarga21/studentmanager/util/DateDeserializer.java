@@ -25,7 +25,7 @@ public final class DateDeserializer {
     /**
      * The predefined date formats.
      */
-    public static final String[] DATE_FORMATS = {
+    private static final String[] DATE_FORMATS = {
             "yyyy/MM/dd",
             "yyyy-MM-dd",
             "yyyy.MM.dd",
@@ -45,7 +45,9 @@ public final class DateDeserializer {
             "yy-MM-dd",
             "yy.MM.dd",
             "dd MMM yy",
-            "dd MMM yyyy"
+            "dd MMM yyyy",
+            "MM dd yyyy",
+            "yyyy MM dd"
     };
     private DateDeserializer() {
 
@@ -61,6 +63,10 @@ public final class DateDeserializer {
     public static LocalDate mapDateStringToLocalDate(
             final String dateString
     ) {
+        if (dateString == null || dateString.isEmpty()) {
+            log.error("Date string is null or empty.");
+            return null;
+        }
         log.info("Date to deserialize: {}", dateString);
         if (dateString.split("/").length == 2 || dateString.split(" ").length == 3) {
             return mapStandardPassportDateStringToLocalDate(dateString);
@@ -120,6 +126,9 @@ public final class DateDeserializer {
      * @return The {@code String} representation of the date.
      */
     public static String mapLocalDateToDateString(final LocalDate date) {
+        if (date == null) {
+            return "";
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return date.format(formatter);
     }
