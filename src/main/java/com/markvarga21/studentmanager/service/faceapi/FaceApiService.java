@@ -46,8 +46,9 @@ public interface FaceApiService {
      *
      * @param studentId The id of the student.
      * @param passportNumber The passport number.
+     * @return {@code true} if the faces are valid, {@code false} otherwise.
      */
-    void validateFacesForPassportNumber(String passportNumber, Long studentId);
+    boolean validateFacesForPassportNumber(String passportNumber, Long studentId);
 
     /**
      * Deletes the face with the given passport number.

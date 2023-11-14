@@ -352,7 +352,7 @@ public class FaceApiServiceImpl implements FaceApiService {
      * @param studentId The id of the student.
      */
     @Override
-    public void validateFacesForPassportNumber(
+    public boolean validateFacesForPassportNumber(
             final String passportNumber,
             final Long studentId
     ) {
@@ -373,6 +373,8 @@ public class FaceApiServiceImpl implements FaceApiService {
 
         this.facialValidationService
                 .saveFacialValidationData(facialValidationData);
+
+        return validityOfFaces.getIsIdentical();
     }
 
     /**

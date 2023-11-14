@@ -207,10 +207,17 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     ) {
         StudentDto studentDataFromUser = this.studentMapper
                 .mapJsonToDto(studentJson);
-        this.faceApiService.validateFacesForPassportNumber(
+        boolean facesAreMatching = this.faceApiService.validateFacesForPassportNumber(
                 studentDataFromUser.getPassportNumber(),
                 studentDataFromUser.getId()
         );
+
+        if (!facesAreMatching) {
+            return PassportValidationResponse.builder()
+                    .isValid(false)
+                    .studentDto(null)
+                    .build();
+        }
 
         log.info("Validating passport for user: {}", studentDataFromUser);
         String passportNumber = studentDataFromUser.getPassportNumber();
