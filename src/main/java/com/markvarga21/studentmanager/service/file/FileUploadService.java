@@ -21,7 +21,7 @@ public interface FileUploadService {
      * @param passportFile The passport file.
      * @param selfieFile The selfie file.
      */
-    void uploadFile(
+    String uploadFile(
             Long studentId,
             MultipartFile passportFile,
             MultipartFile selfieFile
@@ -41,7 +41,7 @@ public interface FileUploadService {
      *
      * @param studentId The id of the student.
      */
-    void deleteImage(Long studentId);
+    String deleteImage(Long studentId);
 
     /**
      * The getImageForType method is used to get
@@ -61,5 +61,5 @@ public interface FileUploadService {
      * @param imageType The image type.
      * @param file The new image.
      */
-    void changeImage(Long studentId, StudentImageType imageType, MultipartFile file);
+    String changeImage(Long studentId, StudentImageType imageType, MultipartFile file);
 }

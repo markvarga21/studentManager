@@ -143,6 +143,31 @@ public class ApplicationExceptionHandler {
     }
 
     /**
+     * Handles if the passport validation data cannot be found.
+     *
+     * @param ex The exception caused by not founding the passport validation data.
+     * @return A readable {@code ResponseEntity} containing useful information.
+     */
+    @ExceptionHandler(PassportValidationDataNotFoundException.class)
+    public ResponseEntity<Object> handlePassportValidationDataNotFoundException(
+            final PassportValidationDataNotFoundException ex
+    ) {
+        String message = "Passport validation data not found!";
+        ApiError apiError = new ApiError(
+                new Date(),
+                HttpStatus.BAD_REQUEST,
+                message,
+                OperationType.CREATE,
+                getStackTraceAsString(ex)
+        );
+        return new ResponseEntity<>(
+                apiError,
+                new HttpHeaders(),
+                apiError.getStatus()
+        );
+    }
+
+    /**
      * Handles the exception if a student cannot be found in the database.
      *
      * @param ex The exception caused by not founding the student.

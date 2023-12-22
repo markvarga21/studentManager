@@ -47,7 +47,7 @@ public interface FormRecognizerService {
      *
      * @param passportNumber the passport number.
      */
-    void deletePassportValidationByPassportNumber(
+    String deletePassportValidationByPassportNumber(
             String passportNumber
     );
 
@@ -56,7 +56,7 @@ public interface FormRecognizerService {
      *
      * @param studentId The id of the student.
      */
-    void validatePassportManually(Long studentId);
+    String validatePassportManually(Long studentId);
 
     /**
      * Checks if the user is valid.

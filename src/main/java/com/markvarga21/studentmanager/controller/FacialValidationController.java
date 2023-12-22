@@ -56,11 +56,12 @@ public class FacialValidationController {
      * @param passportNumber The passport number of the student.
      */
     @DeleteMapping("/{passportNumber}")
-    public void deleteFacialValidationDataByPassportNumber(
+    public ResponseEntity<String> deleteFacialValidationDataByPassportNumber(
             @PathVariable final String passportNumber
     ) {
-        this.facialValidationService
+        String message = this.facialValidationService
                 .deleteFacialValidationDataByPassportNumber(passportNumber);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     /**
@@ -69,9 +70,10 @@ public class FacialValidationController {
      * @param passportNumber The passport number of the student.
      */
     @PostMapping("/setFacialValidationDataToValid")
-    public void setFacialValidationDataToValid(
+    public ResponseEntity<String> setFacialValidationDataToValid(
             @RequestParam final String passportNumber
     ) {
-        this.facialValidationService.setFacialValidationToValid(passportNumber);
+        String message = this.facialValidationService.setFacialValidationToValid(passportNumber);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }

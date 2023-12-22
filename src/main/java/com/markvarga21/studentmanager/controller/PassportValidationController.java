@@ -62,11 +62,12 @@ public class PassportValidationController {
      * @param passportNumber The passport number of the student.
      */
     @DeleteMapping("/{passportNumber}")
-    public void deletePassportValidationData(
+    public ResponseEntity<String> deletePassportValidationData(
             @PathVariable("passportNumber") final String passportNumber
     ) {
-        this.passportValidationService
+        String message = this.passportValidationService
                 .deletePassportValidationData(passportNumber);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     /**
@@ -94,12 +95,12 @@ public class PassportValidationController {
      * @return {@code HttpStatus.OK} if the validation was successful,
      */
     @PostMapping("/validateManually")
-    public ResponseEntity<Void> validatePassportManually(
+    public ResponseEntity<String> validatePassportManually(
             @RequestParam("studentId") final Long studentId
     ) {
         log.info("Manually validating passport for user with ID '{}'", studentId);
-        this.formRecognizerService.validatePassportManually(studentId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        String message = this.formRecognizerService.validatePassportManually(studentId);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     /**

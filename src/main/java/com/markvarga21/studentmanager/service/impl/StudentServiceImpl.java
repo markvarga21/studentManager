@@ -2,14 +2,11 @@ package com.markvarga21.studentmanager.service.impl;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Student;
-import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.exception.InvalidStudentException;
 import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentRepository;
 import com.markvarga21.studentmanager.service.StudentService;
-import com.markvarga21.studentmanager.service.file.FileUploadService;
-import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.util.DateDeserializer;
 import com.markvarga21.studentmanager.util.mapping.StudentMapper;
 import jakarta.transaction.Transactional;
@@ -208,7 +205,7 @@ public class StudentServiceImpl implements StudentService {
      * @param valid The validity of the passport.
      */
     @Override
-    public void setValidity(
+    public String setValidity(
             final Long studentId,
             final boolean valid
     ) {
@@ -220,10 +217,14 @@ public class StudentServiceImpl implements StudentService {
                 studentId
             );
             log.error(message);
-            return;
+            throw new StudentNotFoundException(message, OperationType.UPDATE);
         }
         Student student = studentOptional.get();
         student.setValid(valid);
         this.studentRepository.save(student);
+        return String.format("Student with ID '%s' validity set to '%s'",
+                studentId,
+                valid ? "valid" : "invalid"
+        );
     }
 }

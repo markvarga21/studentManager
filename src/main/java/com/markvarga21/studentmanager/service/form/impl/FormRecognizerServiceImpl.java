@@ -10,8 +10,7 @@ import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.dto.PassportValidationResponse;
 import com.markvarga21.studentmanager.entity.Gender;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
-import com.markvarga21.studentmanager.exception.InvalidDocumentException;
-import com.markvarga21.studentmanager.exception.InvalidPassportException;
+import com.markvarga21.studentmanager.exception.*;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
@@ -282,7 +281,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      */
     @Override
     @Transactional
-    public void deletePassportValidationByPassportNumber(
+    public String deletePassportValidationByPassportNumber(
             final String passportNumber
     ) {
         Optional<PassportValidationData> passportValidationData =
@@ -293,8 +292,13 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
                     .deletePassportValidationDataByPassportNumber(
                     passportNumber
             );
+            return String.format(
+                    "Passport validation data deleted for passport number: %s",
+                    passportNumber
+            );
         } else {
-            log.error("Passport validation data not found for passport number: {}", passportNumber);
+            String message = String.format("Passport validation data not found for passport number: %s", passportNumber);
+            throw new PassportNotFoundException(message);
         }
     }
 
@@ -304,8 +308,8 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      * @param studentId The id of the student.
      */
     @Override
-    public void validatePassportManually(final Long studentId) {
-        this.studentService.setValidity(studentId, true);
+    public String validatePassportManually(final Long studentId) {
+        return this.studentService.setValidity(studentId, true);
     }
 
     /**
@@ -316,13 +320,17 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      */
     @Override
     public Boolean isUserValid(final String passportNumber) {
-        return this.studentService
+        Optional<StudentDto> studentDtoOptional = this.studentService
                 .getAllStudents()
                 .stream()
-                .anyMatch(
+                .filter(
                         studentDto -> studentDto.getPassportNumber().equals(passportNumber)
-                                && studentDto.isValid()
-                );
+                ).findFirst();
+        if (studentDtoOptional.isEmpty()) {
+            String message = String.format("Student with passport number '%s' not found!", passportNumber);
+            throw new StudentNotFoundException(message, OperationType.READ);
+        }
+        return studentDtoOptional.get().isValid();
 
     }
 }

@@ -55,8 +55,9 @@ public interface StudentService {
      * @param studentId The id of the student.
      * @param valid {@code true} if the passport is valid,
      * {@code false} otherwise.
+     * @return A {@code String} containing the result of the operation.
      */
-    void setValidity(
+    String setValidity(
             Long studentId,
             boolean valid
     );

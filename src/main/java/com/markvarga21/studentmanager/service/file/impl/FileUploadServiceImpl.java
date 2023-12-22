@@ -3,7 +3,6 @@ package com.markvarga21.studentmanager.service.file.impl;
 import com.markvarga21.studentmanager.entity.StudentImage;
 import com.markvarga21.studentmanager.exception.InvalidDocumentException;
 import com.markvarga21.studentmanager.exception.InvalidImageTypeException;
-import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentImageRepository;
@@ -39,7 +38,7 @@ public class FileUploadServiceImpl implements FileUploadService {
      */
     @Override
     @Transactional
-    public void uploadFile(
+    public String uploadFile(
             final Long studentId,
             final MultipartFile passportImage,
             final MultipartFile selfieImage
@@ -62,6 +61,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 .build();
         log.info("Saving images for studentId " + studentId);
         this.studentImageRepository.save(studentImage);
+        return String.format("Images saved successfully for user '%s'", studentId);
     }
 
     /**
@@ -83,7 +83,7 @@ public class FileUploadServiceImpl implements FileUploadService {
      */
     @Override
     @Transactional
-    public void deleteImage(
+    public String deleteImage(
             final Long studentId
     ) {
         Optional<StudentImage> studentImageOptional =
@@ -93,11 +93,22 @@ public class FileUploadServiceImpl implements FileUploadService {
             this.studentImageRepository.deleteStudentImageByStudentId(
                     studentId
             );
+            return String.format(
+                    "Images deleted successfully for user '%s'",
+                    studentId
+            );
         } else {
             log.error(String.format(
                     "Student with ID '%s' does not exist",
                     studentId
             ));
+            throw new StudentNotFoundException(
+                    String.format(
+                            "Student with ID '%s' does not exist",
+                            studentId
+                    ),
+                    OperationType.DELETE
+            );
         }
     }
 
@@ -147,7 +158,7 @@ public class FileUploadServiceImpl implements FileUploadService {
      * @param file The new image.
      */
     @Override
-    public void changeImage(
+    public String changeImage(
             final Long studentId,
             final StudentImageType imageType,
             final MultipartFile file
@@ -173,12 +184,13 @@ public class FileUploadServiceImpl implements FileUploadService {
                 log.info("Changing selfie image for student with ID: {}", studentId);
                 studentImage.setSelfieImage(ImageCompressor.compressImage(file));
                 this.studentImageRepository.save(studentImage);
+                return String.format("Selfie image changed successfully for user '%s'", studentId);
             }
             case PASSPORT -> {
                 log.info("Changing passport image for student with ID: {}", studentId);
                 studentImage.setPassportImage(ImageCompressor.compressImage(file));
                 this.studentImageRepository.save(studentImage);
-
+                return String.format("Passport image changed successfully for user '%s'", studentId);
             }
             default -> {
                 String message = "Image type not provided or not valid!\nValid image types are: PASSPORT, SELFIE";

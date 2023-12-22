@@ -1,6 +1,8 @@
 package com.markvarga21.studentmanager.service.validation.face.impl;
 
 import com.markvarga21.studentmanager.entity.FacialValidationData;
+import com.markvarga21.studentmanager.entity.PassportValidationData;
+import com.markvarga21.studentmanager.exception.FaceValidationDataNotFoundException;
 import com.markvarga21.studentmanager.repository.FacialValidationDataRepository;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
 import jakarta.transaction.Transactional;
@@ -75,11 +77,19 @@ public class FacialValidationServiceImpl implements FacialValidationService {
      */
     @Override
     @Transactional
-    public void deleteFacialValidationDataByPassportNumber(
+    public String deleteFacialValidationDataByPassportNumber(
             final String passportNumber
     ) {
+        Optional<FacialValidationData> facialValidationDataOptional = this.repository
+                .getFacialValidationDataByPassportNumber(passportNumber);
+        if (facialValidationDataOptional.isEmpty()) {
+            String message = "Facial validation data not found!";
+            log.error(message);
+            throw new FaceValidationDataNotFoundException(message);
+        }
         this.repository
                 .deleteFacialValidationDataByPassportNumber(passportNumber);
+        return String.format("Facial validation data for passport number '%s' deleted successfully!", passportNumber);
     }
 
     /**
@@ -89,7 +99,7 @@ public class FacialValidationServiceImpl implements FacialValidationService {
      */
     @Override
     @Transactional
-    public void setFacialValidationToValid(
+    public String setFacialValidationToValid(
             final String passportNumber
     ) {
         FacialValidationData data =
@@ -101,11 +111,14 @@ public class FacialValidationServiceImpl implements FacialValidationService {
             data.setIsValid(true);
             data.setPercentage(1.0);
             this.repository.save(data);
-            return;
+            throw new FaceValidationDataNotFoundException(
+                    String.format("Facial validation data for passport number '%s' not found!", passportNumber)
+            );
         }
         log.info("Setting facial validation data to valid.");
         data.setIsValid(true);
         data.setPercentage(1.0);
         this.repository.save(data);
+        return String.format("Facial validation data for passport number '%s' set to valid!", passportNumber);
     }
 }

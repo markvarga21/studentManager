@@ -25,7 +25,7 @@ public interface PassportValidationService {
      *
      * @param passportNumber The passport number of the student.
      */
-    void deletePassportValidationData(String passportNumber);
+    String deletePassportValidationData(String passportNumber);
 
     /**
      * Retrieves a student by passport number.

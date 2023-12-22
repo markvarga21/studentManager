@@ -80,10 +80,11 @@ public class FileUploadController {
      * @param studentId The id of the student.
      */
     @DeleteMapping("/{studentId}")
-    public void deleteImage(
+    public ResponseEntity<String> deleteImage(
             @PathVariable("studentId") final Long studentId
     ) {
-        this.fileUploadService.deleteImage(studentId);
+        String message = this.fileUploadService.deleteImage(studentId);
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
     /**
@@ -117,13 +118,13 @@ public class FileUploadController {
      * @return A response entity.
      */
     @PostMapping("/upload/{studentId}")
-    public ResponseEntity<?> uploadImage(
+    public ResponseEntity<String> uploadImage(
             @PathVariable("studentId") final Long studentId,
             @RequestParam("passport") final MultipartFile passport,
             @RequestParam("selfie") final MultipartFile selfie
     ) {
-        this.fileUploadService.uploadFile(studentId, passport, selfie);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        String message = this.fileUploadService.uploadFile(studentId, passport, selfie);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     /**
@@ -136,15 +137,17 @@ public class FileUploadController {
      * @return A response entity.
      */
     @PostMapping("/changeImage/{studentId}/{imageType}")
-    public ResponseEntity<?> changeImage(
+    public ResponseEntity<String> changeImage(
             @PathVariable("studentId") final Long studentId,
             @PathVariable("imageType") final StudentImageType imageType,
             @RequestParam("file") final MultipartFile file
     ) {
         StudentDto student = this.studentService.getStudentById(studentId);
         this.fileUploadService.changeImage(studentId, imageType, file);
-        this.studentService.setValidity(studentId, false);
+        String updateMessage = this.studentService.setValidity(studentId, false);
+        log.info(updateMessage);
         final String passportNumber = student.getPassportNumber();
+        String message = "";
         switch (imageType) {
             case PASSPORT -> {
                 this.passportValidationService.deletePassportValidationData(passportNumber);
@@ -155,10 +158,14 @@ public class FileUploadController {
                 PassportValidationData data = PassportValidationData
                         .createPassportValidationDataForStudent(studentDto);
                 this.passportValidationService.createPassportValidationData(data);
+                message = String.format("Passport image changed successfully for user '%s'", studentId);
             }
-            case SELFIE -> this.faceApiService.deleteFace(passportNumber);
+            case SELFIE -> {
+                this.faceApiService.deleteFace(passportNumber);
+                message = String.format("Selfie image changed successfully for user '%s'", studentId);
+            }
             default -> log.error("Invalid image type");
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }

@@ -49,14 +49,15 @@ public class PassportValidationServiceImpl
      */
     @Override
     @Transactional
-    public void deletePassportValidationData(final String passportNumber) {
+    public String deletePassportValidationData(final String passportNumber) {
         Optional<PassportValidationData> passportValidationDataOptional =
                 this.passportValidationDataRepository
                         .getPassportValidationDataByPassportNumber(passportNumber);
         if (passportValidationDataOptional.isPresent()) {
             this.passportValidationDataRepository
                     .deletePassportValidationDataByPassportNumber(passportNumber);
-            return;
+            return String.format("Passport validation data with passport number %s deleted.",
+                    passportNumber);
         }
         String message = String.format(
                 "Passport validation data with passport number %s not found.",
@@ -124,6 +125,11 @@ public class PassportValidationServiceImpl
         if (dataOptional.isEmpty()) {
             log.error("Passport validation data with passport number {} not found.",
                     passportNumber);
+            throw new PassportValidationDataNotFoundException(
+                    String.format(
+                            "Passport validation data with passport number %s not found.",
+                            passportNumber
+                    ));
         }
         PassportValidationData data = dataOptional.get();
         return PassportValidationData
