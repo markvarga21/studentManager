@@ -5,7 +5,8 @@ import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClientBuilde
 import com.azure.core.credential.AzureKeyCredential;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.markvarga21.studentmanager.util.LocalDateDeserializer;
+import com.markvarga21.studentmanager.LocalDateDeserializer;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,13 @@ import java.time.LocalDate;
  */
 @Configuration
 @RequiredArgsConstructor
+@OpenAPIDefinition(
+        info = @io.swagger.v3.oas.annotations.info.Info(
+                title = "Student Manager API",
+                version = "1.0",
+                description = "API for managing students."
+        )
+)
 public class ApplicationConfiguration {
     /**
      * The header name used by Azure's Face API

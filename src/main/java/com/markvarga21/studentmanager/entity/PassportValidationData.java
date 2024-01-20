@@ -1,7 +1,7 @@
 package com.markvarga21.studentmanager.entity;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
-import com.markvarga21.studentmanager.util.DateDeserializer;
+import com.markvarga21.studentmanager.DateDeserializer;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

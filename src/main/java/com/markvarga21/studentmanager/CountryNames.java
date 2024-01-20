@@ -1,4 +1,4 @@
-package com.markvarga21.studentmanager.util;
+package com.markvarga21.studentmanager;
 
 /**
  * A util class for storing the country names.

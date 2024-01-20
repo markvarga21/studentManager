@@ -20,6 +20,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -48,6 +49,7 @@ public class ApplicationExceptionHandler {
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleValidationExceptions(
             final MethodArgumentNotValidException ex
     ) {
@@ -128,6 +130,7 @@ public class ApplicationExceptionHandler {
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleConstraintViolationException(
             final ConstraintViolationException ex
     ) {
@@ -156,13 +159,14 @@ public class ApplicationExceptionHandler {
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(PassportValidationDataNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> handlePassportValidationDataNotFoundException(
             final PassportValidationDataNotFoundException ex
     ) {
         String message = "Passport validation data not found!";
         ApiError apiError = new ApiError(
                 new Date(),
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.NOT_FOUND,
                 message,
                 OperationType.CREATE,
                 getStackTraceAsString(ex)
@@ -181,6 +185,7 @@ public class ApplicationExceptionHandler {
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(StudentNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> handleStudentNotFoundException(
             final StudentNotFoundException ex
     ) {
@@ -210,13 +215,14 @@ public class ApplicationExceptionHandler {
             DateTimeParseException.class,
             InvalidDateFormatException.class
     })
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ResponseEntity<Object> handleInvalidDateFormatException(
             final DateTimeParseException ex
     ) {
         log.error("Invalid date format!");
         ApiError apiError = new ApiError(
                 new Date(),
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.NOT_ACCEPTABLE,
                 "Invalid date format! Allowed format is: YYYY-MM-DD",
                 OperationType.CREATE,
                 getStackTraceAsString(ex)
@@ -235,13 +241,14 @@ public class ApplicationExceptionHandler {
      * @return A readable {@code ResponseEntity} containing useful information about the error.
      */
     @ExceptionHandler(InvalidDateException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ResponseEntity<Object> handleInvalidDateException(
             final InvalidDateException ex
     ) {
         log.error("Invalid date!");
         ApiError apiError = new ApiError(
                 new Date(),
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.NOT_ACCEPTABLE,
                 ex.getMessage(),
                 OperationType.CREATE,
                 getStackTraceAsString(ex)
@@ -260,6 +267,7 @@ public class ApplicationExceptionHandler {
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleInvalidGenderException(
             final HttpMessageNotReadableException ex
     ) {
@@ -304,13 +312,14 @@ public class ApplicationExceptionHandler {
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(InvalidPassportException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ResponseEntity<Object> handleInvalidPassportException(
             final InvalidPassportException ex
     ) {
         log.error(ex.getMessage());
         ApiError apiError = new ApiError(
                 new Date(),
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.NOT_ACCEPTABLE,
                 ex.getMessage(),
                 OperationType.CREATE,
                 getStackTraceAsString(ex)
@@ -329,6 +338,7 @@ public class ApplicationExceptionHandler {
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(InvalidFacesException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleInvalidFacesException(
             final InvalidFacesException ex
     ) {
@@ -352,13 +362,14 @@ public class ApplicationExceptionHandler {
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(InvalidStudentException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ResponseEntity<Object> handleInvalidStudentException(
             final InvalidStudentException ex
     ) {
         log.error(ex.getMessage());
         ApiError apiError = new ApiError(
                 new Date(),
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.NOT_ACCEPTABLE,
                 ex.getMessage(),
                 OperationType.CREATE,
                 getStackTraceAsString(ex)

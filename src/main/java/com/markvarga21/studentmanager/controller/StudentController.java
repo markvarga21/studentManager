@@ -5,6 +5,8 @@ import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,7 @@ import java.util.List;
 @RequestMapping("/api/v1/students")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "Student services", description = "The student related endpoints.")
 public class StudentController {
     /**
      * Student service.
@@ -55,6 +58,7 @@ public class StudentController {
      *
      * @return A {@code List} containing all the students.
      */
+    @Operation(summary = "Get all students", description = "Retrieves all the students.")
     @GetMapping
     public List<StudentDto> getAllStudents() {
         return this.studentService.getAllStudents();
@@ -66,6 +70,7 @@ public class StudentController {
      * @param student The student itself.
      * @return The saved {@code StudentDto}.
      */
+    @Operation(summary = "Create a student", description = "Creates a student.")
     @PostMapping
     public ResponseEntity<StudentDto> createStudent(
             @RequestBody @Valid final StudentDto student
@@ -82,6 +87,7 @@ public class StudentController {
      * @param id The ID of the student which we want to retrieve.
      * @return The searched student if present.
      */
+    @Operation(summary = "Get a student by ID", description = "Retrieves a student by ID.")
     @GetMapping("/{id}")
     public ResponseEntity<StudentDto> getStudentById(
             @PathVariable final Long id
@@ -97,6 +103,7 @@ public class StudentController {
      * @param studentId The ID of the student which has to be updated.
      * @return The updated {@code StudentDto}.
      */
+    @Operation(summary = "Update a student by ID", description = "Updates a student by ID.")
     @PutMapping("/{studentId}")
     public ResponseEntity<StudentDto> updateStudentById(
             @RequestBody @Valid final StudentDto student,
@@ -113,6 +120,7 @@ public class StudentController {
      * @param id The ID of the student which we want to delete.
      * @return The recently deleted student DTO object.
      */
+    @Operation(summary = "Delete a student by ID", description = "Deletes a student by ID.")
     @DeleteMapping("/{id}")
     public ResponseEntity<StudentDto> deleteStudentById(
             @PathVariable final Long id

@@ -2,6 +2,8 @@ package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.entity.FacialValidationData;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin
 @Slf4j
+@Tag(name = "Facial validation services", description = "The facial validation related endpoints.")
 public class FacialValidationController {
     /**
      * A service which is used to access facial
@@ -37,6 +40,10 @@ public class FacialValidationController {
      *
      * @return All the facial validation data.
      */
+    @Operation(
+            summary = "Retrieves all the facial validation data.",
+            description = "Retrieves all the facial validation data."
+    )
     @GetMapping
     public List<FacialValidationData> getAllFacialValidationData() {
         return this.facialValidationService.getAllFacialValidationData();
@@ -49,6 +56,10 @@ public class FacialValidationController {
      * @return The facial validation data.
      */
     @SuppressWarnings("checkstyle:LineLength")
+    @Operation(
+            summary = "Retrieves the facial validation data with the given passport number.",
+            description = "Retrieves the facial validation data with the given passport number."
+    )
     @GetMapping("/{passportNumber}")
     public ResponseEntity<FacialValidationData> getFacialValidationDataByPassportNumber(
             @PathVariable final String passportNumber
@@ -68,6 +79,10 @@ public class FacialValidationController {
      * @return A message which indicates whether the
      * deletion was successful or not.
      */
+    @Operation(
+            summary = "Deletes the facial validation data with the given passport number.",
+            description = "Deletes the facial validation data with the given passport number."
+    )
     @DeleteMapping("/{passportNumber}")
     public ResponseEntity<String> deleteFacialValidationDataByPassportNumber(
             @PathVariable final String passportNumber
@@ -84,6 +99,10 @@ public class FacialValidationController {
      * @return A message which indicates whether the setting
      * was successful or not.
      */
+    @Operation(
+            summary = "Sets the facial validation data to valid.",
+            description = "Sets the facial validation data to valid."
+    )
     @PostMapping("/setFacialValidationDataToValid")
     public ResponseEntity<String> setFacialValidationDataToValid(
             @RequestParam final String passportNumber

@@ -9,7 +9,9 @@ import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
-import com.markvarga21.studentmanager.util.StudentImageType;
+import com.markvarga21.studentmanager.StudentImageType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,7 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api/v1/files")
 @Slf4j
+@Tag(name = "File upload services", description = "The file upload related endpoints.")
 public class FileUploadController {
     /**
      * The FileUploadService is used to manipulate
@@ -74,6 +77,9 @@ public class FileUploadController {
      *
      * @return A list of all the images.
      */
+    @Operation(
+            summary = "Retrieves all the images.",
+            description = "Retrieves all the images of a student.")
     @GetMapping
     public List<StudentImage> getAllImages() {
         return this.fileUploadService.getAllImages();
@@ -87,6 +93,10 @@ public class FileUploadController {
      * @return A message which indicates whether the deletion
      * was successful or not.
      */
+    @Operation(
+            summary = "Deletes the image with the given student ID.",
+            description = "Deletes the image with the given student ID."
+    )
     @DeleteMapping("/{studentId}")
     public ResponseEntity<String> deleteImage(
             @PathVariable("studentId") final Long studentId
@@ -103,6 +113,10 @@ public class FileUploadController {
      * @param imageType The type of image.
      * @return The image for the specified type.
      */
+    @Operation(
+            summary = "Retrieves the image for the specified type.",
+            description = "Retrieves the image for the specified type."
+    )
     @GetMapping("/{studentId}")
     public ResponseEntity<byte[]> getImageForType(
             @PathVariable("studentId") final Long studentId,
@@ -125,6 +139,10 @@ public class FileUploadController {
      * @param selfie The selfie image.
      * @return A response entity.
      */
+    @Operation(
+            summary = "Uploads the image(s) to the database.",
+            description = "Uploads the image(s) to the database."
+    )
     @PostMapping("/upload/{studentId}")
     public ResponseEntity<String> uploadImage(
             @PathVariable("studentId") final Long studentId,
@@ -145,6 +163,10 @@ public class FileUploadController {
      * @param file The file to be changed.
      * @return A response entity.
      */
+    @Operation(
+            summary = "Changes the image(s) in the database.",
+            description = "Changes the image(s) in the database."
+    )
     @PostMapping("/changeImage/{studentId}/{imageType}")
     public ResponseEntity<String> changeImage(
             @PathVariable("studentId") final Long studentId,

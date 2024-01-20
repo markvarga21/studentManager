@@ -1,4 +1,4 @@
-package com.markvarga21.studentmanager.util;
+package com.markvarga21.studentmanager;
 
 /**
  * The StudentImageType enum is used to

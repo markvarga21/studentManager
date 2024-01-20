@@ -1,4 +1,4 @@
 /**
  * A package which contains mapping services.
  */
-package com.markvarga21.studentmanager.util.mapping;
+package com.markvarga21.studentmanager.mapping;
