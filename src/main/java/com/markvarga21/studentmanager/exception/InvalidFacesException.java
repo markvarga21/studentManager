@@ -15,6 +15,7 @@ public class InvalidFacesException extends RuntimeException {
      * The default constructor.
      *
      * @param message The message to be sent when the exception occurs.
+     * @param percentage The percentage of the faces matching.
      */
     public InvalidFacesException(
             final String message,

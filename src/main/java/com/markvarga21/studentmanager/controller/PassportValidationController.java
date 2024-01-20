@@ -5,7 +5,6 @@ import com.markvarga21.studentmanager.dto.PassportValidationResponse;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
-import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +59,7 @@ public class PassportValidationController {
      * Deletes the passport validation data with the given ID.
      *
      * @param passportNumber The passport number of the student.
+     * @return A {@code ResponseEntity} object.
      */
     @DeleteMapping("/{passportNumber}")
     public ResponseEntity<String> deletePassportValidationData(
@@ -84,7 +84,8 @@ public class PassportValidationController {
             @RequestParam("passport") final MultipartFile passport
     ) {
         PassportValidationResponse passportValidationResponse =
-                this.formRecognizerService.validatePassport(studentJson, passport);
+                this.formRecognizerService
+                        .validatePassport(studentJson, passport);
         return new ResponseEntity<>(passportValidationResponse, HttpStatus.OK);
     }
 
@@ -98,8 +99,12 @@ public class PassportValidationController {
     public ResponseEntity<String> validatePassportManually(
             @RequestParam("studentId") final Long studentId
     ) {
-        log.info("Manually validating passport for user with ID '{}'", studentId);
-        String message = this.formRecognizerService.validatePassportManually(studentId);
+        log.info(
+                "Manually validating passport for user with ID '{}'",
+                studentId
+        );
+        String message = this.formRecognizerService
+                .validatePassportManually(studentId);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 

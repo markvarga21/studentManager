@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import com.markvarga21.studentmanager.config.ApplicationConfiguration;
 import com.markvarga21.studentmanager.dto.FaceDetectionResponse;
 import com.markvarga21.studentmanager.entity.FacialValidationData;
-import com.markvarga21.studentmanager.exception.InvalidFacesException;
 import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.dto.FaceApiResponse;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
@@ -129,6 +128,7 @@ public class FaceApiServiceImpl implements FaceApiService {
      * @param file the file to be processed.
      * @return the face ID for the given file.
      */
+    @SuppressWarnings("checkstyle:LineLength")
     @Override
     public String getFaceIdForFile(final MultipartFile file) {
         try {
@@ -157,6 +157,7 @@ public class FaceApiServiceImpl implements FaceApiService {
                         detectionString,
                         listType
             );
+            assert faceDetectionResponses != null;
             faceDetectionResponses.sort((face1, face2) -> {
                 Integer area1 = face1.getFaceRectangle().getArea();
                 Integer area2 = face2.getFaceRectangle().getArea();
@@ -181,6 +182,7 @@ public class FaceApiServiceImpl implements FaceApiService {
      * @param fileBytes the file to be processed.
      * @return the face ID for the given file.
      */
+    @SuppressWarnings("checkstyle:LineLength")
     public String getFaceIdForFile(final byte[] fileBytes) {
         String faceApiDetectionEndpoint = String.format(
                 "%sface/v1.0/detect?returnFaceId=true&recognitionModel=recognition_04&faceIdTimeToLive=300",
@@ -206,6 +208,7 @@ public class FaceApiServiceImpl implements FaceApiService {
                         detectionString,
                         listType
                 );
+        assert faceDetectionResponses != null;
         faceDetectionResponses.sort((face1, face2) -> {
             Integer area1 = face1.getFaceRectangle().getArea();
             Integer area2 = face2.getFaceRectangle().getArea();

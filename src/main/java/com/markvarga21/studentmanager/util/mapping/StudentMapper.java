@@ -6,7 +6,6 @@ import com.markvarga21.studentmanager.entity.Student;
 import com.markvarga21.studentmanager.util.DateDeserializer;
 import com.markvarga21.studentmanager.util.DateValidator;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

@@ -1,7 +1,6 @@
 package com.markvarga21.studentmanager.service.validation.face.impl;
 
 import com.markvarga21.studentmanager.entity.FacialValidationData;
-import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.exception.FaceValidationDataNotFoundException;
 import com.markvarga21.studentmanager.repository.FacialValidationDataRepository;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;

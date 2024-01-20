@@ -1,21 +1,14 @@
 package com.markvarga21.studentmanager.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.markvarga21.studentmanager.entity.Gender;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDate;
 
 /**
  * Represents a student data transfer object in the application.
@@ -76,12 +69,14 @@ public class StudentDto {
     /**
      * The student's passports expiry date.
      */
+    @SuppressWarnings("checkstyle:LineLength")
     @NotNull(message = "Passport date of expiry cannot be null and has to be either in the present or in the future!")
     private String passportDateOfExpiry;
 
     /**
      * The student's passports issue date.
      */
+    @SuppressWarnings("checkstyle:LineLength")
     @NotNull(message = "Passport date of issue cannot be null and has to be either in the past or in the present!")
     private String passportDateOfIssue;
 
@@ -93,10 +88,21 @@ public class StudentDto {
     private boolean valid;
 
     /**
+     * The initial non-zero odd number for the hash code.
+     */
+    private static final int INITIAL_NON_ZERO_ODD_NUMBER = 17;
+
+    /**
+     * The multiplier non-zero odd number for the hash code.
+     */
+    private static final int MULTIPLIER_NON_ZERO_ODD_NUMBER = 31;
+
+    /**
      * Clone a student.
      *
      * @return A clone of the student.
      */
+    @Override
     public StudentDto clone() {
         return StudentDto.builder()
                 .id(this.id)
@@ -119,6 +125,7 @@ public class StudentDto {
      * @return {@code true} if the students are equal,
      * {@code false} otherwise.
      */
+    @SuppressWarnings("checkstyle:LineLength")
     public boolean equals(final Object o) {
         if (!(o instanceof StudentDto student)) {
             return false;
@@ -176,9 +183,10 @@ public class StudentDto {
      *
      * @return The hash code.
      */
+    @SuppressWarnings("checkstyle:LineLength")
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 31)
+        return new HashCodeBuilder(INITIAL_NON_ZERO_ODD_NUMBER, MULTIPLIER_NON_ZERO_ODD_NUMBER)
                 .append(this.id)
                 .append(this.firstName)
                 .append(this.lastName)

@@ -6,10 +6,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * A controller which is used to make facial validations.
+ */
 @RestController
 @RequestMapping("/api/v1/facialValidations")
 @RequiredArgsConstructor
@@ -38,6 +48,7 @@ public class FacialValidationController {
      * @param passportNumber The passport number of the student.
      * @return The facial validation data.
      */
+    @SuppressWarnings("checkstyle:LineLength")
     @GetMapping("/{passportNumber}")
     public ResponseEntity<FacialValidationData> getFacialValidationDataByPassportNumber(
             @PathVariable final String passportNumber
@@ -54,6 +65,8 @@ public class FacialValidationController {
      * Deletes the facial validation data with the given passport number.
      *
      * @param passportNumber The passport number of the student.
+     * @return A message which indicates whether the
+     * deletion was successful or not.
      */
     @DeleteMapping("/{passportNumber}")
     public ResponseEntity<String> deleteFacialValidationDataByPassportNumber(
@@ -68,12 +81,15 @@ public class FacialValidationController {
      * Sets the facial validation data to valid.
      *
      * @param passportNumber The passport number of the student.
+     * @return A message which indicates whether the setting
+     * was successful or not.
      */
     @PostMapping("/setFacialValidationDataToValid")
     public ResponseEntity<String> setFacialValidationDataToValid(
             @RequestParam final String passportNumber
     ) {
-        String message = this.facialValidationService.setFacialValidationToValid(passportNumber);
+        String message = this.facialValidationService
+                .setFacialValidationToValid(passportNumber);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }

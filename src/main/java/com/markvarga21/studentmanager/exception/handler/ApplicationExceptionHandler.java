@@ -1,6 +1,13 @@
 package com.markvarga21.studentmanager.exception.handler;
 
-import com.markvarga21.studentmanager.exception.*;
+import com.markvarga21.studentmanager.exception.InvalidDateException;
+import com.markvarga21.studentmanager.exception.InvalidDateFormatException;
+import com.markvarga21.studentmanager.exception.InvalidFacesException;
+import com.markvarga21.studentmanager.exception.InvalidPassportException;
+import com.markvarga21.studentmanager.exception.InvalidStudentException;
+import com.markvarga21.studentmanager.exception.OperationType;
+import com.markvarga21.studentmanager.exception.PassportValidationDataNotFoundException;
+import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.exception.util.ApiError;
 import com.markvarga21.studentmanager.exception.util.InvalidFacesApiError;
 import jakarta.validation.ConstraintViolationException;

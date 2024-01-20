@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * The StudentImage class represents the images of a student.
+ */
 @Entity
 @Data
 @Builder

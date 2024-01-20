@@ -18,6 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The FileUploadServiceImpl class is used to store and manipulate the
+ * images of a student.
+ */
 @RequiredArgsConstructor
 @Slf4j
 @Service

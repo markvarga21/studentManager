@@ -3,7 +3,6 @@ package com.markvarga21.studentmanager.util;
 import com.markvarga21.studentmanager.exception.InvalidDateFormatException;
 import lombok.extern.slf4j.Slf4j;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -68,7 +67,8 @@ public final class DateDeserializer {
             return null;
         }
         log.info("Date to deserialize: {}", dateString);
-        if (dateString.split("/").length == 2 || dateString.split(" ").length == 3) {
+        if (dateString.split("/").length == 2
+                || dateString.split(" ").length == PASSPORT_DATE_COMPONENT_LENGTH) {
             return mapStandardPassportDateStringToLocalDate(dateString);
         }
         for (String dateFormat : DATE_FORMATS) {

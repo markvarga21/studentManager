@@ -4,11 +4,14 @@ package com.markvarga21.studentmanager.util;
  * A util class for storing the country names.
  */
 public final class CountryNames {
-    private CountryNames() {}
+    private CountryNames() {
+
+    }
 
     /**
      * The country names.
      */
+    @SuppressWarnings("checkstyle:LineLength")
     public static final String COUNTRIES = """
                 {
                               "AFG": "Afghanistan",

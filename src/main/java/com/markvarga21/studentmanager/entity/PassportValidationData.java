@@ -1,7 +1,6 @@
 package com.markvarga21.studentmanager.entity;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
-import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import com.markvarga21.studentmanager.util.DateDeserializer;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -91,6 +90,7 @@ public class PassportValidationData {
      * @param passportValidationData The passport validation data.
      * @return A new {@code StudentDto} object.
      */
+    @SuppressWarnings("checkstyle:LineLength")
     public static StudentDto getStudentDtoFromValidationData(
             final PassportValidationData passportValidationData
     ) {
