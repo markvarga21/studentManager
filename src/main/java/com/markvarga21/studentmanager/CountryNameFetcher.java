@@ -1,14 +1,8 @@
-package com.markvarga21.studentmanager.util;
+package com.markvarga21.studentmanager;
 
 import org.json.JSONObject;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * A util class for converting a country code
@@ -17,12 +11,6 @@ import java.nio.file.Paths;
 @Component
 @RequiredArgsConstructor
 public class CountryNameFetcher {
-    /**
-     * The resource loader which is used
-     * to load files from the resources folder.
-     */
-    private final ResourceLoader resourceLoader;
-
     /**
      * Retrieves the name of the country for the given country code.
      *

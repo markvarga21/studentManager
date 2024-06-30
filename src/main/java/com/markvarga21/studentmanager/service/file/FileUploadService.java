@@ -1,7 +1,7 @@
 package com.markvarga21.studentmanager.service.file;
 
 import com.markvarga21.studentmanager.entity.StudentImage;
-import com.markvarga21.studentmanager.util.StudentImageType;
+import com.markvarga21.studentmanager.StudentImageType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +20,7 @@ public interface FileUploadService {
      * @param studentId The id of the student.
      * @param passportFile The passport file.
      * @param selfieFile The selfie file.
+     * @return The message.
      */
     String uploadFile(
             Long studentId,
@@ -40,6 +41,7 @@ public interface FileUploadService {
      * the image from the database.
      *
      * @param studentId The id of the student.
+     * @return The message.
      */
     String deleteImage(Long studentId);
 
@@ -60,6 +62,7 @@ public interface FileUploadService {
      * @param studentId The id of the student.
      * @param imageType The image type.
      * @param file The new image.
+     * @return The message.
      */
     String changeImage(Long studentId, StudentImageType imageType, MultipartFile file);
 }

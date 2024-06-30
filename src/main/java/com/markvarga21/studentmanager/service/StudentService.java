@@ -61,4 +61,12 @@ public interface StudentService {
             Long studentId,
             boolean valid
     );
+
+    /**
+     * Checks if the passport number is valid.
+     *
+     * @param passportNumber The passport number to check.
+     * @return {@code true} if the passport number is valid, {@code false} otherwise.
+     */
+    boolean validPassportNumber(String passportNumber);
 }

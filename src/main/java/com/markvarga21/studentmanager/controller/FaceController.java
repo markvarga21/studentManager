@@ -2,6 +2,8 @@ package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.dto.FaceApiResponse;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/faces")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "Facial services", description = "The Face API related endpoints.")
 public class FaceController {
     /**
      * Face service.
@@ -33,6 +36,10 @@ public class FaceController {
      * @param selfiePhoto The selfie of the student.
      * @return The validity and the percentage of the matching.
      */
+    @Operation(
+            summary = "Compares the faces found on the passport and the selfie, and then sends it back to the client.",
+            description = "Compares the faces found on the passport and the selfie, and then sends it back to the client."
+    )
     @PostMapping("/validate")
     public ResponseEntity<FaceApiResponse> getSelfieValidationData(
             @RequestParam("passport") final MultipartFile passport,

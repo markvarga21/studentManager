@@ -7,8 +7,8 @@ import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentRepository;
 import com.markvarga21.studentmanager.service.StudentService;
-import com.markvarga21.studentmanager.util.DateDeserializer;
-import com.markvarga21.studentmanager.util.mapping.StudentMapper;
+import com.markvarga21.studentmanager.DateDeserializer;
+import com.markvarga21.studentmanager.mapping.StudentMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -88,6 +88,7 @@ public class StudentServiceImpl implements StudentService {
      * @return {@code true} if the passport number is valid,
      * {@code false} otherwise.
      */
+    @Override
     public boolean validPassportNumber(
             final String passportNumber
     ) {

@@ -2,19 +2,32 @@ package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.entity.FacialValidationData;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * A controller which is used to make facial validations.
+ */
 @RestController
 @RequestMapping("/api/v1/facialValidations")
 @RequiredArgsConstructor
 @CrossOrigin
 @Slf4j
+@Tag(name = "Facial validation services", description = "The facial validation related endpoints.")
 public class FacialValidationController {
     /**
      * A service which is used to access facial
@@ -27,6 +40,10 @@ public class FacialValidationController {
      *
      * @return All the facial validation data.
      */
+    @Operation(
+            summary = "Retrieves all the facial validation data.",
+            description = "Retrieves all the facial validation data."
+    )
     @GetMapping
     public List<FacialValidationData> getAllFacialValidationData() {
         return this.facialValidationService.getAllFacialValidationData();
@@ -38,6 +55,11 @@ public class FacialValidationController {
      * @param passportNumber The passport number of the student.
      * @return The facial validation data.
      */
+    @SuppressWarnings("checkstyle:LineLength")
+    @Operation(
+            summary = "Retrieves the facial validation data with the given passport number.",
+            description = "Retrieves the facial validation data with the given passport number."
+    )
     @GetMapping("/{passportNumber}")
     public ResponseEntity<FacialValidationData> getFacialValidationDataByPassportNumber(
             @PathVariable final String passportNumber
@@ -54,7 +76,13 @@ public class FacialValidationController {
      * Deletes the facial validation data with the given passport number.
      *
      * @param passportNumber The passport number of the student.
+     * @return A message which indicates whether the
+     * deletion was successful or not.
      */
+    @Operation(
+            summary = "Deletes the facial validation data with the given passport number.",
+            description = "Deletes the facial validation data with the given passport number."
+    )
     @DeleteMapping("/{passportNumber}")
     public ResponseEntity<String> deleteFacialValidationDataByPassportNumber(
             @PathVariable final String passportNumber
@@ -68,12 +96,19 @@ public class FacialValidationController {
      * Sets the facial validation data to valid.
      *
      * @param passportNumber The passport number of the student.
+     * @return A message which indicates whether the setting
+     * was successful or not.
      */
+    @Operation(
+            summary = "Sets the facial validation data to valid.",
+            description = "Sets the facial validation data to valid."
+    )
     @PostMapping("/setFacialValidationDataToValid")
     public ResponseEntity<String> setFacialValidationDataToValid(
             @RequestParam final String passportNumber
     ) {
-        String message = this.facialValidationService.setFacialValidationToValid(passportNumber);
+        String message = this.facialValidationService
+                .setFacialValidationToValid(passportNumber);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }
