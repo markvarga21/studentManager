@@ -47,6 +47,7 @@ public class FaceApiServiceImpl implements FaceApiService {
      */
     @Value("${knopp.services.key}")
     private String faceApiKey;
+
     /**
      * The rest template used to make API calls.
      */

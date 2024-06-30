@@ -88,6 +88,7 @@ public class StudentServiceImpl implements StudentService {
      * @return {@code true} if the passport number is valid,
      * {@code false} otherwise.
      */
+    @Override
     public boolean validPassportNumber(
             final String passportNumber
     ) {
