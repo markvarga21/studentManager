@@ -15,9 +15,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,13 +62,16 @@ class StudentControllerTest {
      */
     static final String API_URL = "/api/v1/students";
 
+    /**
+     * The {@code ObjectMapper} used for mapping students to JSON strings.
+     */
     @Autowired
     private ObjectMapper objectMapper;
 
     /**
      * A {@code StudentDto} used for testing the API.
      */
-    private StudentDto studentDto = StudentDto.builder()
+    private final StudentDto studentDto = StudentDto.builder()
             .id(1L)
             .firstName("John").lastName("Doe")
             .birthDate("2000-01-01")
@@ -77,7 +84,7 @@ class StudentControllerTest {
             .build();
     @Test
     void shouldReturnAllStudentsTest() throws Exception {
-        when(studentService.getAllStudents()).thenReturn(List.of(
+        when(this.studentService.getAllStudents()).thenReturn(List.of(
                 studentDto,
                 StudentDto.builder()
                         .id(2L)
@@ -94,6 +101,7 @@ class StudentControllerTest {
 
         this.mockMvc.perform(get(API_URL))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].firstName").value("John"))
                 .andExpect(jsonPath("$[0].lastName").value("Doe"))
