@@ -178,8 +178,8 @@ public class PassportValidationController {
      * @return The {@code StudentDto} object.
      */
     @Operation(
-            summary = "Retrieves StudentDto object from the validation data by passport number.",
-            description = "Retrieves StudentDto object from the validation data by passport number."
+        summary = "Retrieves StudentDto object from the validation data by passport number.",
+        description = "Retrieves StudentDto object from the validation data by passport number."
     )
     @GetMapping("/{passportNumber}")
     public ResponseEntity<StudentDto> getPassportValidationByPassportNumber(
