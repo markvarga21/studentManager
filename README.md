@@ -36,6 +36,7 @@
     <li><a href="#flowchart">Flowchart</a></li>
     <li><a href="#known-bugs">Known bugs</a></li>
     <li><a href="#contact">Contact</a></li>
+<li><a href="#license">License</a></li>
   </ol>
 </details>
 
@@ -168,5 +169,15 @@ As any application, this contains some bugs and some sensitive parts too which a
 ## Contact
 
 József Márk Varga - vmark2145@gmail.com
+
+## License
+
+<div id="license"></div>
+Copyright (c) 2024 Department of Informatics, University of Debrecen.
+
+All rights reserved.
+
+This code and the information contained within are proprietary to the Department of Informatics, University of Debrecen.
+This code may not be reproduced, used, or disclosed without the written permission of Department of Informatics, University of Debrecen.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
