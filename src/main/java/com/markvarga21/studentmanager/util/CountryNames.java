@@ -3,6 +3,7 @@ package com.markvarga21.studentmanager.util;
 /**
  * A util class for storing the country names.
  */
+@Generated
 public final class CountryNames {
     private CountryNames() {
 

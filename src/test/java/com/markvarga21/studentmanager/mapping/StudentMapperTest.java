@@ -84,7 +84,7 @@ class StudentMapperTest {
             """;
 
     @Test
-    void shouldMapStudentDtoToEntity() {
+    void shouldMapStudentDtoToEntityTest() {
         // Given
         // When
         Student actual = this.studentMapper.mapStudentDtoToEntity(STUDENT_DTO);
@@ -94,7 +94,7 @@ class StudentMapperTest {
     }
 
     @Test
-    void shouldMapStudentEntityToDto() {
+    void shouldMapStudentEntityToDtoTest() {
         // Given
         // When
         StudentDto actual = this.studentMapper.mapStudentEntityToDto(STUDENT);
@@ -104,7 +104,7 @@ class StudentMapperTest {
     }
 
     @Test
-    void shouldMapJsonToDto() {
+    void shouldMapJsonToDtoTest() {
         // Given
         // When
         when(this.gson.fromJson(STUDENT_JSON, StudentDto.class))
