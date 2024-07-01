@@ -10,6 +10,7 @@ import com.markvarga21.studentmanager.dto.FaceApiResponse;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
+import com.markvarga21.studentmanager.util.Generated;
 import com.markvarga21.studentmanager.util.StudentImageType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Generated
 public class FaceApiServiceImpl implements FaceApiService {
     /**
      * The endpoint of the Face API.

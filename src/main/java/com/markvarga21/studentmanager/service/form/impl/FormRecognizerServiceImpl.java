@@ -23,6 +23,7 @@ import com.markvarga21.studentmanager.service.validation.passport.PassportValida
 import com.markvarga21.studentmanager.util.CountryNameFetcher;
 import com.markvarga21.studentmanager.util.DateDeserializer;
 import com.markvarga21.studentmanager.mapping.StudentMapper;
+import com.markvarga21.studentmanager.util.Generated;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Generated
 public class FormRecognizerServiceImpl implements FormRecognizerService {
     /**
      * The default value if the field is empty.
