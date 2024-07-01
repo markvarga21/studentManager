@@ -1,6 +1,5 @@
 package com.markvarga21.studentmanager.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Gender;
@@ -211,7 +210,7 @@ class PassportValidationControllerTest {
         String passportNumber = "123456789";
 
         // When
-        when(this.passportValidationService.getPassportValidationByPassportNumber(passportNumber))
+        when(this.passportValidationService.getStudentFromPassportValidation(passportNumber))
                 .thenReturn(STUDENT_DTO);
 
         // Then
