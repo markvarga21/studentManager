@@ -1,5 +1,6 @@
 package com.markvarga21.studentmanager.entity;
 
+import com.markvarga21.studentmanager.util.Generated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Generated
 public class FacialValidationData {
     /**
      * The id of the facial validation data.

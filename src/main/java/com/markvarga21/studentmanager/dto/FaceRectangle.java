@@ -1,5 +1,6 @@
 package com.markvarga21.studentmanager.dto;
 
+import com.markvarga21.studentmanager.util.Generated;
 import lombok.Data;
 
 
@@ -8,6 +9,7 @@ import lombok.Data;
  * response from Azure's Face API to a POJO.
  */
 @Data
+@Generated
 public class FaceRectangle {
     /**
      * The top coordinate of the rectangle.

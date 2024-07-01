@@ -1,7 +1,8 @@
 package com.markvarga21.studentmanager.entity;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
-import com.markvarga21.studentmanager.DateDeserializer;
+import com.markvarga21.studentmanager.util.DateDeserializer;
+import com.markvarga21.studentmanager.util.Generated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Generated
 public class PassportValidationData {
     /**
      * The ID of the passport validation data.

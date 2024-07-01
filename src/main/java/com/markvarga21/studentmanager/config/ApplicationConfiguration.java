@@ -5,7 +5,7 @@ import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClientBuilde
 import com.azure.core.credential.AzureKeyCredential;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.markvarga21.studentmanager.LocalDateDeserializer;
+import com.markvarga21.studentmanager.util.LocalDateDeserializer;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

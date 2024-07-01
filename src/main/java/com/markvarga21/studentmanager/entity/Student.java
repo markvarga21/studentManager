@@ -1,5 +1,6 @@
 package com.markvarga21.studentmanager.entity;
 
+import com.markvarga21.studentmanager.util.Generated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Generated
 public class Student {
     /**
      * A unique identifier for the student.

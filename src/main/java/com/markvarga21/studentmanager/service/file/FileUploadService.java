@@ -1,7 +1,7 @@
 package com.markvarga21.studentmanager.service.file;
 
 import com.markvarga21.studentmanager.entity.StudentImage;
-import com.markvarga21.studentmanager.StudentImageType;
+import com.markvarga21.studentmanager.util.StudentImageType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

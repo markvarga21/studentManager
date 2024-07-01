@@ -1,6 +1,7 @@
 package com.markvarga21.studentmanager.exception.util;
 
 import com.markvarga21.studentmanager.exception.OperationType;
+import com.markvarga21.studentmanager.util.Generated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import java.util.Date;
  */
 @Data
 @AllArgsConstructor
+@Generated
 public class ApiError {
     /**
      * The date when the error occurred.

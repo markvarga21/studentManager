@@ -144,6 +144,13 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.10</version>
+				<configuration>
+					<excludes>
+						<exclude>com.markvarga21.studentmanager.dto/**</exclude>
+						<exclude>com.markvarga21.studentmanager.entity/**</exclude>
+						<exclude>com.markvarga21.studentmanager.exception/**</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<phase>initialize</phase>
