@@ -1,20 +1,20 @@
 name: JUnit Tests
 jobs:
   exec-tests:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
-          java-version: '17'
+          distribution: "adopt"
+          java-version: "17"
       - name: Set up Maven
         uses: s4u/setup-maven-action@v1.14.0
         with:
-          java-version: '17'
-          maven-version: '3.9.4'
+          java-version: "17"
+          maven-version: "3.9.4"
       - name: Run tests
         run: mvn clean install
       - name: Upload coverage reports to Codecov
@@ -22,13 +22,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./target/site/jacoco/jacoco.xml
-on:
-    push:
-        branches:
-        - main
-        - master
-    pull_request:
-        branches:
-        - main
-        - master
-
+on: [pull_request, push]

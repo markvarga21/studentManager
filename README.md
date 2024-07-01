@@ -181,3 +181,5 @@ This code and the information contained within are proprietary to the Department
 This code may not be reproduced, used, or disclosed without the written permission of Department of Informatics, University of Debrecen.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+[![codecov](https://codecov.io/gh/markvarga21/studentManager/graph/badge.svg?token=KIW2XODH14)](https://codecov.io/gh/markvarga21/studentManager)
