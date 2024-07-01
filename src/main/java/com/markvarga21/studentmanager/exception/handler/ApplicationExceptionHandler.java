@@ -10,6 +10,7 @@ import com.markvarga21.studentmanager.exception.PassportValidationDataNotFoundEx
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.exception.util.ApiError;
 import com.markvarga21.studentmanager.exception.util.InvalidFacesApiError;
+import com.markvarga21.studentmanager.util.Generated;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +36,7 @@ import java.util.Map;
  */
 @ControllerAdvice
 @Slf4j
+@Generated
 public class ApplicationExceptionHandler {
     /**
      * A bullet point character in unicode.
