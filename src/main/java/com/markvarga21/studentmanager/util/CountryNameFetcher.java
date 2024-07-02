@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
+@Generated
 public class CountryNameFetcher {
     /**
      * Retrieves the name of the country for the given country code.
