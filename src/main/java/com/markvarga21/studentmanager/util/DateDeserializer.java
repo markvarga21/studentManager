@@ -31,22 +31,11 @@ public final class DateDeserializer {
             "dd/MM/yyyy",
             "dd-MM-yyyy",
             "dd.MM.yyyy",
-            "MM/dd/yyyy",
-            "MM-dd-yyyy",
-            "MM.dd.yyyy",
             "dd/MM/yy",
             "dd-MM-yy",
             "dd.MM.yy",
-            "MM/dd/yy",
-            "MM-dd-yy",
-            "MM.dd.yy",
-            "yy/MM/dd",
-            "yy-MM-dd",
-            "yy.MM.dd",
             "dd MMM yy",
             "dd MMM yyyy",
-            "MM dd yyyy",
-            "yyyy MM dd"
     };
     private DateDeserializer() {
 
@@ -84,7 +73,13 @@ public final class DateDeserializer {
         throw new InvalidDateFormatException(dateString);
     }
 
-    private static LocalDate mapStandardPassportDateStringToLocalDate(
+    /**
+     * Maps a standard passport date string to a {@code LocalDate}.
+     *
+     * @param dateString The date string.
+     * @return The mapped {@code LocalDate} from the string itself.
+     */
+    public static LocalDate mapStandardPassportDateStringToLocalDate(
             final String dateString
     ) {
         String formattedDate;

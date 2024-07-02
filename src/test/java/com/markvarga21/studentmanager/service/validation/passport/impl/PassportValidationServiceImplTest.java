@@ -3,18 +3,15 @@ package com.markvarga21.studentmanager.service.validation.passport.impl;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Gender;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
-import com.markvarga21.studentmanager.entity.Student;
 import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.exception.PassportValidationDataNotFoundException;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.annotation.meta.When;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;

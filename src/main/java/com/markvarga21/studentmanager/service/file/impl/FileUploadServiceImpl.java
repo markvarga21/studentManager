@@ -150,6 +150,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             case SELFIE -> studentImageOptional
                                     .get()
                                     .getSelfieImage();
+            default -> throw new InvalidImageTypeException("Invalid image type provided");
         };
     }
 

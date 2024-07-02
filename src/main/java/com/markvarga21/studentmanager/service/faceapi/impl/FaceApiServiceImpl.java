@@ -152,8 +152,7 @@ public class FaceApiServiceImpl implements FaceApiService {
                     );
             String detectionString = response.getBody();
             Gson gson = new Gson();
-            Type listType = new TypeToken<List<FaceDetectionResponse>>() { }
-                    .getType();
+            Type listType = getListType();
 
             ArrayList<FaceDetectionResponse> faceDetectionResponses = gson
                     .fromJson(
@@ -180,6 +179,16 @@ public class FaceApiServiceImpl implements FaceApiService {
     }
 
     /**
+     * Returns the list type for the face detection response.
+     *
+     * @return the list type for the face detection response.
+     */
+    public Type getListType() {
+        return new TypeToken<List<FaceDetectionResponse>>() { }
+                .getType();
+    }
+
+    /**
      * Returns the face ID for the given byte array.
      *
      * @param fileBytes the file to be processed.
@@ -203,8 +212,7 @@ public class FaceApiServiceImpl implements FaceApiService {
                 );
         String detectionString = response.getBody();
         Gson gson = new Gson();
-        Type listType = new TypeToken<List<FaceDetectionResponse>>() { }
-                .getType();
+        Type listType = getListType();
 
         ArrayList<FaceDetectionResponse> faceDetectionResponses = gson
                 .fromJson(

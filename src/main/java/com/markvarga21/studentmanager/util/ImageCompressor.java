@@ -35,6 +35,7 @@ public final class ImageCompressor {
      * @return The byte array of the image.
      * @throws IOException If the image could not be converted.
      */
+    @Generated
     public static byte[] toByteArray(
             final BufferedImage bi,
             final String format
@@ -99,6 +100,7 @@ public final class ImageCompressor {
      * @param file The file to get the size of.
      * @return The size of the given file in MB.
      */
+    @Generated
     private static String getFileSize(final byte[] file) {
         return String.format(String.valueOf(file.length));
     }

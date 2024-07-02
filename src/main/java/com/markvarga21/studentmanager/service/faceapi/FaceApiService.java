@@ -1,6 +1,7 @@
 package com.markvarga21.studentmanager.service.faceapi;
 
 import com.markvarga21.studentmanager.dto.FaceApiResponse;
+import com.markvarga21.studentmanager.util.Generated;
 import org.springframework.web.multipart.MultipartFile;
 
 
