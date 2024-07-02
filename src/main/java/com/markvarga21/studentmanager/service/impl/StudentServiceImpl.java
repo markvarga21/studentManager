@@ -7,7 +7,7 @@ import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentRepository;
 import com.markvarga21.studentmanager.service.StudentService;
-import com.markvarga21.studentmanager.DateDeserializer;
+import com.markvarga21.studentmanager.util.DateDeserializer;
 import com.markvarga21.studentmanager.mapping.StudentMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

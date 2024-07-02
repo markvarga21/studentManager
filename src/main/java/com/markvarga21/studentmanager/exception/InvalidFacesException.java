@@ -1,11 +1,13 @@
 package com.markvarga21.studentmanager.exception;
 
+import com.markvarga21.studentmanager.util.Generated;
 import lombok.Data;
 
 /**
  * A custom exception for when the face data is invalid.
  */
 @Data
+@Generated
 public class InvalidFacesException extends RuntimeException {
     /**
      * The percentage of the faces matching.

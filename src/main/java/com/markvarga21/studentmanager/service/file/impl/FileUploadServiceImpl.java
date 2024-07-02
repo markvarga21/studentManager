@@ -7,8 +7,8 @@ import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentImageRepository;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
-import com.markvarga21.studentmanager.ImageCompressor;
-import com.markvarga21.studentmanager.StudentImageType;
+import com.markvarga21.studentmanager.util.ImageCompressor;
+import com.markvarga21.studentmanager.util.StudentImageType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -150,6 +150,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             case SELFIE -> studentImageOptional
                                     .get()
                                     .getSelfieImage();
+            default -> throw new InvalidImageTypeException("Invalid image type provided");
         };
     }
 

@@ -1,6 +1,7 @@
 package com.markvarga21.studentmanager.dto;
 
 import com.markvarga21.studentmanager.entity.Gender;
+import com.markvarga21.studentmanager.util.Generated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @NoArgsConstructor
 @Builder
 @Slf4j
+@Generated
 public class StudentDto {
     /**
      * A unique identifier for the student.

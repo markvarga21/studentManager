@@ -116,7 +116,7 @@ public class PassportValidationServiceImpl
      * @return The {@code StudentDto} object.
      */
     @Override
-    public StudentDto getPassportValidationByPassportNumber(
+    public StudentDto getStudentFromPassportValidation(
             final String passportNumber
     ) {
         Optional<PassportValidationData> dataOptional =

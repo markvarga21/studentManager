@@ -55,5 +55,5 @@ public interface PassportValidationService {
      * @param passportNumber The passport number of the student.
      * @return The {@code StudentDto} object.
      */
-    StudentDto getPassportValidationByPassportNumber(String passportNumber);
+    StudentDto getStudentFromPassportValidation(String passportNumber);
 }

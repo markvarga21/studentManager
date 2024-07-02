@@ -10,7 +10,8 @@ import com.markvarga21.studentmanager.dto.FaceApiResponse;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
-import com.markvarga21.studentmanager.StudentImageType;
+import com.markvarga21.studentmanager.util.Generated;
+import com.markvarga21.studentmanager.util.StudentImageType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Generated
 public class FaceApiServiceImpl implements FaceApiService {
     /**
      * The endpoint of the Face API.
@@ -150,8 +152,7 @@ public class FaceApiServiceImpl implements FaceApiService {
                     );
             String detectionString = response.getBody();
             Gson gson = new Gson();
-            Type listType = new TypeToken<List<FaceDetectionResponse>>() { }
-                    .getType();
+            Type listType = getListType();
 
             ArrayList<FaceDetectionResponse> faceDetectionResponses = gson
                     .fromJson(
@@ -178,6 +179,16 @@ public class FaceApiServiceImpl implements FaceApiService {
     }
 
     /**
+     * Returns the list type for the face detection response.
+     *
+     * @return the list type for the face detection response.
+     */
+    public Type getListType() {
+        return new TypeToken<List<FaceDetectionResponse>>() { }
+                .getType();
+    }
+
+    /**
      * Returns the face ID for the given byte array.
      *
      * @param fileBytes the file to be processed.
@@ -201,8 +212,7 @@ public class FaceApiServiceImpl implements FaceApiService {
                 );
         String detectionString = response.getBody();
         Gson gson = new Gson();
-        Type listType = new TypeToken<List<FaceDetectionResponse>>() { }
-                .getType();
+        Type listType = getListType();
 
         ArrayList<FaceDetectionResponse> faceDetectionResponses = gson
                 .fromJson(

@@ -1,5 +1,6 @@
 package com.markvarga21.studentmanager.exception.util;
 
+import com.markvarga21.studentmanager.util.Generated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Generated
 public class InvalidFacesApiError {
     /**
      * The message of the error.

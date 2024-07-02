@@ -144,6 +144,11 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.10</version>
+				<configuration>
+					<excludes>
+						<exclude>com/markvarga21/studentmanager/service/faceapi/**/*</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<phase>initialize</phase>

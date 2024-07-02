@@ -186,7 +186,7 @@ public class PassportValidationController {
             @PathVariable("passportNumber") final String passportNumber
     ) {
         StudentDto studentDto = this.passportValidationService
-                .getPassportValidationByPassportNumber(passportNumber);
+                .getStudentFromPassportValidation(passportNumber);
         return new ResponseEntity<>(studentDto, HttpStatus.OK);
     }
 }

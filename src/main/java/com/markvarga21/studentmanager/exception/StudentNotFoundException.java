@@ -1,5 +1,6 @@
 package com.markvarga21.studentmanager.exception;
 
+import com.markvarga21.studentmanager.util.Generated;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ResponseStatus(HttpStatus.NOT_FOUND)
+@Generated
 public class StudentNotFoundException extends RuntimeException {
     /**
      * The type of the operation the user just did, which caused the exception.

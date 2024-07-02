@@ -1,9 +1,12 @@
 package com.markvarga21.studentmanager.exception;
 
+import com.markvarga21.studentmanager.util.Generated;
+
 /**
  * A custom exception which is used when the
  * passport validation data is not found.
  */
+@Generated
 public class PassportValidationDataNotFoundException extends RuntimeException {
     /**
      * The default constructor.

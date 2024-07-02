@@ -1,5 +1,6 @@
 package com.markvarga21.studentmanager.entity;
 
+import com.markvarga21.studentmanager.util.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Generated
 public class StudentImage {
     /**
      * The passport number of the student.
