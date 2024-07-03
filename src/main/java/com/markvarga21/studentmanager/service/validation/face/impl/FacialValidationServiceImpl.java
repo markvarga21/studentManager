@@ -1,7 +1,6 @@
 package com.markvarga21.studentmanager.service.validation.face.impl;
 
 import com.markvarga21.studentmanager.entity.FacialValidationData;
-import com.markvarga21.studentmanager.exception.FaceValidationDataNotFoundException;
 import com.markvarga21.studentmanager.repository.FacialValidationDataRepository;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
 import jakarta.transaction.Transactional;
@@ -84,7 +83,6 @@ public class FacialValidationServiceImpl implements FacialValidationService {
         if (facialValidationDataOptional.isEmpty()) {
             String message = "Facial validation data not found!";
             log.error(message);
-            throw new FaceValidationDataNotFoundException(message);
         }
         this.repository
                 .deleteFacialValidationDataByPassportNumber(passportNumber);
@@ -110,9 +108,6 @@ public class FacialValidationServiceImpl implements FacialValidationService {
             data.setIsValid(true);
             data.setPercentage(1.0);
             this.repository.save(data);
-            throw new FaceValidationDataNotFoundException(
-                    String.format("Facial validation data for passport number '%s' not found!", passportNumber)
-            );
         }
         log.info("Setting facial validation data to valid.");
         data.setIsValid(true);

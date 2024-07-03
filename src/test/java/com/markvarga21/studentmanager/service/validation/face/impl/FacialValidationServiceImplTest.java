@@ -149,20 +149,6 @@ class FacialValidationServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionUponPassportValidationDataIfNotPresentTest() {
-        // Given
-        // When
-        when(this.repository.getFacialValidationDataByPassportNumber(PASSPORT_NUMBER))
-                .thenReturn(Optional.empty());
-
-        // Then
-        assertThrows(
-                FaceValidationDataNotFoundException.class,
-                () -> this.facialValidationService.deleteFacialValidationDataByPassportNumber(PASSPORT_NUMBER)
-        );
-    }
-
-    @Test
     void shouldSetFacialValidationToValidIfPresent() {
         // Given
         FacialValidationData data = INVALID_FACIAL_VALIDATION_DATA;
@@ -181,19 +167,5 @@ class FacialValidationServiceImplTest {
         assertEquals(expected, actual);
         assertTrue(data.getIsValid());
         assertEquals(1.0, data.getPercentage());
-    }
-
-    @Test
-    void shouldSetFacialValidationToValidIfNotPresent() {
-        // Given
-        // When
-        when(this.repository.getFacialValidationDataByPassportNumber(PASSPORT_NUMBER))
-                .thenReturn(Optional.empty());
-
-        // Then
-        assertThrows(
-                FaceValidationDataNotFoundException.class,
-                () -> this.facialValidationService.setFacialValidationToValid(PASSPORT_NUMBER)
-        );
     }
 }

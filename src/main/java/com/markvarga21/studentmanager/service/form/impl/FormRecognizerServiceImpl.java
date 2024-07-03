@@ -13,7 +13,6 @@ import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.exception.InvalidDocumentException;
 import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.exception.OperationType;
-import com.markvarga21.studentmanager.exception.PassportNotFoundException;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.PassportValidationDataRepository;
 import com.markvarga21.studentmanager.service.StudentService;
@@ -304,7 +303,8 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
             );
         } else {
             String message = String.format("Passport validation data not found for passport number: %s", passportNumber);
-            throw new PassportNotFoundException(message);
+            log.error(message);
+            return message;
         }
     }
 
