@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +41,7 @@ public class FormRecognizerController {
             description = "Extracts and returns the data from the passport."
     )
     @PostMapping("/extractData")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<StudentDto> getDataFromPassport(
             @RequestParam("passport") final MultipartFile passport
     ) {

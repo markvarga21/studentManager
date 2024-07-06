@@ -12,18 +12,18 @@ public class InvalidFacesException extends RuntimeException {
     /**
      * The percentage of the faces matching.
      */
-    private Double percentage;
+    private final Double percentage;
     /**
      * The default constructor.
      *
      * @param message The message to be sent when the exception occurs.
-     * @param percentage The percentage of the faces matching.
+     * @param percent The percentage of the faces matching.
      */
     public InvalidFacesException(
             final String message,
-            final Double percentage
+            final Double percent
     ) {
         super(message);
-        this.percentage = percentage;
+        this.percentage = percent;
     }
 }

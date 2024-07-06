@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,12 +55,13 @@ public class StudentController {
     private final FacialValidationService facialValidationService;
 
     /**
-     * Retrieves all students which are present in the application.
+     * Retrieves all students that are present in the application.
      *
      * @return A {@code List} containing all the students.
      */
     @Operation(summary = "Get all students", description = "Retrieves all the students.")
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<StudentDto> getAllStudents() {
         return this.studentService.getAllStudents();
     }
@@ -72,6 +74,7 @@ public class StudentController {
      */
     @Operation(summary = "Create a student", description = "Creates a student.")
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentDto> createStudent(
             @RequestBody @Valid final StudentDto student
     ) {
@@ -89,6 +92,7 @@ public class StudentController {
      */
     @Operation(summary = "Get a student by ID", description = "Retrieves a student by ID.")
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentDto> getStudentById(
             @PathVariable final Long id
     ) {
@@ -105,6 +109,7 @@ public class StudentController {
      */
     @Operation(summary = "Update a student by ID", description = "Updates a student by ID.")
     @PutMapping("/{studentId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentDto> updateStudentById(
             @RequestBody @Valid final StudentDto student,
             @PathVariable("studentId") final Long studentId
@@ -122,6 +127,7 @@ public class StudentController {
      */
     @Operation(summary = "Delete a student by ID", description = "Deletes a student by ID.")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<StudentDto> deleteStudentById(
             @PathVariable final Long id
     ) {

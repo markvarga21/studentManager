@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,6 +58,7 @@ public class PassportValidationController {
             description = "Retrieves all the passport validation data."
     )
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<PassportValidationData> getAllPassportValidationData() {
         return this.passportValidationService
                 .getAllPassportValidationData();
@@ -73,6 +75,7 @@ public class PassportValidationController {
             description = "Deletes the passport validation data with the given ID."
     )
     @DeleteMapping("/{passportNumber}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deletePassportValidationData(
             @PathVariable("passportNumber") final String passportNumber
     ) {
@@ -94,6 +97,7 @@ public class PassportValidationController {
             description = "Validates the data entered by the user against the data which can be found on the passport."
     )
     @PostMapping("/validate")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PassportValidationResponse> validatePassport(
             @RequestParam final String studentJson,
             @RequestParam("passport") final MultipartFile passport
@@ -115,6 +119,7 @@ public class PassportValidationController {
             description = "Validates the passport manually (usually by an admin)."
     )
     @PostMapping("/validateManually")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> validatePassportManually(
             @RequestParam("studentId") final Long studentId
     ) {
@@ -138,6 +143,7 @@ public class PassportValidationController {
             description = "Checks if the user is valid."
     )
     @GetMapping("/isUserValid/{passportNumber}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Boolean> isUserValid(
             @PathVariable("passportNumber") final String passportNumber
     ) {
@@ -158,6 +164,7 @@ public class PassportValidationController {
             description = "Creates a new passport validation data."
     )
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PassportValidationData> createPassportValidationData(
             @RequestBody final PassportValidationData passportValidationData
     ) {
@@ -182,6 +189,7 @@ public class PassportValidationController {
         description = "Retrieves StudentDto object from the validation data by passport number."
     )
     @GetMapping("/{passportNumber}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<StudentDto> getPassportValidationByPassportNumber(
             @PathVariable("passportNumber") final String passportNumber
     ) {

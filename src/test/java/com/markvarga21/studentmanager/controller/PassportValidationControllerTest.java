@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Gender;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
+import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -21,6 +24,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -47,6 +51,12 @@ class PassportValidationControllerTest {
      */
     @MockBean
     private FormRecognizerService formRecognizerService;
+
+    /**
+     * The {@code JwtService} for mocking the JWT service.
+     */
+    @MockBean
+    private JwtService jwtService;
 
     /**
      * The URL used for testing the API.
@@ -94,7 +104,7 @@ class PassportValidationControllerTest {
     );
 
     /**
-     * A static student data based on the information found in
+     * Static student data based on the information found in
      * {@code PASSPORT_VALIDATION_DATA1} passport.
      */
     static final StudentDto STUDENT_DTO = StudentDto.builder()
@@ -110,6 +120,7 @@ class PassportValidationControllerTest {
             .passportDateOfExpiry("2023-04-04")
             .build();
 
+    @WithMockUser(roles = "ADMIN")
     @Test
     void shouldReturnAllPassportValidationData() throws Exception {
         when(this.passportValidationService.getAllPassportValidationData())
@@ -131,6 +142,7 @@ class PassportValidationControllerTest {
                 .andExpect(jsonPath("$[0].passportDateOfExpiry").value("2023-04-04"));
     }
 
+    @WithMockUser(roles = "ADMIN")
     @Test
     void testManualValidation() throws Exception {
         // Given
@@ -142,11 +154,13 @@ class PassportValidationControllerTest {
                 .thenReturn(successMessage);
 
         // Then
-        this.mockMvc.perform(post(API_URL + "/validateManually?studentId=1"))
+        this.mockMvc.perform(post(API_URL + "/validateManually?studentId=1")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(successMessage));
     }
 
+    @WithMockUser(roles = "ADMIN")
     @Test
     void shouldReturnValidIfStudentIsValid() throws Exception {
         // Given
@@ -163,6 +177,7 @@ class PassportValidationControllerTest {
                 .andExpect(jsonPath("$").value(isValid));
     }
 
+    @WithMockUser(roles = "ADMIN")
     @Test
     void shouldReturnInvalidIfStudentIsInvalid() throws Exception {
         // Given
@@ -178,13 +193,14 @@ class PassportValidationControllerTest {
                 .andExpect(jsonPath("$").value(isValid));
     }
 
+    @WithMockUser(roles = "USER")
     @Test
     void shouldCreatePassportValidationData() throws Exception {
         when(this.passportValidationService.createPassportValidationData(any()))
                 .thenReturn(PASSPORT_VALIDATION_DATA1);
 
         // make a string out of it and check those shortly
-        this.mockMvc.perform(post(API_URL)
+        this.mockMvc.perform(post(API_URL).with(csrf())
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(PASSPORT_VALIDATION_DATA1)))
                 .andExpect(jsonPath("$.id").value(1))
@@ -200,6 +216,7 @@ class PassportValidationControllerTest {
                 .andExpect(jsonPath("$.passportDateOfExpiry").value("2023-04-04"));
     }
 
+    @WithMockUser(roles = "ADMIN")
     @Test
     void shouldFetchPassportValidationByPassportNumber() throws Exception {
         // Given

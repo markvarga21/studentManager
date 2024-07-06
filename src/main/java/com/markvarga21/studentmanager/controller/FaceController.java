@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,7 @@ public class FaceController {
             description = "Compares the faces found on the passport and the selfie, and then sends it back to the client."
     )
     @PostMapping("/validate")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<FaceApiResponse> getSelfieValidationData(
             @RequestParam("passport") final MultipartFile passport,
             @RequestParam("selfiePhoto") final MultipartFile selfiePhoto

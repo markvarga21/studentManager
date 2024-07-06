@@ -3,17 +3,25 @@ package com.markvarga21.studentmanager.controller;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.StudentImage;
 import com.markvarga21.studentmanager.service.StudentService;
+import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import com.markvarga21.studentmanager.util.StudentImageType;
 import org.junit.jupiter.api.Test;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
+
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
@@ -21,7 +29,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,6 +71,13 @@ class FileUploadControllerTest {
     @MockBean
     private PassportValidationService passportValidationService;
 
+    /**
+     * The {@code JwtService} for mocking the JWT service.
+     */
+    @MockBean
+    private JwtService jwtService;
+
+    @WithMockUser(roles = "ADMIN")
     @Test
     void shouldFetchAllImagesTest() throws Exception {
         // Given
@@ -88,6 +102,7 @@ class FileUploadControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)));
     }
 
+    @WithMockUser(roles = "ADMIN")
     @Test
     void shouldDeleteImageForStudentIdTest() throws Exception {
         // Given
@@ -98,12 +113,13 @@ class FileUploadControllerTest {
                 .thenReturn(String.format("Image deleted successfully for user '%d'", studentId));
 
         // Then
-        this.mockMvc.perform(delete(String.format("/api/v1/files/%d", studentId)))
+        this.mockMvc.perform(delete(String.format("/api/v1/files/%d", studentId)).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$")
                         .value(String.format("Image deleted successfully for user '%d'", studentId)));
     }
 
+    @WithMockUser(roles = "USER")
     @Test
     void shouldGetImageForTypeTest() throws Exception {
         // Given
@@ -122,6 +138,7 @@ class FileUploadControllerTest {
                 .andExpect(jsonPath("$", is(imageString)));
     }
 
+    @WithMockUser(roles = "USER")
     @Test
     void shouldUploadImageTest() throws Exception {
         // Given
@@ -148,12 +165,13 @@ class FileUploadControllerTest {
         // Then
         this.mockMvc.perform(multipart(String.format("/api/v1/files/upload/%d", studentId))
                 .file(passport)
-                .file(selfie))
+                .file(selfie).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$")
                         .value(String.format("Images saved successfully for user '%s'", studentId)));
     }
 
+    @WithMockUser(roles = "USER")
     @Test
     void shouldChangePassportImageTest() throws Exception {
         // Given
@@ -178,7 +196,7 @@ class FileUploadControllerTest {
 
         // Then
         this.mockMvc.perform(multipart(String.format("/api/v1/files/changeImage/%d/%s", studentId, imageType))
-                .file(file))
+                .file(file).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$")
                         .value(expected));
@@ -190,6 +208,7 @@ class FileUploadControllerTest {
                 .createPassportValidationData(any());
     }
 
+    @WithMockUser(roles = "USER")
     @Test
     void shouldChangeSelfieImageTest() throws Exception {
         // Given
@@ -214,7 +233,7 @@ class FileUploadControllerTest {
 
         // Then
         this.mockMvc.perform(multipart(String.format("/api/v1/files/changeImage/%d/%s", studentId, imageType))
-                        .file(file))
+                        .file(file).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$")
                         .value(expected));

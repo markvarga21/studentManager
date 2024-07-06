@@ -2,6 +2,7 @@ package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Gender;
+import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +35,13 @@ class FormRecognizerControllerTest {
     @MockBean
     private FormRecognizerService formRecognizerService;
 
+    /**
+     * The {@code JwtService} for mocking the JWT service.
+     */
+    @MockBean
+    private JwtService jwtService;
+
+    @WithMockUser(roles = "ADMIN")
     @Test
     void shouldGetDataFromPassport() throws Exception {
         // Given
@@ -61,7 +71,7 @@ class FormRecognizerControllerTest {
 
         // Then
         this.mockMvc.perform(multipart("/api/v1/form/extractData")
-                .file(file)
+                .file(file).with(csrf())
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id")

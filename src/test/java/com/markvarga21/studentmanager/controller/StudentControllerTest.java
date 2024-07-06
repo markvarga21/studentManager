@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Gender;
 import com.markvarga21.studentmanager.service.StudentService;
+import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -69,6 +72,12 @@ class StudentControllerTest {
     private ObjectMapper objectMapper;
 
     /**
+     * The {@code JwtService} for mocking the JWT service.
+     */
+    @MockBean
+    private JwtService jwtService;
+
+    /**
      * A {@code StudentDto} used for testing the API.
      */
     private final StudentDto studentDto = StudentDto.builder()
@@ -82,6 +91,9 @@ class StudentControllerTest {
             .passportDateOfIssue("2020-01-01")
             .passportDateOfExpiry("2025-01-01")
             .build();
+
+
+    @WithMockUser(roles = "ADMIN")
     @Test
     void shouldReturnAllStudentsTest() throws Exception {
         when(this.studentService.getAllStudents()).thenReturn(List.of(
@@ -114,6 +126,7 @@ class StudentControllerTest {
                 .andExpect(jsonPath("$[0].passportDateOfExpiry").value("2025-01-01"));
     }
 
+    @WithMockUser(roles = "USER")
     @Test
     void shouldCreateStudentTest() throws Exception {
         when(this.studentService.validPassportNumber(anyString()))
@@ -124,7 +137,7 @@ class StudentControllerTest {
 
         this.mockMvc.perform(post(API_URL)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(studentDto)))
+                .content(objectMapper.writeValueAsString(studentDto)).with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
@@ -137,6 +150,7 @@ class StudentControllerTest {
                 .andExpect(jsonPath("$.passportDateOfExpiry").value("2025-01-01"));
     }
 
+    @WithMockUser(roles = "USER")
     @Test
     void shouldReturnStudentByIdTest() throws Exception {
         when(studentService.getStudentById(1L)).thenReturn(studentDto);
@@ -154,6 +168,7 @@ class StudentControllerTest {
                 .andExpect(jsonPath("$.passportDateOfExpiry").value("2025-01-01"));
     }
 
+    @WithMockUser(roles = "USER")
     @Test
     void shouldUpdateStudentByIdTest() throws Exception {
         when(this.studentService.modifyStudentById(studentDto, 1L))
@@ -161,7 +176,7 @@ class StudentControllerTest {
 
         this.mockMvc.perform(put(API_URL + "/1")
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(studentDto)))
+                .content(objectMapper.writeValueAsString(studentDto)).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
@@ -174,12 +189,13 @@ class StudentControllerTest {
                 .andExpect(jsonPath("$.passportDateOfExpiry").value("2025-01-01"));
     }
 
+    @WithMockUser(roles = "ADMIN")
     @Test
     void shouldDeleteStudentById() throws Exception {
         when(this.studentService.deleteStudentById(1L))
                 .thenReturn(studentDto);
 
-        this.mockMvc.perform(delete(API_URL + "/1"))
+        this.mockMvc.perform(delete(API_URL + "/1").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
