@@ -81,7 +81,7 @@ public class AppUserController {
     @Operation(summary = "Deletes a user from the database.")
     @DeleteMapping("/users/{id}")
     public String deleteUser(@PathVariable final Long id) {
-        return appUserService.deleteUser(id);
+        return appUserService.deleteUserById(id);
     }
 
     /**

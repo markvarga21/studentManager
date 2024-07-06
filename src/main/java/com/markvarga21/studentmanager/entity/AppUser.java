@@ -15,7 +15,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
@@ -25,6 +28,9 @@ import java.util.Set;
 @Entity
 @Data
 @Generated
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppUser {
     /**
      * The id of the user.

@@ -80,7 +80,7 @@ public class AppUserServiceImpl implements AppUserService {
      * @return The username of the deleted user.
      */
     @Override
-    public String deleteUser(final Long id) {
+    public String deleteUserById(final Long id) {
         Optional<AppUser> userOptional = this.repository.findById(id);
         if (userOptional.isEmpty()) {
             String message = "User with id " + id + " not found.";

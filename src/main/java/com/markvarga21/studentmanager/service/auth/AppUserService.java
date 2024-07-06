@@ -40,7 +40,7 @@ public interface AppUserService {
      * @param id The id of the user.
      * @return The username of the deleted user.
      */
-    String deleteUser(Long id);
+    String deleteUserById(Long id);
 
     /**
      * Method for fetching a user by the id.
