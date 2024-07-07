@@ -166,6 +166,11 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.12.5</version>
 		</dependency>
+		<dependency>
+			<groupId>io.github.orhankupusoglu</groupId>
+			<artifactId>sloc-maven-plugin</artifactId>
+			<version>1.0.7</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -177,6 +182,7 @@
 					<excludes>
 						<exclude>com/markvarga21/studentmanager/service/faceapi/**/*</exclude>
 						<exclude>com/markvarga21/studentmanager/config/**/*</exclude>
+						<exclude>com/markvarga21/studentmanager/service/auth/webtoken/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>

@@ -148,5 +148,4 @@ class FacialValidationControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$").value(expected));
     }
-
 }

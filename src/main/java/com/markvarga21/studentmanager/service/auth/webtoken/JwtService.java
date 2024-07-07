@@ -3,6 +3,7 @@ package com.markvarga21.studentmanager.service.auth.webtoken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
  * A service class for handling JWT tokens.
  */
 @Service
+@Setter
 public final class JwtService {
     private JwtService() {
     }
