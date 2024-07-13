@@ -99,26 +99,25 @@ public class StudentDto {
      */
     private static final int MULTIPLIER_NON_ZERO_ODD_NUMBER = 31;
 
-    /**
-     * Clone a student.
-     *
-     * @return A clone of the student.
-     */
-    @Override
-    public StudentDto clone() {
-        return StudentDto.builder()
-                .id(this.id)
-                .firstName(this.firstName)
-                .lastName(this.lastName)
-                .birthDate(this.birthDate)
-                .placeOfBirth(this.placeOfBirth)
-                .countryOfCitizenship(this.countryOfCitizenship)
-                .gender(this.gender)
-                .passportNumber(this.passportNumber)
-                .passportDateOfIssue(this.passportDateOfIssue)
-                .passportDateOfExpiry(this.passportDateOfExpiry)
-                .build();
-    }
+//    /**
+//     * Clone a student.
+//     *
+//     * @return A clone of the student.
+//     */
+//    public StudentDto clone() {
+//        return StudentDto.builder()
+//                .id(this.id)
+//                .firstName(this.firstName)
+//                .lastName(this.lastName)
+//                .birthDate(this.birthDate)
+//                .placeOfBirth(this.placeOfBirth)
+//                .countryOfCitizenship(this.countryOfCitizenship)
+//                .gender(this.gender)
+//                .passportNumber(this.passportNumber)
+//                .passportDateOfIssue(this.passportDateOfIssue)
+//                .passportDateOfExpiry(this.passportDateOfExpiry)
+//                .build();
+//    }
 
     /**
      * Checks if two students are equal.
@@ -186,7 +185,6 @@ public class StudentDto {
      * @return The hash code.
      */
     @SuppressWarnings("checkstyle:LineLength")
-    @Override
     public int hashCode() {
         return new HashCodeBuilder(INITIAL_NON_ZERO_ODD_NUMBER, MULTIPLIER_NON_ZERO_ODD_NUMBER)
                 .append(this.id)

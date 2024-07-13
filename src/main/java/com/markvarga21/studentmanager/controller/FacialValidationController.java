@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +46,7 @@ public class FacialValidationController {
             description = "Retrieves all the facial validation data."
     )
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<FacialValidationData> getAllFacialValidationData() {
         return this.facialValidationService.getAllFacialValidationData();
     }
@@ -61,6 +63,7 @@ public class FacialValidationController {
             description = "Retrieves the facial validation data with the given passport number."
     )
     @GetMapping("/{passportNumber}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<FacialValidationData> getFacialValidationDataByPassportNumber(
             @PathVariable final String passportNumber
     ) {
@@ -84,6 +87,7 @@ public class FacialValidationController {
             description = "Deletes the facial validation data with the given passport number."
     )
     @DeleteMapping("/{passportNumber}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteFacialValidationDataByPassportNumber(
             @PathVariable final String passportNumber
     ) {
@@ -104,6 +108,7 @@ public class FacialValidationController {
             description = "Sets the facial validation data to valid."
     )
     @PostMapping("/setFacialValidationDataToValid")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> setFacialValidationDataToValid(
             @RequestParam final String passportNumber
     ) {

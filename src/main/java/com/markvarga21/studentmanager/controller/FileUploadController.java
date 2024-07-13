@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,6 +82,7 @@ public class FileUploadController {
             summary = "Retrieves all the images.",
             description = "Retrieves all the images of a student.")
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<StudentImage> getAllImages() {
         return this.fileUploadService.getAllImages();
     }
@@ -98,6 +100,7 @@ public class FileUploadController {
             description = "Deletes the image with the given student ID."
     )
     @DeleteMapping("/{studentId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteImage(
             @PathVariable("studentId") final Long studentId
     ) {
@@ -118,6 +121,7 @@ public class FileUploadController {
             description = "Retrieves the image for the specified type."
     )
     @GetMapping("/{studentId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<byte[]> getImageForType(
             @PathVariable("studentId") final Long studentId,
             @QueryParam("imageType") final StudentImageType imageType
@@ -144,6 +148,7 @@ public class FileUploadController {
             description = "Uploads the image(s) to the database."
     )
     @PostMapping("/upload/{studentId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> uploadImage(
             @PathVariable("studentId") final Long studentId,
             @RequestParam("passport") final MultipartFile passport,
@@ -168,6 +173,7 @@ public class FileUploadController {
             description = "Changes the image(s) in the database."
     )
     @PostMapping("/changeImage/{studentId}/{imageType}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> changeImage(
             @PathVariable("studentId") final Long studentId,
             @PathVariable("imageType") final StudentImageType imageType,

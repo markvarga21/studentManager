@@ -103,12 +103,12 @@ public class FileUploadServiceImpl implements FileUploadService {
             );
         } else {
             log.error(String.format(
-                    "Student with ID '%s' does not exist",
+                    "Student with the ID '%s' does not exist",
                     studentId
             ));
             throw new StudentNotFoundException(
                     String.format(
-                            "Student with ID '%s' does not exist",
+                            "Student with ID '%s' doesn't exist",
                             studentId
                     ),
                     OperationType.DELETE

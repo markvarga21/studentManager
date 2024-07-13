@@ -5,9 +5,11 @@ import com.markvarga21.studentmanager.exception.InvalidDateFormatException;
 import com.markvarga21.studentmanager.exception.InvalidFacesException;
 import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.exception.InvalidStudentException;
+import com.markvarga21.studentmanager.exception.InvalidUserCredentialsException;
 import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.PassportValidationDataNotFoundException;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
+import com.markvarga21.studentmanager.exception.UserNotFoundException;
 import com.markvarga21.studentmanager.exception.util.ApiError;
 import com.markvarga21.studentmanager.exception.util.InvalidFacesApiError;
 import com.markvarga21.studentmanager.util.Generated;
@@ -65,7 +67,7 @@ public class ApplicationExceptionHandler {
         });
         log.error(String.format("Invalid field(s): %s", errors));
         String message = String.format(
-                "The data you've entered is not valid!\nCauses:\n%s",
+                "The data you've entered is not valid!%nCauses:%n%s",
                 this.formatInvalidFieldsMap(errors)
         );
         ApiError apiError = new ApiError(
@@ -171,6 +173,58 @@ public class ApplicationExceptionHandler {
                 HttpStatus.NOT_FOUND,
                 message,
                 OperationType.CREATE,
+                getStackTraceAsString(ex)
+        );
+        return new ResponseEntity<>(
+                apiError,
+                new HttpHeaders(),
+                apiError.getStatus()
+        );
+    }
+
+    /**
+     * Handles if the user cannot be found in the database.
+     *
+     * @param ex The exception caused by not founding the user.
+     * @return A readable {@code ResponseEntity} containing useful information.
+     */
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Object> handleUserNotFoundException(
+            final UserNotFoundException ex
+    ) {
+        log.error("User not found!");
+        ApiError apiError = new ApiError(
+                new Date(),
+                HttpStatus.NOT_FOUND,
+                "User not found!",
+                OperationType.READ,
+                getStackTraceAsString(ex)
+        );
+        return new ResponseEntity<>(
+                apiError,
+                new HttpHeaders(),
+                apiError.getStatus()
+        );
+    }
+
+    /**
+     * Handles if the user's credentials are invalid.
+     *
+     * @param ex The exception caused by the invalid user credentials.
+     * @return A readable {@code ResponseEntity} containing useful information.
+     */
+    @ExceptionHandler(InvalidUserCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<Object> handleInvalidUserCredentialsException(
+            final InvalidUserCredentialsException ex
+    ) {
+        log.error("Invalid user credentials!");
+        ApiError apiError = new ApiError(
+                new Date(),
+                HttpStatus.UNAUTHORIZED,
+                "Invalid user credentials!",
+                OperationType.READ,
                 getStackTraceAsString(ex)
         );
         return new ResponseEntity<>(

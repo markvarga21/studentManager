@@ -1,14 +1,15 @@
 package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.dto.FaceApiResponse;
+import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,7 @@ import java.nio.file.Paths;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,6 +39,12 @@ class FaceControllerTest {
      */
     @MockBean
     private FaceApiService faceApiService;
+
+    /**
+     * The {@code JwtService} for mocking the JWT service.
+     */
+    @MockBean
+    private JwtService jwtService;
 
     /**
      * A face api response used for testing.
@@ -76,6 +84,7 @@ class FaceControllerTest {
         this.passportImage = mockMultipartFile;
     }
 
+    @WithMockUser(roles = "ADMIN")
     @Test
     void shouldFetchSelfieValidationDataTest() throws Exception {
         // Given
@@ -87,7 +96,7 @@ class FaceControllerTest {
         // Then
         this.mockMvc.perform(multipart("/api/v1/faces/validate")
                 .file("passport", this.passportImage.getBytes())
-                .file("selfiePhoto", this.selfieImage.getBytes()))
+                .file("selfiePhoto", this.selfieImage.getBytes()).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isIdentical")
                         .value(FACE_API_RESPONSE.getIsIdentical()))

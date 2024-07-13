@@ -42,20 +42,23 @@ public class ApplicationConfiguration {
      */
     @Value("${knopp.services.key}")
     private String formRecognizerKey;
+
     /**
      * The Face API URL and endpoint.
      */
     @Value("${knopp.services.endpoint}")
     private String formRecognizerEndpoint;
+
     /**
      * A custom {@code LocalDate} deserializer.
      */
     private final LocalDateDeserializer localDateDeserializer;
 
+
     /**
-     * A bean for setting up the passport analysis.
+     * A bean for creating a client for the Azure's Form Recognizer service.
      *
-     * @return The already sat up {@code DocumentAnalysisClient}.
+     * @return The built {@code DocumentAnalysisClient} object.
      */
     @Bean
     public DocumentAnalysisClient getDocumentanalysisClient() {
