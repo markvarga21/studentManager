@@ -184,6 +184,8 @@
 						<exclude>com/markvarga21/studentmanager/config/**/*</exclude>
 						<exclude>com/markvarga21/studentmanager/service/auth/webtoken/*</exclude>
 						<exclude>com/markvarga21/studentmanager/exception/**/*</exclude>
+						<exclude>com/google/**/*</exclude>
+						<exclude>com/markvarga21/studentmanager/controller/AppUserController.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>

@@ -33,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.Mockito.when;
@@ -70,6 +69,9 @@ class AppUserControllerTest {
     @MockBean
     private UserDetailsService userDetailsService;
 
+    /**
+     * The {@code UserDetails} for mocking the user details.
+     */
     @MockBean
     private UserDetails userDetails;
 
