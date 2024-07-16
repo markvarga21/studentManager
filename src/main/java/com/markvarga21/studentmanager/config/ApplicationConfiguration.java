@@ -10,10 +10,20 @@ import com.markvarga21.studentmanager.util.LocalDateDeserializer;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.data.redis.RedisConnectionDetails;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
 /**
@@ -48,6 +58,9 @@ public class ApplicationConfiguration {
      */
     @Value("${knopp.services.endpoint}")
     private String formRecognizerEndpoint;
+
+    @Value("${cache.duration.hours}")
+    private Long cachingDurationInHours;
 
     /**
      * A custom {@code LocalDate} deserializer.
@@ -92,5 +105,27 @@ public class ApplicationConfiguration {
     @Bean
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
+    }
+
+    /**
+     * A bean created for caching the data.
+     *
+     * @param redisConnectionFactory The connection factory for Redis.
+     * @return The created bean.
+     */
+    @Bean
+    public CacheManager cacheManager(
+            final RedisConnectionFactory redisConnectionFactory
+    ) {
+        RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration
+                .defaultCacheConfig()
+                .entryTtl(Duration.ofHours(1))
+                .disableCachingNullValues()
+                .serializeValuesWith(RedisSerializationContext.SerializationPair
+                        .fromSerializer(new GenericJackson2JsonRedisSerializer()));
+
+        return RedisCacheManager.builder(redisConnectionFactory)
+                .cacheDefaults(cacheConfiguration)
+                .build();
     }
 }

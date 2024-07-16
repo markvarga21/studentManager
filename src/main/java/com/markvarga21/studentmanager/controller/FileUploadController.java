@@ -1,5 +1,6 @@
 package com.markvarga21.studentmanager.controller;
 
+import com.azure.core.annotation.Get;
 import com.azure.core.annotation.QueryParam;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
@@ -213,5 +214,15 @@ public class FileUploadController {
             default -> log.error("Invalid image type");
         }
         return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @GetMapping("/test/{studentId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<StudentImage> getImagesForStudentId(
+            @PathVariable final Long studentId
+    ) {
+        StudentImage studentImage = this.fileUploadService
+                .getStudentImageById(studentId);
+        return ResponseEntity.status(HttpStatus.OK).body(studentImage);
     }
 }

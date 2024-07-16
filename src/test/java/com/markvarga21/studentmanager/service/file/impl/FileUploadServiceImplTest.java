@@ -20,8 +20,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FileUploadServiceImplTest {
@@ -248,21 +255,21 @@ class FileUploadServiceImplTest {
     void shouldChangeImageForPassportTest() {
         // Given
         Long studentId = 1L;
-        StudentImage studentImage = new StudentImage();
-        studentImage.setStudentId(studentId);
-        studentImage.setPassportImage(new byte[]{1});
-        studentImage.setSelfieImage(new byte[]{2});
-        String expected = "Passport image changed successfully for user '1'";
+        StudentImage oldStudentImage = new StudentImage();
+        oldStudentImage.setStudentId(studentId);
+        StudentImage expected = new StudentImage();
+        expected.setStudentId(studentId);
+        expected.setPassportImage(new byte[]{1});
 
         // When
         when(this.repository.findById(studentId))
-                .thenReturn(Optional.of(studentImage));
-        String actual = this.service
+                .thenReturn(Optional.of(oldStudentImage));
+        when(this.repository.save(oldStudentImage))
+                .thenReturn(expected);
+        StudentImage actual = this.service
                 .changeImage(studentId, StudentImageType.PASSPORT, this.passportImage);
 
         // Then
-        verify(this.repository, times(1))
-                .save(studentImage);
         assertEquals(expected, actual);
     }
 
@@ -270,21 +277,21 @@ class FileUploadServiceImplTest {
     void shouldChangeImageForSelfieTest() {
         // Given
         Long studentId = 1L;
-        StudentImage studentImage = new StudentImage();
-        studentImage.setStudentId(studentId);
-        studentImage.setPassportImage(new byte[]{1});
-        studentImage.setSelfieImage(new byte[]{2});
-        String expected = "Selfie image changed successfully for user '1'";
+        StudentImage oldStudentImage = new StudentImage();
+        oldStudentImage.setStudentId(studentId);
+        StudentImage expected = new StudentImage();
+        expected.setStudentId(studentId);
+        expected.setSelfieImage(new byte[]{1});
 
         // When
         when(this.repository.findById(studentId))
-                .thenReturn(Optional.of(studentImage));
-        String actual = this.service
+                .thenReturn(Optional.of(oldStudentImage));
+        when(this.repository.save(oldStudentImage))
+                .thenReturn(expected);
+        StudentImage actual = this.service
                 .changeImage(studentId, StudentImageType.SELFIE, this.selfieImage);
 
         // Then
-        verify(this.repository, times(1))
-                .save(studentImage);
         assertEquals(expected, actual);
     }
 }
