@@ -1,6 +1,5 @@
 package com.markvarga21.studentmanager.controller;
 
-import com.azure.core.annotation.Get;
 import com.azure.core.annotation.QueryParam;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
@@ -216,7 +215,14 @@ public class FileUploadController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    @GetMapping("/test/{studentId}")
+    /**
+     * The getImagesForStudentId method is used to get
+     * the images for the specified student id.
+     *
+     * @param studentId The id of the student.
+     * @return The image for the specified student id.
+     */
+    @GetMapping("/combined/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentImage> getImagesForStudentId(
             @PathVariable final Long studentId
