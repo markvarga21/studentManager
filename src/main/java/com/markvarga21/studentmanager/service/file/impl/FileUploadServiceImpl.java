@@ -3,6 +3,7 @@ package com.markvarga21.studentmanager.service.file.impl;
 import com.markvarga21.studentmanager.entity.StudentImage;
 import com.markvarga21.studentmanager.exception.InvalidDocumentException;
 import com.markvarga21.studentmanager.exception.InvalidImageTypeException;
+import com.markvarga21.studentmanager.exception.InvalidStudentException;
 import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.repository.StudentImageRepository;
@@ -12,6 +13,9 @@ import com.markvarga21.studentmanager.util.StudentImageType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,6 +62,15 @@ public class FileUploadServiceImpl implements FileUploadService {
             throw new InvalidDocumentException(message);
         }
 
+        if (this.studentImageRepository.findById(studentId).isPresent()) {
+            String message = String.format(
+                    "Student with ID '%s' already has images",
+                    studentId
+            );
+            log.error(message);
+            throw new InvalidStudentException(message);
+        }
+
         StudentImage studentImage = StudentImage.builder()
                 .studentId(studentId)
                 .passportImage(ImageCompressor.compressImage(passportImage))
@@ -87,6 +100,7 @@ public class FileUploadServiceImpl implements FileUploadService {
      */
     @Override
     @Transactional
+    @CacheEvict(value = "studentImage", key = "#studentId")
     public String deleteImage(
             final Long studentId
     ) {
@@ -161,9 +175,11 @@ public class FileUploadServiceImpl implements FileUploadService {
      * @param studentId The id of the student.
      * @param imageType The image type.
      * @param file The new image.
+     * @return The updated student image group.
      */
     @Override
-    public String changeImage(
+    @CachePut(value = "studentImage", key = "#studentId")
+    public StudentImage changeImage(
             final Long studentId,
             final StudentImageType imageType,
             final MultipartFile file
@@ -183,19 +199,16 @@ public class FileUploadServiceImpl implements FileUploadService {
                         ),
                         OperationType.UPDATE
                 ));
-
         switch (imageType) {
             case SELFIE -> {
                 log.info("Changing selfie image for student with ID: {}", studentId);
                 studentImage.setSelfieImage(ImageCompressor.compressImage(file));
-                this.studentImageRepository.save(studentImage);
-                return String.format("Selfie image changed successfully for user '%s'", studentId);
+                return this.studentImageRepository.save(studentImage);
             }
             case PASSPORT -> {
                 log.info("Changing passport image for student with ID: {}", studentId);
                 studentImage.setPassportImage(ImageCompressor.compressImage(file));
-                this.studentImageRepository.save(studentImage);
-                return String.format("Passport image changed successfully for user '%s'", studentId);
+                return this.studentImageRepository.save(studentImage);
             }
             default -> {
                 String message = "Image type not provided or not valid!\nValid image types are: PASSPORT, SELFIE";
@@ -203,5 +216,32 @@ public class FileUploadServiceImpl implements FileUploadService {
                 throw new InvalidImageTypeException(message);
             }
         }
+    }
+
+    /**
+     * The getStudentImageById method is used to get
+     * the image for the given student ID.
+     *
+     * @param studentId The id of the student.
+     * @return The student's images.
+     */
+    @Override
+    @Cacheable(value = "studentImage", key = "#studentId")
+    public StudentImage getStudentImageById(final Long studentId) {
+        log.info("Invoking database...");
+        Optional<StudentImage> studentImageOptional = this.studentImageRepository
+                .findById(studentId);
+        if (studentImageOptional.isEmpty()) {
+            String message = String.format(
+                    "Student with the ID '%s' does not exist",
+                    studentId
+            );
+            log.error(message);
+            throw new StudentNotFoundException(
+                    message,
+                    OperationType.READ
+            );
+        }
+        return studentImageOptional.get();
     }
 }

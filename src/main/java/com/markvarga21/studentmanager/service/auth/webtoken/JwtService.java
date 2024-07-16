@@ -65,8 +65,8 @@ public final class JwtService {
                 TimeUnit.MILLISECONDS.toMillis(System.currentTimeMillis()))
         );
         claims.put("exp", String.valueOf(
-                TimeUnit.MILLISECONDS.toMillis(this.getExpirationTime().getTime()))
-                    + TimeUnit.MINUTES.toMillis(this.expirationTimeInMinutes)
+                TimeUnit.MILLISECONDS
+                        .toMillis(this.getExpirationTime().getTime()))
         );
         claims.put("roles", userDetails.getAuthorities().toString());
 

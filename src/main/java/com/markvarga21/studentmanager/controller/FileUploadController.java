@@ -214,4 +214,21 @@ public class FileUploadController {
         }
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
+
+    /**
+     * The getImagesForStudentId method is used to get
+     * the images for the specified student id.
+     *
+     * @param studentId The id of the student.
+     * @return The image for the specified student id.
+     */
+    @GetMapping("/combined/{studentId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<StudentImage> getImagesForStudentId(
+            @PathVariable final Long studentId
+    ) {
+        StudentImage studentImage = this.fileUploadService
+                .getStudentImageById(studentId);
+        return ResponseEntity.status(HttpStatus.OK).body(studentImage);
+    }
 }

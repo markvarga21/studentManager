@@ -64,5 +64,14 @@ public interface FileUploadService {
      * @param file The new image.
      * @return The message.
      */
-    String changeImage(Long studentId, StudentImageType imageType, MultipartFile file);
+    StudentImage changeImage(Long studentId, StudentImageType imageType, MultipartFile file);
+
+    /**
+     * The getStudentImageById method is used to get
+     * the image for the given student.
+     *
+     * @param studentId The id of the student.
+     * @return The images of the student.
+     */
+    StudentImage getStudentImageById(Long studentId);
 }
