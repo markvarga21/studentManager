@@ -32,11 +32,22 @@ public class ReportServiceImpl implements ReportService {
     private final MailService mailService;
 
     /**
+     * Retrieves all the reports.
+     *
+     * @return A list of all the reports.
+     */
+    @Override
+    public List<Report> getAllReports() {
+        return this.repository.findAll();
+    }
+
+    /**
      * Sends a report to the system.
      *
      * @param reportMessage The report message object.
      * @return An informational/status message.
      */
+
     @Override
     public String sendReport(final ReportMessage reportMessage)  {
         try {
@@ -74,15 +85,5 @@ public class ReportServiceImpl implements ReportService {
             throw new ReportNotFoundException(message);
         }
         this.repository.deleteById(id);
-    }
-
-    /**
-     * Retrieves all the reports.
-     *
-     * @return A list of all the reports.
-     */
-    @Override
-    public List<Report> getAllReports() {
-        return this.repository.findAll();
     }
 }
