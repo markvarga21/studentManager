@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,14 +34,19 @@ public class PassportValidationServiceImpl
     private final PassportValidationDataRepository passportValidationDataRepository;
 
     /**
-     * Retrieves all the passport validation data.
+     * Retrieves all passport validation data.
      *
-     * @return All the passport validation data.
+     * @param page The page number.
+     * @param size The page size.
+     * @return The list of passport validation data.
      */
     @Override
-    public List<PassportValidationData> getAllPassportValidationData() {
+    public Page<PassportValidationData> getAllPassportValidationData(
+            final Integer page,
+            final Integer size
+    ) {
         return this.passportValidationDataRepository
-                .findAll();
+                .findAll(PageRequest.of(page, size));
     }
 
     /**

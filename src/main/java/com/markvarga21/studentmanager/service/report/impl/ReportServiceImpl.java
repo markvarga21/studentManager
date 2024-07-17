@@ -9,6 +9,8 @@ import com.markvarga21.studentmanager.service.report.ReportService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,8 +39,12 @@ public class ReportServiceImpl implements ReportService {
      * @return A list of all the reports.
      */
     @Override
-    public List<Report> getAllReports() {
-        return this.repository.findAll();
+    public Page<Report> getAllReports(
+            final Integer page,
+            final Integer size
+    ) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return this.repository.findAll(pageRequest);
     }
 
     /**

@@ -72,44 +72,6 @@ public class FaceApiServiceImpl implements FaceApiService {
     public static final int PERCENT_MULTIPLIER = 100;
 
     /**
-     * Compares two faces.
-     *
-     * @param passport The passport photo of the student.
-     * @param selfiePhoto A selfie of the student.
-     */
-    @Override
-    public void facesAreMatching(
-            final MultipartFile passport,
-            final MultipartFile selfiePhoto
-    ) {
-        if (passport == null || selfiePhoto == null) {
-            String message = "Passport or selfie file missing!";
-            log.error(message);
-            throw new InvalidPassportException(message);
-        }
-        log.info("Comparing faces...");
-        FaceApiResponse faceApiResponse =
-                this.compareFaces(passport, selfiePhoto);
-
-        if (faceApiResponse == null) {
-            String message = "Face api response is NULL!";
-            log.error(message);
-            throw new InvalidPassportException(message);
-        }
-
-        log.info(String.format(
-            "The probability that the faces are the same is %,.2f percent.",
-            PERCENT_MULTIPLIER * faceApiResponse.getConfidence())
-        );
-
-        if (Boolean.FALSE.equals(faceApiResponse.getIsIdentical())) {
-            String message =
-                    "Passport photo is not matching with the selfie!";
-            throw new InvalidPassportException(message);
-        }
-    }
-
-    /**
      * Returns the headers for the API call.
      *
      * @return The headers for the API call.

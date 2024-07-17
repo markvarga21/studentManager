@@ -1,8 +1,7 @@
 package com.markvarga21.studentmanager.service;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 /**
  * An interface which contains essential methods
@@ -10,11 +9,13 @@ import java.util.List;
  */
 public interface StudentService {
     /**
-     * A method used for retrieving all the students from the application.
+     * Retrieves all the students from the application.
      *
-     * @return All to students stored in a {@code List}.
+     * @param page The page number.
+     * @param size The size of the page.
+     * @return All the students stored in a {@code Page}.
      */
-    List<StudentDto> getAllStudents();
+    Page<StudentDto> getAllStudents(Integer page, Integer size);
 
     /**
      * Validates and then persists a student in the database.

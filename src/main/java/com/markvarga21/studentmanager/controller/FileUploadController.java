@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -73,18 +74,23 @@ public class FileUploadController {
     private final PassportValidationService passportValidationService;
 
     /**
-     * The getAllImages method is used to get all
-     * the images from the database.
+     * The getAllImages method is used to get
+     * all the images from the database.
      *
-     * @return A list of all the images.
+     * @param page The page number.
+     * @param size The number of elements in a page.
+     * @return The images.
      */
     @Operation(
             summary = "Retrieves all the images.",
             description = "Retrieves all the images of a student.")
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<StudentImage> getAllImages() {
-        return this.fileUploadService.getAllImages();
+    public Page<StudentImage> getAllImages(
+            @RequestParam(defaultValue = "0") final Integer page,
+            @RequestParam(defaultValue = "10") final Integer size
+    ) {
+        return this.fileUploadService.getAllImages(page, size);
     }
 
     /**

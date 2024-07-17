@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -82,14 +84,21 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     /**
-     * The getAllImages method is used to get all
-     * the images from the database.
+     * The getAllImages method is used to get
+     * all the student images from the database.
      *
-     * @return A list of all the images.
+     * @param page The page number.
+     * @param size The number of elements in a page.
+     * @return The images.
      */
     @Override
-    public List<StudentImage> getAllImages() {
-        return this.studentImageRepository.findAll();
+    public Page<StudentImage> getAllImages(
+            final Integer page,
+            final Integer size
+    ) {
+        return this.studentImageRepository.findAll(
+                PageRequest.of(page, size)
+        );
     }
 
     /**

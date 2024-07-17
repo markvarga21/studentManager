@@ -2,6 +2,7 @@ package com.markvarga21.studentmanager.service.file;
 
 import com.markvarga21.studentmanager.entity.StudentImage;
 import com.markvarga21.studentmanager.util.StudentImageType;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,12 +30,14 @@ public interface FileUploadService {
     );
 
     /**
-     * The getAllImages method is used to get all
-     * the images from the database.
+     * The getAllImages method is used to get
+     * all the student images from the database.
      *
-     * @return A list of all the images.
+     * @param page The page number.
+     * @param size The number of elements in a page.
+     * @return The images.
      */
-    List<StudentImage> getAllImages();
+    Page<StudentImage> getAllImages(Integer page, Integer size);
 
     /**
      * The deleteImage method is used to delete
