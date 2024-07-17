@@ -179,6 +179,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -192,6 +196,8 @@
 						<exclude>com/markvarga21/studentmanager/config/**/*</exclude>
 						<exclude>com/markvarga21/studentmanager/service/auth/webtoken/*</exclude>
 						<exclude>com/markvarga21/studentmanager/exception/**/*</exclude>
+						<exclude>com/markvarga21/studentmanager/service/mail/**/*</exclude>
+						<exclude>com/markvarga21/studentmanager/entity/*</exclude>
 						<exclude>com/google/**/*</exclude>
 						<exclude>com/markvarga21/studentmanager/controller/AppUserController.class</exclude>
 					</excludes>

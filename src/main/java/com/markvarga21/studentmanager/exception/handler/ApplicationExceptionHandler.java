@@ -8,6 +8,7 @@ import com.markvarga21.studentmanager.exception.InvalidStudentException;
 import com.markvarga21.studentmanager.exception.InvalidUserCredentialsException;
 import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.PassportValidationDataNotFoundException;
+import com.markvarga21.studentmanager.exception.ReportNotFoundException;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.exception.UserNotFoundException;
 import com.markvarga21.studentmanager.exception.util.ApiError;
@@ -250,6 +251,32 @@ public class ApplicationExceptionHandler {
                 new Date(),
                 HttpStatus.NOT_FOUND,
                 "Student not found!",
+                ex.getType(),
+                getStackTraceAsString(ex)
+        );
+        return new ResponseEntity<>(
+                apiError,
+                new HttpHeaders(),
+                apiError.getStatus()
+        );
+    }
+
+    /**
+     * Handles the exception if a report could not be found in the database.
+     *
+     * @param ex The exception caused by not founding the report.
+     * @return A readable {@code ResponseEntity} containing useful information.
+     */
+    @ExceptionHandler(ReportNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Object> handleReportNotFoundException(
+            final StudentNotFoundException ex
+    ) {
+        log.error("Report not found!");
+        ApiError apiError = new ApiError(
+                new Date(),
+                HttpStatus.NOT_FOUND,
+                "Report not found!",
                 ex.getType(),
                 getStackTraceAsString(ex)
         );

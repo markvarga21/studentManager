@@ -97,7 +97,7 @@ class StudentControllerTest {
     @Test
     void shouldReturnAllStudentsTest() throws Exception {
         when(this.studentService.getAllStudents()).thenReturn(List.of(
-                studentDto,
+                this.studentDto,
                 StudentDto.builder()
                         .id(2L)
                         .firstName("John").lastName("Wick")
@@ -137,7 +137,7 @@ class StudentControllerTest {
 
         this.mockMvc.perform(post(API_URL)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(studentDto)).with(csrf()))
+                .content(this.objectMapper.writeValueAsString(this.studentDto)).with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
@@ -153,7 +153,7 @@ class StudentControllerTest {
     @WithMockUser(roles = "USER")
     @Test
     void shouldReturnStudentByIdTest() throws Exception {
-        when(studentService.getStudentById(1L)).thenReturn(studentDto);
+        when(this.studentService.getStudentById(1L)).thenReturn(this.studentDto);
 
         this.mockMvc.perform(get(API_URL + "/1"))
                 .andExpect(status().isOk())
@@ -171,12 +171,12 @@ class StudentControllerTest {
     @WithMockUser(roles = "USER")
     @Test
     void shouldUpdateStudentByIdTest() throws Exception {
-        when(this.studentService.modifyStudentById(studentDto, 1L))
-                .thenReturn(studentDto);
+        when(this.studentService.modifyStudentById(this.studentDto, 1L))
+                .thenReturn(this.studentDto);
 
         this.mockMvc.perform(put(API_URL + "/1")
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(studentDto)).with(csrf()))
+                .content(this.objectMapper.writeValueAsString(this.studentDto)).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
@@ -193,7 +193,7 @@ class StudentControllerTest {
     @Test
     void shouldDeleteStudentById() throws Exception {
         when(this.studentService.deleteStudentById(1L))
-                .thenReturn(studentDto);
+                .thenReturn(this.studentDto);
 
         this.mockMvc.perform(delete(API_URL + "/1").with(csrf()))
                 .andExpect(status().isOk())
