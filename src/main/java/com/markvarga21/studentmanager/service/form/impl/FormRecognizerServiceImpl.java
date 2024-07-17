@@ -327,7 +327,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     @Override
     public Boolean isUserValid(final String passportNumber) {
         Optional<StudentDto> studentDtoOptional = this.studentService
-                .getAllStudents()
+                .getAllStudents(0, Integer.MAX_VALUE)
                 .stream()
                 .filter(
                         studentDto -> studentDto.getPassportNumber().equals(passportNumber)

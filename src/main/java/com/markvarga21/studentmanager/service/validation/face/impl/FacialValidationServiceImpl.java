@@ -6,9 +6,10 @@ import com.markvarga21.studentmanager.service.validation.face.FacialValidationSe
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -64,8 +65,12 @@ public class FacialValidationServiceImpl implements FacialValidationService {
      * @return All the facial validation data.
      */
     @Override
-    public List<FacialValidationData> getAllFacialValidationData() {
-        return this.repository.findAll();
+    public Page<FacialValidationData> getAllFacialValidationData(
+            final Integer page,
+            final Integer size
+    ) {
+        return this.repository
+                .findAll(PageRequest.of(page, size));
     }
 
     /**

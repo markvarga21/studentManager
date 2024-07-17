@@ -3,23 +3,11 @@ package com.markvarga21.studentmanager.service.faceapi;
 import com.markvarga21.studentmanager.dto.FaceApiResponse;
 import org.springframework.web.multipart.MultipartFile;
 
-
 /**
  * An interface for validating and comparing the faces on the
  * passport and the selfie itself.
  */
 public interface FaceApiService {
-    /**
-     * Compares two faces.
-     *
-     * @param passport The passport of the student.
-     * @param selfiePhoto A selfie of the student.
-     */
-    void facesAreMatching(
-            MultipartFile passport,
-            MultipartFile selfiePhoto
-    );
-
     /**
      * Compares the faces found on the passport and the
      * selfie, and then sends it back to the client.

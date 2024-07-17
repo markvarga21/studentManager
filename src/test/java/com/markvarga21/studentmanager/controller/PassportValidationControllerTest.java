@@ -8,10 +8,11 @@ import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,6 +21,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -123,23 +126,33 @@ class PassportValidationControllerTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     void shouldReturnAllPassportValidationData() throws Exception {
-        when(this.passportValidationService.getAllPassportValidationData())
-                .thenReturn(List.of(PASSPORT_VALIDATION_DATA1, PASSPORT_VALIDATION_DATA2));
+        // Given
+        Page<PassportValidationData> passportValidationDataPage = new PageImpl<>(List.of(
+                PASSPORT_VALIDATION_DATA1,
+                PASSPORT_VALIDATION_DATA2
+        ));
 
-        this.mockMvc.perform(get(API_URL))
+        // When
+        when(this.passportValidationService.getAllPassportValidationData(PAGE, SIZE))
+                .thenReturn(passportValidationDataPage);
+
+        // Then
+        this.mockMvc.perform(get(API_URL)
+                        .param("page", PAGE.toString())
+                        .param("size", SIZE.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*]", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].timestamp").value("2000-01-01T00:00:00"))
-                .andExpect(jsonPath("$[0].firstName").value("John"))
-                .andExpect(jsonPath("$[0].lastName").value("Doe"))
-                .andExpect(jsonPath("$[0].birthDate").value("2001-02-02"))
-                .andExpect(jsonPath("$[0].placeOfBirth").value("New York"))
-                .andExpect(jsonPath("$[0].countryOfCitizenship").value("USA"))
-                .andExpect(jsonPath("$[0].gender").value("MALE"))
-                .andExpect(jsonPath("$[0].passportNumber").value("123456789"))
-                .andExpect(jsonPath("$[0].passportDateOfIssue").value("2022-03-03"))
-                .andExpect(jsonPath("$[0].passportDateOfExpiry").value("2023-04-04"));
+                .andExpect(jsonPath("$.content[*]", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].timestamp").value("2000-01-01T00:00:00"))
+                .andExpect(jsonPath("$.content[0].firstName").value("John"))
+                .andExpect(jsonPath("$.content[0].lastName").value("Doe"))
+                .andExpect(jsonPath("$.content[0].birthDate").value("2001-02-02"))
+                .andExpect(jsonPath("$.content[0].placeOfBirth").value("New York"))
+                .andExpect(jsonPath("$.content[0].countryOfCitizenship").value("USA"))
+                .andExpect(jsonPath("$.content[0].gender").value("MALE"))
+                .andExpect(jsonPath("$.content[0].passportNumber").value("123456789"))
+                .andExpect(jsonPath("$.content[0].passportDateOfIssue").value("2022-03-03"))
+                .andExpect(jsonPath("$.content[0].passportDateOfExpiry").value("2023-04-04"));
     }
 
     @WithMockUser(roles = "ADMIN")

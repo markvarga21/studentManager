@@ -3,9 +3,8 @@ package com.markvarga21.studentmanager.service.report;
 import com.markvarga21.studentmanager.dto.ReportMessage;
 import com.markvarga21.studentmanager.entity.Report;
 import jakarta.mail.MessagingException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * A service which is used to access report data.
@@ -30,7 +29,9 @@ public interface ReportService {
     /**
      * Retrieves all the reports.
      *
+     * @param page The page number.
+     * @param size The size of the page.
      * @return A list of all the reports.
      */
-    List<Report> getAllReports();
+    Page<Report> getAllReports(Integer page, Integer size);
 }

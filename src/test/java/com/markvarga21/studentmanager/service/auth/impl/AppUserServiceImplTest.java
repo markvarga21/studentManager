@@ -10,11 +10,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -113,11 +118,13 @@ class AppUserServiceImplTest {
     void shouldFetchAllUsersTest() {
         // Given
         List<AppUser> expected = List.of(USER);
+        Page<AppUser> appUserPage = new PageImpl<>(expected);
 
         // When
-        when(this.repository.findAll())
-                .thenReturn(List.of(USER));
-        List<AppUser> actual = this.service.getAllUsers();
+        when(this.repository.findAll(any(Pageable.class)))
+                .thenReturn(appUserPage);
+        List<AppUser> actual = this.service
+                .getAllUsers(PAGE, SIZE).getContent();
 
         // Then
         assertArrayEquals(expected.toArray(), actual.toArray());

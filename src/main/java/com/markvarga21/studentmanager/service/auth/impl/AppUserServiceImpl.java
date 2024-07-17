@@ -9,10 +9,11 @@ import com.markvarga21.studentmanager.service.auth.AppUserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -64,13 +65,15 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     /**
-     * Method for fetching all users from the database.
+     * This method is used to get all the users.
      *
-     * @return A list of all users.
+     * @param page The page number.
+     * @param size The size of the page.
+     * @return The list of users.
      */
     @Override
-    public List<AppUser> getAllUsers() {
-        return this.repository.findAll();
+    public Page<AppUser> getAllUsers(final Integer page, final Integer size) {
+        return this.repository.findAll(PageRequest.of(page, size));
     }
 
     /**

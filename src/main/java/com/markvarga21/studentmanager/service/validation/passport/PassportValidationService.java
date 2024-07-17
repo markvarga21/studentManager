@@ -2,9 +2,9 @@ package com.markvarga21.studentmanager.service.validation.passport;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,11 +14,16 @@ import java.util.Optional;
 @Service
 public interface PassportValidationService {
     /**
-     * Retrieves all the passport validation data.
+     * Retrieves all passport validation data.
      *
-     * @return All the passport validation data.
+     * @param page The page number.
+     * @param size The page size.
+     * @return The list of passport validation data.
      */
-    List<PassportValidationData> getAllPassportValidationData();
+    Page<PassportValidationData> getAllPassportValidationData(
+            Integer page,
+            Integer size
+    );
 
     /**
      * Deletes the passport validation data with the given ID.

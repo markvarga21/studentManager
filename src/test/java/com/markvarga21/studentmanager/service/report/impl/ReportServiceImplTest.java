@@ -11,11 +11,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,11 +68,14 @@ class ReportServiceImplTest {
     void shouldFetchAllReportsTest() {
         // Given
         List<Report> expected = List.of(REPORT);
+        Page<Report> reportPage = new PageImpl<>(expected);
 
         // When
-        when(this.repository.findAll())
-                .thenReturn(expected);
-        List<Report> actual = this.reportService.getAllReports();
+        when(this.repository.findAll(any(Pageable.class)))
+                .thenReturn(reportPage);
+        List<Report> actual = this.reportService
+                .getAllReports(PAGE, SIZE)
+                .getContent();
 
         // Then
         assertEquals(expected, actual);

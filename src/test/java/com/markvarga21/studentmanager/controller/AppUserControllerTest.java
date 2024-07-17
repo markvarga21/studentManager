@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,6 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -109,21 +113,25 @@ class AppUserControllerTest {
     @Test
     void shouldFetchAllUsersTest() throws Exception {
         // Given
+        Page<AppUser> users = new PageImpl<>(List.of(USER));
+
         // When
-        when(this.appUserService.getAllUsers())
-                .thenReturn(List.of(USER));
+        when(this.appUserService.getAllUsers(PAGE, SIZE))
+                .thenReturn(users);
 
         // Then
-        this.mockMvc.perform(get(API_URL + "/users"))
+        this.mockMvc.perform(get(API_URL + "/users")
+                        .param("page", PAGE.toString())
+                        .param("size", SIZE.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*]", hasSize(1)))
-                .andExpect(jsonPath("$[0].id").value(USER.getId()))
-                .andExpect(jsonPath("$[0].username").value(USER.getUsername()))
-                .andExpect(jsonPath("$[0].email").value(USER.getEmail()))
-                .andExpect(jsonPath("$[0].password").value(USER.getPassword()))
-                .andExpect(jsonPath("$[0].firstName").value(USER.getFirstName()))
-                .andExpect(jsonPath("$[0].lastName").value(USER.getLastName()))
-                .andExpect(jsonPath("$[0].roles").value(Role.USER.name()));
+                .andExpect(jsonPath("$.content[*]", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].id").value(USER.getId()))
+                .andExpect(jsonPath("$.content[0].username").value(USER.getUsername()))
+                .andExpect(jsonPath("$.content[0].email").value(USER.getEmail()))
+                .andExpect(jsonPath("$.content[0].password").value(USER.getPassword()))
+                .andExpect(jsonPath("$.content[0].firstName").value(USER.getFirstName()))
+                .andExpect(jsonPath("$.content[0].lastName").value(USER.getLastName()))
+                .andExpect(jsonPath("$.content[0].roles").value(Role.USER.name()));
     }
 
     @WithMockUser(roles = "ADMIN")

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,9 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * A controller which is used to make create, read,
@@ -55,15 +55,20 @@ public class StudentController {
     private final FacialValidationService facialValidationService;
 
     /**
-     * Retrieves all students that are present in the application.
+     * Retrieves all the students from the application.
      *
-     * @return A {@code List} containing all the students.
+     * @param page The page number.
+     * @param size The size of the page.
+     * @return All the students stored in a {@code Page}.
      */
     @Operation(summary = "Get all students", description = "Retrieves all the students.")
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<StudentDto> getAllStudents() {
-        return this.studentService.getAllStudents();
+    public Page<StudentDto> getAllStudents(
+            @RequestParam(defaultValue = "0") final Integer page,
+            @RequestParam(defaultValue = "10") final Integer size
+    ) {
+        return this.studentService.getAllStudents(page, size);
     }
 
     /**

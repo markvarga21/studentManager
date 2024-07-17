@@ -1,9 +1,8 @@
 package com.markvarga21.studentmanager.service.validation.face;
 
 import com.markvarga21.studentmanager.entity.FacialValidationData;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * The FacialValidationService interface is used to manipulate
@@ -49,9 +48,14 @@ public interface FacialValidationService {
     );
 
     /**
-     * Retrieves all the facial validation data.
+     * Retrieves all facial validation data.
      *
-     * @return All the facial validation data.
+     * @param page The page number.
+     * @param size The page size.
+     * @return The facial validation data.
      */
-    List<FacialValidationData> getAllFacialValidationData();
+    Page<FacialValidationData> getAllFacialValidationData(
+            Integer page,
+            Integer size
+    );
 }

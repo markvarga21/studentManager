@@ -12,9 +12,10 @@ import com.markvarga21.studentmanager.mapping.StudentMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -42,12 +43,13 @@ public class StudentServiceImpl implements StudentService {
      * @since 1.0
      */
     @Override
-    public List<StudentDto> getAllStudents() {
+    public Page<StudentDto> getAllStudents(
+            final Integer page,
+            final Integer size
+    ) {
         return studentRepository
-                .findAll()
-                .stream()
-                .map(this.studentMapper::mapStudentEntityToDto)
-                .toList();
+                .findAll(PageRequest.of(page, size))
+                .map(studentMapper::mapStudentEntityToDto);
     }
 
     /**

@@ -9,12 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -68,16 +72,18 @@ class ReportingControllerTest {
     @Test
     void shouldReturnAllReportsTest() throws Exception {
         // Given
-        List<Report> expected = List.of(REPORT);
+        Page<Report> expected = new PageImpl<>(
+                List.of(REPORT)
+        );
 
         // When
-        when(this.reportService.getAllReports())
+        when(this.reportService.getAllReports(PAGE, SIZE))
                 .thenReturn(expected);
 
         // Then
         this.mockMvc.perform(get(API_URL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$.content", hasSize(1)));
     }
 
     @WithMockUser(roles = "ADMIN")

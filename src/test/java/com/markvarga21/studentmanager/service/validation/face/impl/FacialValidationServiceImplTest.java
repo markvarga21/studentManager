@@ -12,12 +12,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Assertions.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class FacialValidationServiceImplTest {
@@ -118,10 +124,18 @@ class FacialValidationServiceImplTest {
     @Test
     void shouldFetchAllFacialValidationDataTest() {
         // Given
+        List<FacialValidationData> facialValidationData = List.of(
+                VALID_FACIAL_VALIDATION_DATA,
+                INVALID_FACIAL_VALIDATION_DATA
+        );
+        Page<FacialValidationData> facialValidationDataPage = new PageImpl<>(facialValidationData);
+
         // When
-        when(this.repository.findAll())
-                .thenReturn(List.of(VALID_FACIAL_VALIDATION_DATA, INVALID_FACIAL_VALIDATION_DATA));
-        List<FacialValidationData> actual = this.facialValidationService.getAllFacialValidationData();
+        when(this.repository.findAll(any(Pageable.class)))
+                .thenReturn(facialValidationDataPage);
+        List<FacialValidationData> actual = this.facialValidationService
+                .getAllFacialValidationData(PAGE, SIZE)
+                .getContent();
 
         // Then
         assertNotNull(actual);

@@ -1,9 +1,9 @@
 package com.markvarga21.studentmanager.service.auth;
 
 import com.markvarga21.studentmanager.entity.AppUser;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -28,11 +28,13 @@ public interface AppUserService {
     AppUser registerUser(AppUser user);
 
     /**
-     * Method for fetching all users from the database.
+     * This method is used to get all the users.
      *
-     * @return A list of all users.
+     * @param page The page number.
+     * @param size The size of the page.
+     * @return The list of users.
      */
-    List<AppUser> getAllUsers();
+    Page<AppUser> getAllUsers(Integer page, Integer size);
 
     /**
      * Method for deleting a user from the database.

@@ -11,12 +11,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -73,12 +78,14 @@ class PassportValidationServiceImplTest {
     void shouldFetchAllPassportValidationDataTest() {
         // Given
         List<PassportValidationData> expected = List.of(VALIDATION_DATA);
+        Page<PassportValidationData> page = new PageImpl<>(expected);
 
         // When
-        when(repository.findAll())
-                .thenReturn(List.of(VALIDATION_DATA));
+        when(repository.findAll(any(Pageable.class)))
+                .thenReturn(page);
         List<PassportValidationData> actual = this.service
-                .getAllPassportValidationData();
+                .getAllPassportValidationData(PAGE, SIZE)
+                .getContent();
 
         // Assert
         assertArrayEquals(expected.toArray(), actual.toArray());

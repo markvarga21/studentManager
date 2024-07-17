@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * A controller which is used to make facial validations.
@@ -39,7 +38,9 @@ public class FacialValidationController {
     /**
      * Retrieves all the facial validation data.
      *
-     * @return All the facial validation data.
+     * @param page The page number.
+     * @param size The page size.
+     * @return The facial validation data.
      */
     @Operation(
             summary = "Retrieves all the facial validation data.",
@@ -47,8 +48,12 @@ public class FacialValidationController {
     )
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<FacialValidationData> getAllFacialValidationData() {
-        return this.facialValidationService.getAllFacialValidationData();
+    public Page<FacialValidationData> getAllFacialValidationData(
+            @RequestParam(defaultValue = "0") final Integer page,
+            @RequestParam(defaultValue = "10") final Integer size
+    ) {
+        return this.facialValidationService
+                .getAllFacialValidationData(page, size);
     }
 
     /**
