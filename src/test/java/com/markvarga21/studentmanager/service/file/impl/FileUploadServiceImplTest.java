@@ -294,4 +294,38 @@ class FileUploadServiceImplTest {
         // Then
         assertEquals(expected, actual);
     }
+
+    @Test
+    void shouldGetStudentImageByIdIfPresentTest() {
+        // Given
+        Long studentId = 1L;
+        StudentImage expected = new StudentImage();
+        expected.setStudentId(studentId);
+        expected.setPassportImage(new byte[]{1});
+        expected.setSelfieImage(new byte[]{2});
+
+        // When
+        when(this.repository.findById(studentId))
+                .thenReturn(Optional.of(expected));
+        StudentImage actual = this.service.getStudentImageById(studentId);
+
+        // Then
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldThrowExceptionUponGetStudentImageByIdTest() {
+        // Given
+        Long studentId = 1L;
+
+        // When
+        when(this.repository.findById(studentId))
+                .thenReturn(Optional.empty());
+
+        // Then
+        assertThrows(
+                StudentNotFoundException.class,
+                () -> this.service.getStudentImageById(studentId)
+        );
+    }
 }

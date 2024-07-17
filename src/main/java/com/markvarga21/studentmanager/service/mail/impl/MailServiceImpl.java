@@ -4,6 +4,7 @@ import com.markvarga21.studentmanager.entity.Report;
 import com.markvarga21.studentmanager.service.mail.MailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,6 +18,7 @@ import java.time.format.DateTimeFormatter;
  */
 @Service
 @RequiredArgsConstructor
+@Getter
 public class MailServiceImpl implements MailService {
     /**
      * The JavaMailSender object used to send emails.
@@ -38,7 +40,7 @@ public class MailServiceImpl implements MailService {
     /**
      * The HTML body of the email.
      */
-    static final String HTML_BODY = """
+    public static final String HTML_BODY = """
         <!DOCTYPE html>
         <html>
           <body style="font-family: 'Tahoma'">
