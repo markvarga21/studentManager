@@ -4,7 +4,6 @@ import com.markvarga21.studentmanager.entity.AppUser;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

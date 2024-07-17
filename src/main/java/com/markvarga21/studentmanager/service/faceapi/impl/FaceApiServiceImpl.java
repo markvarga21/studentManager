@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import com.markvarga21.studentmanager.config.ApplicationConfiguration;
 import com.markvarga21.studentmanager.dto.FaceDetectionResponse;
 import com.markvarga21.studentmanager.entity.FacialValidationData;
-import com.markvarga21.studentmanager.exception.InvalidPassportException;
 import com.markvarga21.studentmanager.dto.FaceApiResponse;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;

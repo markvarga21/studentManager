@@ -6,8 +6,6 @@ import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * A service which is used to access report data.
  */

@@ -6,8 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 /**
  * The FileUploadService interface is used to
  * store the image in the database.
