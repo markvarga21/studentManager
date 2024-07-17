@@ -12,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.File;
@@ -20,6 +22,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -111,11 +115,11 @@ class FileUploadServiceImplTest {
     void shouldFetchAllImagesTest() {
         // Given
         // When
-        this.service.getAllImages();
+        this.service.getAllImages(PAGE, SIZE);
 
         // Then
         verify(this.repository, times(1))
-                .findAll();
+                .findAll(any(Pageable.class));
     }
 
     @Test

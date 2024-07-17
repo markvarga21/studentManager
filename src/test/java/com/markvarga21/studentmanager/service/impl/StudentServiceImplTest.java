@@ -12,11 +12,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -102,16 +107,20 @@ class StudentServiceImplTest {
 
     @Test
     void shouldReturnAllStudentsTest() {
-        // given
+        // Given
         List<Student> students = List.of(INVALID_STUDENT);
-        when(studentRepository.findAll()).thenReturn(students);
+        Page<Student> studentPage = new PageImpl<>(students);
+
+        // When
+        when(studentRepository.findAll(any(Pageable.class)))
+                .thenReturn(studentPage);
         when(studentMapper.mapStudentEntityToDto(any(Student.class)))
                 .thenReturn(INVALID_STUDENT_DTO);
+        List<StudentDto> result = studentService
+                .getAllStudents(PAGE, SIZE)
+                .getContent();
 
-        // when
-        List<StudentDto> result = studentService.getAllStudents();
-
-        // then
+        // Then
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).getId());
         assertEquals("John", result.get(0).getFirstName());
