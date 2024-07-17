@@ -2,6 +2,7 @@ package com.markvarga21.studentmanager.service.report.impl;
 
 import com.markvarga21.studentmanager.dto.ReportMessage;
 import com.markvarga21.studentmanager.entity.Report;
+import com.markvarga21.studentmanager.exception.ReportNotFoundException;
 import com.markvarga21.studentmanager.repository.ReportRepository;
 import com.markvarga21.studentmanager.service.mail.MailService;
 import jakarta.mail.MessagingException;
@@ -14,7 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ReportServiceImplTest {
@@ -86,7 +90,33 @@ class ReportServiceImplTest {
     }
 
     @Test
-    void shouldDeleteReportTest() {
+    void shouldThrowExceptionUponSendingReportTest() throws MessagingException {
+        // Given
+        ReportMessage reportMessage = new ReportMessage(
+                "JohnDoe",
+                "Test subject",
+                "Test description"
+        );
+        Report report = Report.builder()
+                .issuerUsername(reportMessage.getUsername())
+                .subject(reportMessage.getSubject())
+                .description(reportMessage.getDescription())
+                .build();
+        String expected = "An error occurred while sending the report.";
+
+        // When
+        when(this.mailService.sendMail(report))
+                .thenThrow(MessagingException.class);
+        String actual = this.reportService.sendReport(reportMessage);
+
+        // Then
+        verify(this.repository, times(1))
+                .save(report);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldDeleteReportIfExistsTest() {
         // Given
         Long reportId = 1L;
 
@@ -98,6 +128,21 @@ class ReportServiceImplTest {
         // Then
         verify(this.repository, times(1))
                 .deleteById(reportId);
+    }
+
+    @Test
+    void shouldThrowExceptionUponDeletingReportIfNotExistsTest() {
+        // Given
+        Long reportId = 1L;
+
+        // When
+        when(this.repository.findById(reportId))
+                .thenReturn(java.util.Optional.empty());
+
+        // Then
+        assertThrows(ReportNotFoundException.class, () -> {
+            this.reportService.deleteReport(reportId);
+        });
     }
 
 }
