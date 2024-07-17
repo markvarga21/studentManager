@@ -7,11 +7,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -51,24 +55,32 @@ class FacialValidationControllerTest {
     static final FacialValidationData VALID_FACIAL_VALIDATION_DATA =
             new FacialValidationData(1L, "123456789",true, 0.9);
 
+
+
     @WithMockUser(roles = "USER")
     @Test
     void shouldFetchAllFacialValidationDataTest() throws Exception {
         // Given
+        Page<FacialValidationData> facialValidationDataPage = new PageImpl<>(
+                List.of(VALID_FACIAL_VALIDATION_DATA)
+        );
+
         // When
-        when(this.facialValidationService.getAllFacialValidationData())
-                .thenReturn(List.of(VALID_FACIAL_VALIDATION_DATA));
+        when(this.facialValidationService.getAllFacialValidationData(PAGE, SIZE))
+                .thenReturn(facialValidationDataPage);
 
         // Then
-        this.mockMvc.perform(get(API_URL))
+        this.mockMvc.perform(get(API_URL)
+                        .param("page", PAGE.toString())
+                        .param("size", SIZE.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id")
+                .andExpect(jsonPath("$.content[0].id")
                         .value(VALID_FACIAL_VALIDATION_DATA.getId()))
-                .andExpect(jsonPath("$[0].passportNumber")
+                .andExpect(jsonPath("$.content[0].passportNumber")
                         .value(VALID_FACIAL_VALIDATION_DATA.getPassportNumber()))
-                .andExpect(jsonPath("$[0].isValid")
+                .andExpect(jsonPath("$.content[0].isValid")
                         .value(VALID_FACIAL_VALIDATION_DATA.getIsValid()))
-                .andExpect(jsonPath("$[0].percentage")
+                .andExpect(jsonPath("$.content[0].percentage")
                         .value(VALID_FACIAL_VALIDATION_DATA.getPercentage()));
     }
 

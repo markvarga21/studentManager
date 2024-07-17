@@ -12,11 +12,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -96,7 +100,8 @@ class StudentControllerTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     void shouldReturnAllStudentsTest() throws Exception {
-        when(this.studentService.getAllStudents()).thenReturn(List.of(
+        // Given
+        List<StudentDto> studentDtoList = List.of(
                 this.studentDto,
                 StudentDto.builder()
                         .id(2L)
@@ -109,21 +114,27 @@ class StudentControllerTest {
                         .passportDateOfIssue("2021-01-01")
                         .passportDateOfExpiry("2028-01-01")
                         .build()
-        ));
+        );
+        Page<StudentDto> studentDtoPage = new PageImpl<>(studentDtoList);
 
+        // When
+        when(this.studentService.getAllStudents(PAGE, SIZE))
+                .thenReturn(studentDtoPage);
+
+        // Then
         this.mockMvc.perform(get(API_URL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*]", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].firstName").value("John"))
-                .andExpect(jsonPath("$[0].lastName").value("Doe"))
-                .andExpect(jsonPath("$[0].birthDate").value("2000-01-01"))
-                .andExpect(jsonPath("$[0].placeOfBirth").value("New York"))
-                .andExpect(jsonPath("$[0].countryOfCitizenship").value("USA"))
-                .andExpect(jsonPath("$[0].gender").value("MALE"))
-                .andExpect(jsonPath("$[0].passportNumber").value("123456"))
-                .andExpect(jsonPath("$[0].passportDateOfIssue").value("2020-01-01"))
-                .andExpect(jsonPath("$[0].passportDateOfExpiry").value("2025-01-01"));
+                .andExpect(jsonPath("$.content[*]", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].firstName").value("John"))
+                .andExpect(jsonPath("$.content[0].lastName").value("Doe"))
+                .andExpect(jsonPath("$.content[0].birthDate").value("2000-01-01"))
+                .andExpect(jsonPath("$.content[0].placeOfBirth").value("New York"))
+                .andExpect(jsonPath("$.content[0].countryOfCitizenship").value("USA"))
+                .andExpect(jsonPath("$.content[0].gender").value("MALE"))
+                .andExpect(jsonPath("$.content[0].passportNumber").value("123456"))
+                .andExpect(jsonPath("$.content[0].passportDateOfIssue").value("2020-01-01"))
+                .andExpect(jsonPath("$.content[0].passportDateOfExpiry").value("2025-01-01"));
     }
 
     @WithMockUser(roles = "USER")

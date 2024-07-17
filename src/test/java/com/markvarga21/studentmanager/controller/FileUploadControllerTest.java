@@ -13,8 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.mock.web.MockMultipartFile;
 
+import static com.markvarga21.studentmanager.data.TestingData.PAGE;
+import static com.markvarga21.studentmanager.data.TestingData.SIZE;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
@@ -91,15 +95,21 @@ class FileUploadControllerTest {
         studentImage.setSelfieImage("selfieImage2".getBytes());
         studentImage.setPassportImage("passportImage2".getBytes());
 
+        Page<StudentImage> studentImages = new PageImpl<>(
+                List.of(studentImage, studentImage2)
+        );
+
         // When
-        when(this.fileUploadService.getAllImages())
-                .thenReturn(List.of(studentImage, studentImage2));
+        when(this.fileUploadService.getAllImages(PAGE, SIZE))
+                .thenReturn(studentImages);
 
 
         // Then
-        this.mockMvc.perform(get("/api/v1/files"))
+        this.mockMvc.perform(get("/api/v1/files")
+                        .param("page", PAGE.toString())
+                        .param("size", SIZE.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$.content", hasSize(2)));
     }
 
     @WithMockUser(roles = "ADMIN")
