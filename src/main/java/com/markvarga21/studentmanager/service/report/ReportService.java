@@ -2,6 +2,7 @@ package com.markvarga21.studentmanager.service.report;
 
 import com.markvarga21.studentmanager.dto.ReportMessage;
 import com.markvarga21.studentmanager.entity.Report;
+import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface ReportService {
      * @param reportMessage The report message object.
      * @return An informational/status message.
      */
-    String sendReport(ReportMessage reportMessage);
+    String sendReport(ReportMessage reportMessage) throws MessagingException;
 
     /**
      * Retrieves all the reports.

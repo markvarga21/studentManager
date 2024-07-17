@@ -4,7 +4,9 @@ import com.markvarga21.studentmanager.dto.ReportMessage;
 import com.markvarga21.studentmanager.entity.Report;
 import com.markvarga21.studentmanager.exception.ReportNotFoundException;
 import com.markvarga21.studentmanager.repository.ReportRepository;
+import com.markvarga21.studentmanager.service.mail.MailService;
 import com.markvarga21.studentmanager.service.report.ReportService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,20 +27,34 @@ public class ReportServiceImpl implements ReportService {
     private final ReportRepository repository;
 
     /**
+     * The mail service used to send emails.
+     */
+    private final MailService mailService;
+
+    /**
      * Sends a report to the system.
      *
      * @param reportMessage The report message object.
      * @return An informational/status message.
      */
     @Override
-    public String sendReport(final ReportMessage reportMessage) {
-        Report report = Report.builder()
-                .issuerUsername(reportMessage.getUsername())
-                .subject(reportMessage.getSubject())
-                .description(reportMessage.getDescription())
-                .build();
-        this.repository.save(report);
-        return "Report sent successfully.";
+    public String sendReport(final ReportMessage reportMessage)  {
+        try {
+            Report report = Report.builder()
+                    .issuerUsername(reportMessage.getUsername())
+                    .subject(reportMessage.getSubject())
+                    .description(reportMessage.getDescription())
+                    .build();
+            this.repository
+                    .save(report);
+            String emailStatusMessage = this.mailService
+                    .sendMail(report);
+            log.info(emailStatusMessage);
+            return "Report sent successfully.";
+        } catch (MessagingException e) {
+            log.error("An error occurred while sending the report.");
+            return "An error occurred while sending the report.";
+        }
     }
 
     /**

@@ -10,6 +10,7 @@ import com.markvarga21.studentmanager.util.LocalDateDeserializer;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,10 +19,14 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Properties;
 
 /**
  * Configuration class for setting up the beans.
@@ -56,8 +61,36 @@ public class ApplicationConfiguration {
     @Value("${knopp.services.endpoint}")
     private String formRecognizerEndpoint;
 
+    /**
+     * The duration for caching the data
+     * measured in hours.
+     */
     @Value("${cache.duration.hours}")
     private Long cachingDurationInHours;
+
+    /**
+     * The host of the mailing.
+     */
+    @Value("${spring.mail.host}")
+    private String mailHost;
+
+    /**
+     * The port of the mailing.
+     */
+    @Value("${spring.mail.port}")
+    private Integer mailPort;
+
+    /**
+     * The username of the mailing.
+     */
+    @Value("${spring.mail.username}")
+    private String mailUsername;
+
+    /**
+     * The password of the mailing.
+     */
+    @Value("${spring.mail.password}")
+    private String mailPassword;
 
     /**
      * A custom {@code LocalDate} deserializer.
@@ -124,5 +157,27 @@ public class ApplicationConfiguration {
         return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(cacheConfiguration)
                 .build();
+    }
+
+    /**
+     * A bean created for sending emails.
+     *
+     * @return The configured bean.
+     */
+    @Bean
+    public JavaMailSender javaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(this.mailHost);
+        mailSender.setPort(this.mailPort);
+        mailSender.setUsername(this.mailUsername);
+        mailSender.setPassword(this.mailPassword);
+
+        Properties properties = mailSender.getJavaMailProperties();
+        properties.put("mail.transport.protocol", "smtp");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.debug", "true");
+
+        return mailSender;
     }
 }

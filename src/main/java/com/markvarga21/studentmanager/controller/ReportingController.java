@@ -4,6 +4,7 @@ import com.markvarga21.studentmanager.dto.ReportMessage;
 import com.markvarga21.studentmanager.entity.Report;
 import com.markvarga21.studentmanager.service.report.ReportService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +66,7 @@ public class ReportingController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> sendReport(
             @RequestBody @Validated final ReportMessage reportMessage
-    ) {
+    ) throws MessagingException {
         String status = this.reportService
                 .sendReport(reportMessage);
         return ResponseEntity.ok(status);
