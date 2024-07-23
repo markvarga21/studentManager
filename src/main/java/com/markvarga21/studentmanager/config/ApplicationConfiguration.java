@@ -7,6 +7,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.markvarga21.studentmanager.util.Generated;
 import com.markvarga21.studentmanager.util.LocalDateDeserializer;
+import com.networknt.schema.JsonSchema;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -95,6 +98,11 @@ public class ApplicationConfiguration {
      */
     private final LocalDateDeserializer localDateDeserializer;
 
+    /**
+     * The path to the JSON schema.
+     */
+    private static final String JSON_SCHEMA_PATH = "/schemas/students_draft-07.json";
+
 
     /**
      * A bean for creating a client for the Azure's Form Recognizer service.
@@ -177,5 +185,17 @@ public class ApplicationConfiguration {
         properties.put("mail.debug", "true");
 
         return mailSender;
+    }
+
+    /**
+     * A bean created for validating JSON data.
+     *
+     * @return The JSON schema.
+     */
+    @Bean
+    public JsonSchema jsonSchema() {
+        return JsonSchemaFactory
+                .getInstance(SpecVersion.VersionFlag.V7)
+                .getSchema(getClass().getResourceAsStream(JSON_SCHEMA_PATH));
     }
 }

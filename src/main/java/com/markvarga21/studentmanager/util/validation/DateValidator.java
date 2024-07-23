@@ -1,4 +1,4 @@
-package com.markvarga21.studentmanager.util;
+package com.markvarga21.studentmanager.util.validation;
 
 import com.markvarga21.studentmanager.exception.InvalidDateException;
 

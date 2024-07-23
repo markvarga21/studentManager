@@ -68,7 +68,7 @@ public class SecurityConfiguration {
         String[] permittedEndpoints = {
                 BASE_AUTH_URL + "/register",
                 BASE_AUTH_URL + "/login",
-                BASE_AUTH_URL + "/logout"
+                BASE_AUTH_URL + "/logout",
         };
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
