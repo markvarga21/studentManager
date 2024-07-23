@@ -29,6 +29,7 @@ public class XmlValidator {
      * Validates the XML file.
      *
      * @param xml The XML file to be validated.
+     * @return Whether the XML file is valid.
      */
     public boolean isXmlValid(final String xml) throws IOException {
         Path tempFile = Files.createTempFile("temp", ".xml");

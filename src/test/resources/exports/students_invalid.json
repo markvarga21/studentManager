@@ -1,0 +1,28 @@
+[
+  {
+    "birthDate": "1992-11-01",
+    "countryOfCitizenship": "South Korean",
+    "dateOfExpiry": "2022-1210",
+    "dateOfIssue": "2012-12-10",
+    "firstName": "Ava",
+    "gender": "Female",
+    "id": 3,
+    "lastName": "Lee",
+    "passportNumber": "KR345678",
+    "placeOfBirth": "Seoul",
+    "validity": false
+  },
+  {
+    "birthDate": "1993-06-22",
+    "countryOfCitizenship": "Chinese",
+    "dateOfExpiry": "2023-07-20",
+    "dateOfIssue": "2013-07-20",
+    "firstName": "Logan",
+    "gender": "Male",
+    "id": 8,
+    "lastName": "Brown",
+    "passportNumber": "CN789012",
+    "placeOfBirth": "Beijing",
+    "validity": false
+  }
+]
