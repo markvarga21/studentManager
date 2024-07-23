@@ -20,8 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.markvarga21.studentmanager.data.TestingData.PAGE;
-import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,62 +47,6 @@ class StudentServiceImplTest {
      */
     @Mock
     private StudentMapper studentMapper;
-
-    /**
-     * The mock passport number.
-     */
-    static final String PASSPORT_NUMBER = "123456";
-
-    /**
-     * The invalidated student mock entity.
-     */
-    static final Student INVALID_STUDENT = new Student(
-            1L,
-            "John",
-            "Doe",
-            LocalDate.of(1990, 1, 1),
-            "New York",
-            "USA",
-            Gender.MALE,
-            PASSPORT_NUMBER,
-            LocalDate.of(2021, 1, 1),
-            LocalDate.of(2031, 1, 1),
-            false
-    );
-
-    /**
-     * A validated student mock.
-     */
-    static final Student VALID_STUDENT = new Student(
-            1L,
-            "John",
-            "Doe",
-            LocalDate.of(1990, 1, 1),
-            "New York",
-            "USA",
-            Gender.MALE,
-            PASSPORT_NUMBER,
-            LocalDate.of(2021, 1, 1),
-            LocalDate.of(2031, 1, 1),
-            true
-    );
-
-    /**
-     * The invalidated student mock dto.
-     */
-    static final StudentDto INVALID_STUDENT_DTO = new StudentDto(
-            1L,
-            "John",
-            "Doe",
-            "1990-01-01",
-            "New York",
-            "USA",
-            Gender.MALE,
-            PASSPORT_NUMBER,
-            "2021-01-01",
-            "2031-01-01",
-            false
-    );
 
     @Test
     void shouldReturnAllStudentsTest() {

@@ -25,8 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.markvarga21.studentmanager.data.TestingData.PAGE;
-import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -95,19 +94,6 @@ class AppUserControllerTest {
      * The URL used for testing the API.
      */
     static final String API_URL = "/api/v1/auth";
-
-    /**
-     * A static user for mocking purposes.
-     */
-    static final AppUser USER = AppUser.builder()
-            .id(1L)
-            .username("john.doe")
-            .email("jdoe12@domain.com")
-            .password("1234")
-            .firstName("John")
-            .lastName("Doe")
-            .roles(Set.of(Role.USER))
-            .build();
 
     @WithMockUser(roles = "ADMIN")
     @Test

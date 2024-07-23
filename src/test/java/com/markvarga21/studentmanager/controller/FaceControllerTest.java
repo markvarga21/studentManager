@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static com.markvarga21.studentmanager.data.TestingData.FACE_API_RESPONSE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -45,14 +46,6 @@ class FaceControllerTest {
      */
     @MockBean
     private JwtService jwtService;
-
-    /**
-     * A face api response used for testing.
-     */
-    static final FaceApiResponse FACE_API_RESPONSE = new FaceApiResponse(
-            true,
-            0.95
-    );
 
     /**
      * A simple mock image.

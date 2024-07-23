@@ -29,6 +29,9 @@ class AdminUserInitTest {
     @Spy
     private AppUserRepository repository;
 
+    /**
+     * The password encoder for mocking the password encoder.
+     */
     @Mock
     private PasswordEncoder passwordEncoder;
 

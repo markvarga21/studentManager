@@ -10,11 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-
+import static com.markvarga21.studentmanager.data.TestingData.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,58 +28,6 @@ class StudentMapperTest {
      */
     @Mock
     private Gson gson;
-
-    /**
-     * A static student entity for testing purposes.
-     */
-    static final Student STUDENT = new Student(
-            1L,
-            "John",
-            "Doe",
-            LocalDate.of(1990, 1, 1),
-            "New York",
-            "USA",
-            Gender.MALE,
-            "123456",
-            LocalDate.of(2031, 1, 1),
-            LocalDate.of(2021, 1, 1),
-            false
-    );
-
-    /**
-     * A static student DTO for testing purposes.
-     */
-    static final StudentDto STUDENT_DTO = new StudentDto(
-            1L,
-            "John",
-            "Doe",
-            "1990-01-01",
-            "New York",
-            "USA",
-            Gender.MALE,
-            "123456",
-            "2031-01-01",
-            "2021-01-01",
-            false
-    );
-
-    /**
-     * A static JSON string representing the student above.
-     */
-    static final String STUDENT_JSON = """
-            {
-                "id": 1,
-                "firstName": "John",
-                "lastName": "Doe",
-                "birthDate": "1990-01-01",
-                "placeOfBirth": "New York",
-                "countryOfCitizenship": "USA",
-                "gender": "MALE",
-                "passportNumber": "123456",
-                "passportDateOfIssue": "2021-01-01",
-                "passportDateOfExpiry": "2031-01-01"
-            }
-            """;
 
     @Test
     void shouldMapStudentDtoToEntityTest() {

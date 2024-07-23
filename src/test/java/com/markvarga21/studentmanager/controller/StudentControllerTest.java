@@ -21,6 +21,7 @@ import java.util.List;
 
 import static com.markvarga21.studentmanager.data.TestingData.PAGE;
 import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.STUDENT_DTO;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -81,32 +82,16 @@ class StudentControllerTest {
     @MockBean
     private JwtService jwtService;
 
-    /**
-     * A {@code StudentDto} used for testing the API.
-     */
-    private final StudentDto studentDto = StudentDto.builder()
-            .id(1L)
-            .firstName("John").lastName("Doe")
-            .birthDate("2000-01-01")
-            .placeOfBirth("New York")
-            .countryOfCitizenship("USA")
-            .gender(Gender.MALE)
-            .passportNumber("123456")
-            .passportDateOfIssue("2020-01-01")
-            .passportDateOfExpiry("2025-01-01")
-            .build();
-
-
     @WithMockUser(roles = "ADMIN")
     @Test
     void shouldReturnAllStudentsTest() throws Exception {
         // Given
         List<StudentDto> studentDtoList = List.of(
-                this.studentDto,
+                STUDENT_DTO,
                 StudentDto.builder()
                         .id(2L)
                         .firstName("John").lastName("Wick")
-                        .birthDate("2002-01-01")
+                        .birthDate("2001-02-02")
                         .placeOfBirth("Washington")
                         .countryOfCitizenship("USA")
                         .gender(Gender.MALE)
@@ -128,7 +113,7 @@ class StudentControllerTest {
                 .andExpect(jsonPath("$.content[0].id").value(1))
                 .andExpect(jsonPath("$.content[0].firstName").value("John"))
                 .andExpect(jsonPath("$.content[0].lastName").value("Doe"))
-                .andExpect(jsonPath("$.content[0].birthDate").value("2000-01-01"))
+                .andExpect(jsonPath("$.content[0].birthDate").value("2001-02-02"))
                 .andExpect(jsonPath("$.content[0].placeOfBirth").value("New York"))
                 .andExpect(jsonPath("$.content[0].countryOfCitizenship").value("USA"))
                 .andExpect(jsonPath("$.content[0].gender").value("MALE"))
@@ -143,16 +128,16 @@ class StudentControllerTest {
         when(this.studentService.validPassportNumber(anyString()))
                 .thenReturn(true);
 
-        when(this.studentService.createStudent(studentDto))
-                .thenReturn(studentDto);
+        when(this.studentService.createStudent(STUDENT_DTO))
+                .thenReturn(STUDENT_DTO);
 
         this.mockMvc.perform(post(API_URL)
                 .contentType("application/json")
-                .content(this.objectMapper.writeValueAsString(this.studentDto)).with(csrf()))
+                .content(this.objectMapper.writeValueAsString(STUDENT_DTO)).with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.birthDate").value("2000-01-01"))
+                .andExpect(jsonPath("$.birthDate").value("2001-02-02"))
                 .andExpect(jsonPath("$.placeOfBirth").value("New York"))
                 .andExpect(jsonPath("$.countryOfCitizenship").value("USA"))
                 .andExpect(jsonPath("$.gender").value("MALE"))
@@ -164,13 +149,13 @@ class StudentControllerTest {
     @WithMockUser(roles = "USER")
     @Test
     void shouldReturnStudentByIdTest() throws Exception {
-        when(this.studentService.getStudentById(1L)).thenReturn(this.studentDto);
+        when(this.studentService.getStudentById(1L)).thenReturn(STUDENT_DTO);
 
         this.mockMvc.perform(get(API_URL + "/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.birthDate").value("2000-01-01"))
+                .andExpect(jsonPath("$.birthDate").value("2001-02-02"))
                 .andExpect(jsonPath("$.placeOfBirth").value("New York"))
                 .andExpect(jsonPath("$.countryOfCitizenship").value("USA"))
                 .andExpect(jsonPath("$.gender").value("MALE"))
@@ -182,16 +167,16 @@ class StudentControllerTest {
     @WithMockUser(roles = "USER")
     @Test
     void shouldUpdateStudentByIdTest() throws Exception {
-        when(this.studentService.modifyStudentById(this.studentDto, 1L))
-                .thenReturn(this.studentDto);
+        when(this.studentService.modifyStudentById(STUDENT_DTO, 1L))
+                .thenReturn(STUDENT_DTO);
 
         this.mockMvc.perform(put(API_URL + "/1")
                 .contentType("application/json")
-                .content(this.objectMapper.writeValueAsString(this.studentDto)).with(csrf()))
+                .content(this.objectMapper.writeValueAsString(STUDENT_DTO)).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.birthDate").value("2000-01-01"))
+                .andExpect(jsonPath("$.birthDate").value("2001-02-02"))
                 .andExpect(jsonPath("$.placeOfBirth").value("New York"))
                 .andExpect(jsonPath("$.countryOfCitizenship").value("USA"))
                 .andExpect(jsonPath("$.gender").value("MALE"))
@@ -204,13 +189,13 @@ class StudentControllerTest {
     @Test
     void shouldDeleteStudentById() throws Exception {
         when(this.studentService.deleteStudentById(1L))
-                .thenReturn(this.studentDto);
+                .thenReturn(STUDENT_DTO);
 
         this.mockMvc.perform(delete(API_URL + "/1").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.birthDate").value("2000-01-01"))
+                .andExpect(jsonPath("$.birthDate").value("2001-02-02"))
                 .andExpect(jsonPath("$.placeOfBirth").value("New York"))
                 .andExpect(jsonPath("$.countryOfCitizenship").value("USA"))
                 .andExpect(jsonPath("$.gender").value("MALE"))

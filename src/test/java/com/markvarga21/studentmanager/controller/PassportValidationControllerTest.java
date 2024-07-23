@@ -21,8 +21,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
-import static com.markvarga21.studentmanager.data.TestingData.PAGE;
-import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -71,57 +70,6 @@ class PassportValidationControllerTest {
      */
     @Autowired
     private ObjectMapper objectMapper;
-
-    /**
-     * The first passport validation data used for testing.
-     */
-    static final PassportValidationData PASSPORT_VALIDATION_DATA1 = new PassportValidationData(
-            1L,
-            LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0),
-            "John",
-            "Doe",
-            LocalDate.of(2001, 2, 2),
-            "New York",
-            "USA",
-            Gender.MALE,
-            "123456789",
-            LocalDate.of(2023, 4, 4),
-            LocalDate.of(2022, 3, 3)
-    );
-
-    /**
-     * The second passport validation data used for testing.
-     */
-    static final PassportValidationData PASSPORT_VALIDATION_DATA2 = new PassportValidationData(
-            2L,
-            LocalDateTime.of(1980, Month.JANUARY, 1, 0, 0),
-            "John",
-            "Wick",
-            LocalDate.of(2001, 2, 2),
-            "Washington",
-            "USA",
-            Gender.MALE,
-            "23456789",
-            LocalDate.of(2022, 3, 3),
-            LocalDate.of(2023, 4, 4)
-    );
-
-    /**
-     * Static student data based on the information found in
-     * {@code PASSPORT_VALIDATION_DATA1} passport.
-     */
-    static final StudentDto STUDENT_DTO = StudentDto.builder()
-            .id(1L)
-            .firstName("John")
-            .lastName("Doe")
-            .birthDate("2001-02-02")
-            .placeOfBirth("New York")
-            .countryOfCitizenship("USA")
-            .gender(Gender.MALE)
-            .passportNumber("123456789")
-            .passportDateOfIssue("2022-03-03")
-            .passportDateOfExpiry("2023-04-04")
-            .build();
 
     @WithMockUser(roles = "ADMIN")
     @Test
@@ -249,8 +197,8 @@ class PassportValidationControllerTest {
                 .andExpect(jsonPath("$.placeOfBirth").value("New York"))
                 .andExpect(jsonPath("$.countryOfCitizenship").value("USA"))
                 .andExpect(jsonPath("$.gender").value("MALE"))
-                .andExpect(jsonPath("$.passportNumber").value("123456789"))
-                .andExpect(jsonPath("$.passportDateOfIssue").value("2022-03-03"))
-                .andExpect(jsonPath("$.passportDateOfExpiry").value("2023-04-04"));
+                .andExpect(jsonPath("$.passportNumber").value("123456"))
+                .andExpect(jsonPath("$.passportDateOfIssue").value("2020-01-01"))
+                .andExpect(jsonPath("$.passportDateOfExpiry").value("2025-01-01"));
     }
 }

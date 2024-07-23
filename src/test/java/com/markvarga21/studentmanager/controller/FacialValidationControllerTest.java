@@ -14,8 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static com.markvarga21.studentmanager.data.TestingData.PAGE;
-import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -48,14 +47,6 @@ class FacialValidationControllerTest {
      * The URL used for testing the API.
      */
     static final String API_URL = "/api/v1/facialValidations";
-
-    /**
-     * A valid facial validation data used for testing.
-     */
-    static final FacialValidationData VALID_FACIAL_VALIDATION_DATA =
-            new FacialValidationData(1L, "123456789",true, 0.9);
-
-
 
     @WithMockUser(roles = "USER")
     @Test

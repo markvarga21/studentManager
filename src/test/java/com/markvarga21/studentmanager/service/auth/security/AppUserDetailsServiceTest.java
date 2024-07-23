@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.markvarga21.studentmanager.data.TestingData.USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -35,15 +36,7 @@ class AppUserDetailsServiceTest {
     void shouldLoadUserByUsernameIfPresentTest() {
         // Given
         String username = "john12";
-        AppUser appUser = AppUser.builder()
-                .id(1L)
-                .username("john.doe")
-                .email("jdoe12@domain.com")
-                .password("1234")
-                .firstName("John")
-                .lastName("Doe")
-                .roles(Set.of(Role.USER))
-                .build();
+        AppUser appUser = USER;
 
         // When
         when(this.appUserService.getUserByUsername(username))
