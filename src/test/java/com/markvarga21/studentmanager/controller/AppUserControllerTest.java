@@ -6,6 +6,7 @@ import com.markvarga21.studentmanager.dto.Role;
 import com.markvarga21.studentmanager.dto.UserLogin;
 import com.markvarga21.studentmanager.entity.AppUser;
 import com.markvarga21.studentmanager.service.auth.AppUserService;
+import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import jakarta.validation.constraints.NotBlank;
 import org.apache.commons.lang3.text.translate.NumericEntityUnescaper;
@@ -89,6 +90,12 @@ class AppUserControllerTest {
      */
     @MockBean
     private Authentication authentication;
+
+    /**
+     * The token management service mock bean.
+     */
+    @MockBean
+    private TokenManagementService tokenManagementService;
 
     /**
      * The URL used for testing the API.

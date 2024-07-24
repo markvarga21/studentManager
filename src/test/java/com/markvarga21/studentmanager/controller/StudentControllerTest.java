@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Gender;
 import com.markvarga21.studentmanager.service.StudentService;
+import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
@@ -81,6 +82,12 @@ class StudentControllerTest {
      */
     @MockBean
     private JwtService jwtService;
+
+    /**
+     * The {@code TokenManagementService} for mocking the token management.
+     */
+    @MockBean
+    private TokenManagementService tokenManagementService;
 
     @WithMockUser(roles = "ADMIN")
     @Test

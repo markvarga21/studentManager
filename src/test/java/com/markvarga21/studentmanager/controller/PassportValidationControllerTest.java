@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Gender;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
+import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
@@ -59,6 +60,12 @@ class PassportValidationControllerTest {
      */
     @MockBean
     private JwtService jwtService;
+
+    /**
+     * The {@code TokenManagementService} for mocking the token management.
+     */
+    @MockBean
+    private TokenManagementService tokenManagementService;
 
     /**
      * The URL used for testing the API.
