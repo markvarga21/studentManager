@@ -1,16 +1,6 @@
 package com.markvarga21.studentmanager.exception.handler;
 
-import com.markvarga21.studentmanager.exception.InvalidDateException;
-import com.markvarga21.studentmanager.exception.InvalidDateFormatException;
-import com.markvarga21.studentmanager.exception.InvalidFacesException;
-import com.markvarga21.studentmanager.exception.InvalidPassportException;
-import com.markvarga21.studentmanager.exception.InvalidStudentException;
-import com.markvarga21.studentmanager.exception.InvalidUserCredentialsException;
-import com.markvarga21.studentmanager.exception.OperationType;
-import com.markvarga21.studentmanager.exception.PassportValidationDataNotFoundException;
-import com.markvarga21.studentmanager.exception.ReportNotFoundException;
-import com.markvarga21.studentmanager.exception.StudentNotFoundException;
-import com.markvarga21.studentmanager.exception.UserNotFoundException;
+import com.markvarga21.studentmanager.exception.*;
 import com.markvarga21.studentmanager.exception.util.ApiError;
 import com.markvarga21.studentmanager.exception.util.InvalidFacesApiError;
 import com.markvarga21.studentmanager.util.Generated;
@@ -455,6 +445,26 @@ public class ApplicationExceptionHandler {
                 HttpStatus.NOT_ACCEPTABLE,
                 ex.getMessage(),
                 OperationType.CREATE,
+                getStackTraceAsString(ex)
+        );
+        return new ResponseEntity<>(
+                apiError,
+                new HttpHeaders(),
+                apiError.getStatus()
+        );
+    }
+
+    @ExceptionHandler(TokenNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Object> handleTokenNotFoundException(
+            final TokenNotFoundException ex
+    ) {
+        log.error("Token not found!");
+        ApiError apiError = new ApiError(
+                new Date(),
+                HttpStatus.NOT_FOUND,
+                "Token not found!",
+                OperationType.READ,
                 getStackTraceAsString(ex)
         );
         return new ResponseEntity<>(

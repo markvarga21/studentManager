@@ -4,7 +4,12 @@ import com.markvarga21.studentmanager.dto.FaceApiResponse;
 import com.markvarga21.studentmanager.dto.ReportMessage;
 import com.markvarga21.studentmanager.dto.Role;
 import com.markvarga21.studentmanager.dto.StudentDto;
-import com.markvarga21.studentmanager.entity.*;
+import com.markvarga21.studentmanager.entity.AppUser;
+import com.markvarga21.studentmanager.entity.FacialValidationData;
+import com.markvarga21.studentmanager.entity.Gender;
+import com.markvarga21.studentmanager.entity.PassportValidationData;
+import com.markvarga21.studentmanager.entity.Report;
+import com.markvarga21.studentmanager.entity.Student;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

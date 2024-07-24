@@ -4,6 +4,7 @@ import com.markvarga21.studentmanager.dto.UserLogin;
 import com.markvarga21.studentmanager.entity.AppUser;
 import com.markvarga21.studentmanager.exception.InvalidUserCredentialsException;
 import com.markvarga21.studentmanager.service.auth.AppUserService;
+import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -58,6 +59,11 @@ public class AppUserController {
      * The UserDetailsService object.
      */
     private final UserDetailsService userDetailsService;
+
+    /**
+     * The TokenManagementService object.
+     */
+    private final TokenManagementService tokenManagementService;
 
     /**
      * Endpoint for fetching all users.
@@ -132,6 +138,7 @@ public class AppUserController {
         String token = this.jwtService.generateJwtToken(
                 this.userDetailsService.loadUserByUsername(user.getUsername())
         );
+        this.tokenManagementService.addToken(token);
         return ResponseEntity.ok(token);
     }
 

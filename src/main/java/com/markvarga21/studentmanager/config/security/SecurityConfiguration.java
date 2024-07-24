@@ -2,6 +2,8 @@ package com.markvarga21.studentmanager.config.security;
 
 import com.markvarga21.studentmanager.exception.handler.security.AppAccessDeniedHandler;
 import com.markvarga21.studentmanager.service.auth.security.AppUserDetailsService;
+
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -55,6 +57,11 @@ public class SecurityConfiguration {
     private final ApplicationContext applicationContext;
 
     /**
+     * The logout success handler.
+     */
+    private final AppLogoutSuccessHandler logoutSuccessHandler;
+
+    /**
      * This method is used to configure the security filter chain.
      *
      * @param httpSecurity The HttpSecurity object to configure the security filter chain.
@@ -85,6 +92,9 @@ public class SecurityConfiguration {
                 .addFilterBefore(
                         jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class
+                ).logout(logout -> logout
+                    .logoutUrl(BASE_AUTH_URL + "/logout")
+                    .logoutSuccessHandler(this.logoutSuccessHandler)
                 ).build();
     }
 
