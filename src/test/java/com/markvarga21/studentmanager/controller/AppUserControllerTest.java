@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.markvarga21.studentmanager.data.TestingData.*;
@@ -96,6 +97,12 @@ class AppUserControllerTest {
      */
     @MockBean
     private TokenManagementService tokenManagementService;
+
+    /**
+     * The LogoutSuccessHandler object.
+     */
+    @MockBean
+    private LogoutSuccessHandler logoutSuccessHandler;
 
     /**
      * The URL used for testing the API.

@@ -7,6 +7,9 @@ import com.markvarga21.studentmanager.service.auth.AppUserService;
 import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +19,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +32,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+import java.io.IOException;
 
 /**
  * The controller for the user authentication.
@@ -34,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 @Slf4j
+@CrossOrigin
 public class AppUserController {
     /**
      * The user service.
@@ -64,6 +74,11 @@ public class AppUserController {
      * The TokenManagementService object.
      */
     private final TokenManagementService tokenManagementService;
+
+    /**
+     * The LogoutSuccessHandler object.
+     */
+    private final LogoutSuccessHandler logoutSuccessHandler;
 
     /**
      * Endpoint for fetching all users.
@@ -140,6 +155,34 @@ public class AppUserController {
         );
         this.tokenManagementService.addToken(token);
         return ResponseEntity.ok(token);
+    }
+
+    /**
+     * Endpoint for logging out a user.
+     *
+     * @param request The request.
+     * @param response The response.
+     * @return A descriptive message of the logout.
+     * @throws ServletException if a servlet error occurs.
+     * @throws IOException if an I/O error occurs.
+     */
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Logs out a user.")
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutUser(
+            final HttpServletRequest request,
+            final HttpServletResponse response
+    ) throws ServletException, IOException {
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        if (authentication != null) {
+            new SecurityContextLogoutHandler()
+                    .logout(request, response, authentication);
+            this.logoutSuccessHandler
+                    .onLogoutSuccess(request, response, authentication);
+        }
+        return ResponseEntity.ok("User logged out successfully.");
     }
 
     /**
