@@ -3,7 +3,6 @@ package com.markvarga21.studentmanager.config.security;
 import com.markvarga21.studentmanager.exception.handler.security.AppAccessDeniedHandler;
 import com.markvarga21.studentmanager.service.auth.security.AppUserDetailsService;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
@@ -21,13 +20,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.server.header.XFrameOptionsServerHttpHeadersWriter.Mode;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -70,7 +69,7 @@ public class SecurityConfiguration {
 
     /**
      * This method is used to configure the CORS configuration source.
-     * 
+     *
      * @return The CorsConfigurationSource object.
      */
     @Bean
@@ -80,9 +79,9 @@ public class SecurityConfiguration {
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Access-Control-Allow-Origin"));
         corsConfiguration.setAllowCredentials(true);
-        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
+        source
+                .registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
 
@@ -120,8 +119,7 @@ public class SecurityConfiguration {
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .headers(headers -> headers
-                    .frameOptions(frameOptionsConfig -> 
-                        frameOptionsConfig.sameOrigin())
+                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
                 .build();
     }

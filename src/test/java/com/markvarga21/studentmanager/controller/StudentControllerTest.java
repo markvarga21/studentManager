@@ -135,7 +135,7 @@ class StudentControllerTest {
         when(this.studentService.validPassportNumber(anyString()))
                 .thenReturn(true);
 
-        when(this.studentService.createStudent(STUDENT_DTO))
+        when(this.studentService.createStudent(STUDENT_DTO, anyString(), anyString()))
                 .thenReturn(STUDENT_DTO);
 
         this.mockMvc.perform(post(API_URL)

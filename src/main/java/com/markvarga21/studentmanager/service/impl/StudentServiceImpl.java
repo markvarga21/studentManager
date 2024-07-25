@@ -1,10 +1,14 @@
 package com.markvarga21.studentmanager.service.impl;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
+import com.markvarga21.studentmanager.entity.AppUser;
 import com.markvarga21.studentmanager.entity.Student;
+import com.markvarga21.studentmanager.entity.StudentAppUser;
 import com.markvarga21.studentmanager.exception.InvalidStudentException;
 import com.markvarga21.studentmanager.exception.OperationType;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
+import com.markvarga21.studentmanager.repository.AppUserRepository;
+import com.markvarga21.studentmanager.repository.StudentAppUserRepository;
 import com.markvarga21.studentmanager.repository.StudentRepository;
 import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.util.DateDeserializer;
@@ -16,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -35,6 +41,16 @@ public class StudentServiceImpl implements StudentService {
      * A student mapper.
      */
     private final StudentMapper studentMapper;
+
+    /**
+     * Repository for student application users.
+     */
+    private final StudentAppUserRepository studentAppUserRepository;
+
+    /**
+     * Repository for application users.
+     */
+    private final AppUserRepository userRepository;
 
     /**
      * Retrieves all the students from the application.
@@ -57,11 +73,17 @@ public class StudentServiceImpl implements StudentService {
      * into the database.
      *
      * @param studentDto The student itself.
+     * @param username The username of the user who created the student.
+     * @param roles The roles of the user who created the student.
      * @return The updated {@code AppUserDto}.
      */
     @Override
     @Transactional
-    public StudentDto createStudent(final StudentDto studentDto) {
+    public StudentDto createStudent(
+            final StudentDto studentDto,
+            final String username,
+            final String roles
+    ) {
         String passportNumber = studentDto.getPassportNumber();
         if (!validPassportNumber(passportNumber)) {
             String message = String.format(
@@ -72,9 +94,38 @@ public class StudentServiceImpl implements StudentService {
             throw new InvalidStudentException(message);
         }
 
-        Student studentToSave = this.studentMapper.mapStudentDtoToEntity(studentDto);
+        Student studentToSave = this.studentMapper
+                .mapStudentDtoToEntity(studentDto);
         studentToSave.setValid(false);
-        this.studentRepository.save(studentToSave);
+        Student savedStudent = this.studentRepository.save(studentToSave);
+        if (roles != null && username != null) {
+            List<String> roleArray = Arrays.asList(roles.split(","));
+            if (!roleArray.contains("ROLE_ADMIN")) {
+                StudentAppUser studentAppUser = new StudentAppUser();
+                studentAppUser.setStudentId(savedStudent.getId());
+                studentAppUser.setUsername(username);
+                this.studentAppUserRepository.save(studentAppUser);
+            } else {
+                String studentFirstName = studentToSave.getFirstName();
+                String studentLastName = studentToSave.getLastName();
+                Optional<AppUser> studentUser = this.userRepository
+                        .findByFirstNameAndLastName(studentFirstName, studentLastName);
+                if (studentUser.isEmpty()) {
+                    String message = String.format(
+                            "Student user not found with first name: %s and last name: %s",
+                            studentFirstName,
+                            studentLastName
+                    );
+                    log.error(message);
+                    throw new StudentNotFoundException(message, OperationType.CREATE);
+                }
+                AppUser studentAppUser = studentUser.get();
+                StudentAppUser studentAppUserEntity = new StudentAppUser();
+                studentAppUserEntity.setStudentId(savedStudent.getId());
+                studentAppUserEntity.setUsername(studentAppUser.getUsername());
+                this.studentAppUserRepository.save(studentAppUserEntity);
+            }
+        }
 
         StudentDto studentDtoToSave = this.studentMapper
                 .mapStudentEntityToDto(studentToSave);
@@ -126,6 +177,40 @@ public class StudentServiceImpl implements StudentService {
     }
 
     /**
+     * Retrieves a student by its username.
+     *
+     * @param username The username of the student.
+     * @return The student's DTO.
+     */
+    @Override
+    public Optional<StudentDto> getStudentByUsername(final String username) {
+        Optional<StudentAppUser> studentAppUser = this.studentAppUserRepository
+                .findByUsername(username);
+        if (studentAppUser.isEmpty()) {
+            String message = String.format(
+                "Student cant be retrieved! Cause: user not found with username: %s",
+                username
+            );
+            log.error(message);
+            throw new StudentNotFoundException(message, OperationType.READ);
+        }
+        StudentAppUser studentUser = studentAppUser.get();
+        Optional<Student> student = this.studentRepository
+                .findById(studentUser.getStudentId());
+        if (student.isEmpty()) {
+            String message = String.format(
+                "Student cant be retrieved! Cause: user not found with username: %s",
+                username
+            );
+            log.error(message);
+            throw new StudentNotFoundException(message, OperationType.READ);
+        }
+        return Optional.of(
+                this.studentMapper
+                        .mapStudentEntityToDto(student.get()));
+    }
+
+    /**
      * Validates and then modifies the student's information.
      *
      * @param studentDto The user itself.
@@ -155,8 +240,7 @@ public class StudentServiceImpl implements StudentService {
         student.setGender(studentDto.getGender());
         student.setFirstName(studentDto.getFirstName());
         student.setLastName(studentDto.getLastName());
-        student
-                .setCountryOfCitizenship(studentDto.getCountryOfCitizenship());
+        student.setCountryOfCitizenship(studentDto.getCountryOfCitizenship());
         student.setPlaceOfBirth(studentDto.getPlaceOfBirth());
         student.setBirthDate(DateDeserializer.mapDateStringToLocalDate(studentDto.getBirthDate()));
         student.setPassportNumber(updatedStudentPassport);
@@ -193,6 +277,7 @@ public class StudentServiceImpl implements StudentService {
         StudentDto deletedStudent = this.studentMapper
                 .mapStudentEntityToDto(studentOptional.get());
         this.studentRepository.deleteById(id);
+        this.studentAppUserRepository.deleteByStudentId(id);
         log.info(String.format(
                 "Student with id %d deleted successfully!",
                 id

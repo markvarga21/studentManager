@@ -1,6 +1,17 @@
 package com.markvarga21.studentmanager.exception.handler;
 
-import com.markvarga21.studentmanager.exception.*;
+import com.markvarga21.studentmanager.exception.InvalidDateException;
+import com.markvarga21.studentmanager.exception.InvalidDateFormatException;
+import com.markvarga21.studentmanager.exception.InvalidFacesException;
+import com.markvarga21.studentmanager.exception.InvalidPassportException;
+import com.markvarga21.studentmanager.exception.InvalidStudentException;
+import com.markvarga21.studentmanager.exception.InvalidUserCredentialsException;
+import com.markvarga21.studentmanager.exception.OperationType;
+import com.markvarga21.studentmanager.exception.PassportValidationDataNotFoundException;
+import com.markvarga21.studentmanager.exception.ReportNotFoundException;
+import com.markvarga21.studentmanager.exception.StudentNotFoundException;
+import com.markvarga21.studentmanager.exception.TokenNotFoundException;
+import com.markvarga21.studentmanager.exception.UserNotFoundException;
 import com.markvarga21.studentmanager.exception.util.ApiError;
 import com.markvarga21.studentmanager.exception.util.InvalidFacesApiError;
 import com.markvarga21.studentmanager.util.Generated;
@@ -454,6 +465,12 @@ public class ApplicationExceptionHandler {
         );
     }
 
+    /**
+     * Handles the exception if the faces are not identical.
+     *
+     * @param ex The exception caused by the faces not being identical.
+     * @return A readable {@code ResponseEntity} containing useful information.
+     */
     @ExceptionHandler(TokenNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> handleTokenNotFoundException(

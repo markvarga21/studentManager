@@ -1,6 +1,5 @@
 package com.markvarga21.studentmanager.controller;
 
-import com.markvarga21.studentmanager.dto.FaceApiResponse;
 import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;

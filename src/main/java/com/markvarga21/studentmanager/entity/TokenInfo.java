@@ -1,6 +1,10 @@
 package com.markvarga21.studentmanager.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,10 +29,15 @@ public class TokenInfo {
     private Long id;
 
     /**
+     * The maximum length of the token.
+     */
+    private static final int TOKEN_LENGTH = 512;
+
+    /**
      * The token string.
      */
     @SuppressWarnings("checkstyle:MagicNumber")
-    @Column(length = 512)
+    @Column(length = TOKEN_LENGTH)
     private String token;
 
     /**

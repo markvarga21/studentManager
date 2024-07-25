@@ -233,6 +233,8 @@ public class FileUploadController {
     ) {
         StudentImage studentImage = this.fileUploadService
                 .getStudentImageById(studentId);
-        return ResponseEntity.status(HttpStatus.OK).body(studentImage);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(studentImage);
     }
 }

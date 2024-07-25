@@ -87,7 +87,8 @@ class StudentServiceImplTest {
                 .thenReturn(INVALID_STUDENT);
         when(this.studentMapper.mapStudentEntityToDto(INVALID_STUDENT))
                 .thenReturn(INVALID_STUDENT_DTO);
-        StudentDto actual = this.studentService.createStudent(INVALID_STUDENT_DTO);
+        StudentDto actual = this.studentService
+                .createStudent(INVALID_STUDENT_DTO, anyString(), anyString());
 
         // Then
         assertEquals(INVALID_STUDENT_DTO, actual);
@@ -103,7 +104,7 @@ class StudentServiceImplTest {
         // Then
         assertThrows(
                 InvalidStudentException.class,
-                () -> this.studentService.createStudent(INVALID_STUDENT_DTO)
+                () -> this.studentService.createStudent(INVALID_STUDENT_DTO, anyString(), anyString())
         );
     }
 

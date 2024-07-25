@@ -75,16 +75,21 @@ public class StudentController {
      * Saves and validates a student in the database and then returns it.
      *
      * @param student The student itself.
+     * @param username The username of the user who created the student.
+     * @param roles The roles of the user who created the student.
      * @return The saved {@code StudentDto}.
      */
     @Operation(summary = "Create a student", description = "Creates a student.")
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentDto> createStudent(
-            @RequestBody @Valid final StudentDto student
+            @RequestBody @Valid final StudentDto student,
+            @RequestParam(required = false) final String username,
+            @RequestParam(required = false) final String roles
     ) {
 
-        StudentDto createdStudent = this.studentService.createStudent(student);
+        StudentDto createdStudent = this.studentService
+                .createStudent(student, username, roles);
         return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
     }
 

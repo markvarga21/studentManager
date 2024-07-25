@@ -236,7 +236,6 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Override
     @Cacheable(value = "studentImage", key = "#studentId")
     public StudentImage getStudentImageById(final Long studentId) {
-        log.info("Invoking database...");
         Optional<StudentImage> studentImageOptional = this.studentImageRepository
                 .findById(studentId);
         if (studentImageOptional.isEmpty()) {
