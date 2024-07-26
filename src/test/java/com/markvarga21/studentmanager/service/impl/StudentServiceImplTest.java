@@ -6,6 +6,7 @@ import com.markvarga21.studentmanager.entity.Student;
 import com.markvarga21.studentmanager.exception.InvalidStudentException;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.mapping.StudentMapper;
+import com.markvarga21.studentmanager.repository.StudentAppUserRepository;
 import com.markvarga21.studentmanager.repository.StudentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +47,12 @@ class StudentServiceImplTest {
      */
     @Mock
     private StudentMapper studentMapper;
+
+    /**
+     * Repository for student app users.
+     */
+    @Mock
+    private StudentAppUserRepository studentAppUserRepository;
 
     @Test
     void shouldReturnAllStudentsTest() {
@@ -80,6 +86,9 @@ class StudentServiceImplTest {
     @Test
     void shouldCreateStudentWhenExistsTest() {
         // Given
+        String username = "john12";
+        String roles = "ROLE_USER";
+
         // When
         when(this.studentRepository.findStudentByPassportNumber(anyString()))
                 .thenReturn(Optional.empty());
@@ -87,8 +96,10 @@ class StudentServiceImplTest {
                 .thenReturn(INVALID_STUDENT);
         when(this.studentMapper.mapStudentEntityToDto(INVALID_STUDENT))
                 .thenReturn(INVALID_STUDENT_DTO);
+        when(this.studentRepository.save(INVALID_STUDENT))
+                .thenReturn(INVALID_STUDENT);
         StudentDto actual = this.studentService
-                .createStudent(INVALID_STUDENT_DTO, anyString(), anyString());
+                .createStudent(INVALID_STUDENT_DTO, username, roles);
 
         // Then
         assertEquals(INVALID_STUDENT_DTO, actual);
@@ -97,6 +108,9 @@ class StudentServiceImplTest {
     @Test
     void shouldThrowExceptionUponStudentCreationTest() {
         // Given
+        String username = "john12";
+        String roles = "ROLE_USER";
+
         // When
         when(this.studentRepository.findStudentByPassportNumber(PASSPORT_NUMBER))
                 .thenReturn(Optional.of(INVALID_STUDENT));
@@ -104,7 +118,7 @@ class StudentServiceImplTest {
         // Then
         assertThrows(
                 InvalidStudentException.class,
-                () -> this.studentService.createStudent(INVALID_STUDENT_DTO, anyString(), anyString())
+                () -> this.studentService.createStudent(INVALID_STUDENT_DTO, username, roles)
         );
     }
 

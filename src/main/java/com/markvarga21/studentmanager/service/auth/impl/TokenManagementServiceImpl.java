@@ -4,6 +4,7 @@ import com.markvarga21.studentmanager.entity.TokenInfo;
 import com.markvarga21.studentmanager.exception.TokenNotFoundException;
 import com.markvarga21.studentmanager.repository.TokenInfoRepository;
 import com.markvarga21.studentmanager.service.auth.TokenManagementService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Getter
 public class TokenManagementServiceImpl implements TokenManagementService {
     /**
      * The token database.
@@ -92,7 +94,7 @@ public class TokenManagementServiceImpl implements TokenManagementService {
                         .getIssueDate()
                         .isBefore(
                             LocalDateTime.now()
-                                .minusMinutes(this.expirationTimeInMinutes)
+                                .minusMinutes(this.getExpirationTimeInMinutes())
                         ))
                 .forEach(this.tokenInfoRepository::delete);
     }

@@ -15,8 +15,11 @@ import com.markvarga21.studentmanager.exception.UserNotFoundException;
 import com.markvarga21.studentmanager.exception.util.ApiError;
 import com.markvarga21.studentmanager.exception.util.InvalidFacesApiError;
 import com.markvarga21.studentmanager.util.Generated;
+
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -488,6 +491,32 @@ public class ApplicationExceptionHandler {
                 apiError,
                 new HttpHeaders(),
                 apiError.getStatus()
+        );
+    }
+
+    /**
+     * Handles the exception if the JWT token has expired.
+     *
+     * @param ex The exception caused by the expired JWT token.
+     * @return A readable {@code ResponseEntity} containing useful information.
+     */
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<Object> handleTokenExpiredException(
+        final ExpiredJwtException ex
+    ) {
+        log.error("Token has expired!");
+        ApiError apiError = new ApiError(
+            new Date(),
+            HttpStatus.UNAUTHORIZED,
+            "Token has expired!",
+            OperationType.READ,
+            getStackTraceAsString(ex)
+        );
+        return new ResponseEntity<>(
+            apiError,
+            new HttpHeaders(),
+            apiError.getStatus()
         );
     }
 

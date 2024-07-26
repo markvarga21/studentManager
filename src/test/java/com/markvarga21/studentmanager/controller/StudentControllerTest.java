@@ -132,15 +132,23 @@ class StudentControllerTest {
     @WithMockUser(roles = "USER")
     @Test
     void shouldCreateStudentTest() throws Exception {
+        // Given
+        String username = "john.doe";
+        String roles = "ROLE_USER";
+
+        // When
         when(this.studentService.validPassportNumber(anyString()))
                 .thenReturn(true);
 
-        when(this.studentService.createStudent(STUDENT_DTO, anyString(), anyString()))
+        when(this.studentService.createStudent(STUDENT_DTO, username, roles))
                 .thenReturn(STUDENT_DTO);
 
+        // Then
         this.mockMvc.perform(post(API_URL)
                 .contentType("application/json")
-                .content(this.objectMapper.writeValueAsString(STUDENT_DTO)).with(csrf()))
+                    .queryParam("username", username)
+                    .queryParam("roles", roles)
+                    .content(this.objectMapper.writeValueAsString(STUDENT_DTO)).with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))

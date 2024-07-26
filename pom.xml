@@ -205,6 +205,8 @@
 						<exclude>com/markvarga21/studentmanager/entity/*</exclude>
 						<exclude>com/google/**/*</exclude>
 						<exclude>com/markvarga21/studentmanager/controller/AppUserController.class</exclude>
+						<exclude>com/markvarga21/studentmanager/util/TokenDeleter.class</exclude>
+						<exclude>com/markvarga21/studentmanager/util/LocalDateDeserializer.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>
