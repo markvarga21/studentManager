@@ -18,4 +18,13 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
      * @return The user object.
      */
     Optional<AppUser> findByUsername(String username);
+
+    /**
+     * This method is used to find a user by their first and last name.
+     *
+     * @param firstName The first name of the user.
+     * @param lastName The last name of the user.
+     * @return The user object.
+     */
+    Optional<AppUser> findByFirstNameAndLastName(String firstName, String lastName);
 }

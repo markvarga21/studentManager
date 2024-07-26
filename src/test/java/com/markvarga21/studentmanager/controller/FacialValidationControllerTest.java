@@ -1,6 +1,7 @@
 package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.entity.FacialValidationData;
+import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
 import org.junit.jupiter.api.Test;
@@ -16,10 +17,13 @@ import java.util.List;
 
 import static com.markvarga21.studentmanager.data.TestingData.PAGE;
 import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.VALID_FACIAL_VALIDATION_DATA;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,17 +49,15 @@ class FacialValidationControllerTest {
     private JwtService jwtService;
 
     /**
+     * The {@code TokenManagementService} for mocking the token management.
+     */
+    @MockBean
+    private TokenManagementService tokenManagementService;
+
+    /**
      * The URL used for testing the API.
      */
     static final String API_URL = "/api/v1/facialValidations";
-
-    /**
-     * A valid facial validation data used for testing.
-     */
-    static final FacialValidationData VALID_FACIAL_VALIDATION_DATA =
-            new FacialValidationData(1L, "123456789",true, 0.9);
-
-
 
     @WithMockUser(roles = "USER")
     @Test

@@ -183,6 +183,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.networknt</groupId>
+			<artifactId>json-schema-validator</artifactId>
+			<version>1.5.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -200,6 +205,8 @@
 						<exclude>com/markvarga21/studentmanager/entity/*</exclude>
 						<exclude>com/google/**/*</exclude>
 						<exclude>com/markvarga21/studentmanager/controller/AppUserController.class</exclude>
+						<exclude>com/markvarga21/studentmanager/util/TokenDeleter.class</exclude>
+						<exclude>com/markvarga21/studentmanager/util/LocalDateDeserializer.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>

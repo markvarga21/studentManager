@@ -20,8 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.markvarga21.studentmanager.data.TestingData.PAGE;
-import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -39,40 +38,6 @@ class PassportValidationServiceImplTest {
      */
     @Spy
     private PassportValidationDataRepository repository;
-
-    /**
-     * Static passport validation data for testing.
-     */
-    static final PassportValidationData VALIDATION_DATA = PassportValidationData.builder()
-            .id(1L)
-            .timestamp(LocalDateTime.of(2021, 1, 1, 0, 0))
-            .firstName("John")
-            .lastName("Doe")
-            .birthDate(LocalDate.of(2000, 1, 1))
-            .placeOfBirth("New York")
-            .countryOfCitizenship("USA")
-            .gender(Gender.MALE)
-            .passportNumber("123456")
-            .passportDateOfIssue(LocalDate.of(2020, 1, 1))
-            .passportDateOfExpiry(LocalDate.of(2030, 1, 1))
-            .build();
-
-    /**
-     * Student dto object extracted from the passport validation data
-     * above.
-     */
-    static final StudentDto STUDENT_DTO_FROM_PASSPORT_VALIDATION = StudentDto.builder()
-            .id(1L)
-            .firstName("John")
-            .lastName("Doe")
-            .birthDate("2000-01-01")
-            .placeOfBirth("New York")
-            .countryOfCitizenship("USA")
-            .gender(Gender.MALE)
-            .passportNumber("123456")
-            .passportDateOfIssue("2020-01-01")
-            .passportDateOfExpiry("2030-01-01")
-            .build();
 
     @Test
     void shouldFetchAllPassportValidationDataTest() {

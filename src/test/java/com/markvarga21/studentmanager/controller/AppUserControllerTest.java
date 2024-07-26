@@ -1,21 +1,18 @@
 package com.markvarga21.studentmanager.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markvarga21.studentmanager.dto.Role;
 import com.markvarga21.studentmanager.dto.UserLogin;
 import com.markvarga21.studentmanager.entity.AppUser;
 import com.markvarga21.studentmanager.service.auth.AppUserService;
+import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
-import jakarta.validation.constraints.NotBlank;
-import org.apache.commons.lang3.text.translate.NumericEntityUnescaper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -23,23 +20,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static com.markvarga21.studentmanager.data.TestingData.PAGE;
-import static com.markvarga21.studentmanager.data.TestingData.SIZE;
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 import java.util.Set;
 
+import static com.markvarga21.studentmanager.data.TestingData.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AppUserController.class)
 class AppUserControllerTest {
@@ -92,22 +86,21 @@ class AppUserControllerTest {
     private Authentication authentication;
 
     /**
+     * The token management service mock bean.
+     */
+    @MockBean
+    private TokenManagementService tokenManagementService;
+
+    /**
+     * The LogoutSuccessHandler object.
+     */
+    @MockBean
+    private LogoutSuccessHandler logoutSuccessHandler;
+
+    /**
      * The URL used for testing the API.
      */
     static final String API_URL = "/api/v1/auth";
-
-    /**
-     * A static user for mocking purposes.
-     */
-    static final AppUser USER = AppUser.builder()
-            .id(1L)
-            .username("john.doe")
-            .email("jdoe12@domain.com")
-            .password("1234")
-            .firstName("John")
-            .lastName("Doe")
-            .roles(Set.of(Role.USER))
-            .build();
 
     @WithMockUser(roles = "ADMIN")
     @Test

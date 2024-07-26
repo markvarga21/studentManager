@@ -6,6 +6,7 @@ import com.markvarga21.studentmanager.entity.Student;
 import com.markvarga21.studentmanager.exception.InvalidStudentException;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.mapping.StudentMapper;
+import com.markvarga21.studentmanager.repository.StudentAppUserRepository;
 import com.markvarga21.studentmanager.repository.StudentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,12 +17,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.markvarga21.studentmanager.data.TestingData.PAGE;
-import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,60 +49,10 @@ class StudentServiceImplTest {
     private StudentMapper studentMapper;
 
     /**
-     * The mock passport number.
+     * Repository for student app users.
      */
-    static final String PASSPORT_NUMBER = "123456";
-
-    /**
-     * The invalidated student mock entity.
-     */
-    static final Student INVALID_STUDENT = new Student(
-            1L,
-            "John",
-            "Doe",
-            LocalDate.of(1990, 1, 1),
-            "New York",
-            "USA",
-            Gender.MALE,
-            PASSPORT_NUMBER,
-            LocalDate.of(2021, 1, 1),
-            LocalDate.of(2031, 1, 1),
-            false
-    );
-
-    /**
-     * A validated student mock.
-     */
-    static final Student VALID_STUDENT = new Student(
-            1L,
-            "John",
-            "Doe",
-            LocalDate.of(1990, 1, 1),
-            "New York",
-            "USA",
-            Gender.MALE,
-            PASSPORT_NUMBER,
-            LocalDate.of(2021, 1, 1),
-            LocalDate.of(2031, 1, 1),
-            true
-    );
-
-    /**
-     * The invalidated student mock dto.
-     */
-    static final StudentDto INVALID_STUDENT_DTO = new StudentDto(
-            1L,
-            "John",
-            "Doe",
-            "1990-01-01",
-            "New York",
-            "USA",
-            Gender.MALE,
-            PASSPORT_NUMBER,
-            "2021-01-01",
-            "2031-01-01",
-            false
-    );
+    @Mock
+    private StudentAppUserRepository studentAppUserRepository;
 
     @Test
     void shouldReturnAllStudentsTest() {
@@ -137,6 +86,9 @@ class StudentServiceImplTest {
     @Test
     void shouldCreateStudentWhenExistsTest() {
         // Given
+        String username = "john12";
+        String roles = "ROLE_USER";
+
         // When
         when(this.studentRepository.findStudentByPassportNumber(anyString()))
                 .thenReturn(Optional.empty());
@@ -144,7 +96,10 @@ class StudentServiceImplTest {
                 .thenReturn(INVALID_STUDENT);
         when(this.studentMapper.mapStudentEntityToDto(INVALID_STUDENT))
                 .thenReturn(INVALID_STUDENT_DTO);
-        StudentDto actual = this.studentService.createStudent(INVALID_STUDENT_DTO);
+        when(this.studentRepository.save(INVALID_STUDENT))
+                .thenReturn(INVALID_STUDENT);
+        StudentDto actual = this.studentService
+                .createStudent(INVALID_STUDENT_DTO, username, roles);
 
         // Then
         assertEquals(INVALID_STUDENT_DTO, actual);
@@ -153,6 +108,9 @@ class StudentServiceImplTest {
     @Test
     void shouldThrowExceptionUponStudentCreationTest() {
         // Given
+        String username = "john12";
+        String roles = "ROLE_USER";
+
         // When
         when(this.studentRepository.findStudentByPassportNumber(PASSPORT_NUMBER))
                 .thenReturn(Optional.of(INVALID_STUDENT));
@@ -160,7 +118,7 @@ class StudentServiceImplTest {
         // Then
         assertThrows(
                 InvalidStudentException.class,
-                () -> this.studentService.createStudent(INVALID_STUDENT_DTO)
+                () -> this.studentService.createStudent(INVALID_STUDENT_DTO, username, roles)
         );
     }
 

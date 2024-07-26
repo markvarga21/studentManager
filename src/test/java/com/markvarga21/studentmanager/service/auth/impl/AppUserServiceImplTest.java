@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.markvarga21.studentmanager.data.TestingData.PAGE;
-import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -43,19 +42,6 @@ class AppUserServiceImplTest {
      */
     @Spy
     private AppUserRepository repository;
-
-    /**
-     * A static user for mocking purposes.
-     */
-    static final AppUser USER = AppUser.builder()
-            .id(1L)
-            .username("john.doe")
-            .email("jdoe12@domain.com")
-            .password("1234")
-            .firstName("John")
-            .lastName("Doe")
-            .roles(Set.of(Role.USER))
-            .build();
 
     @Test
     void shouldGetUserByUsernameIfPresentTest() {

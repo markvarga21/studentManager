@@ -17,8 +17,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static com.markvarga21.studentmanager.data.TestingData.PAGE;
-import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,24 +44,6 @@ class ReportServiceImplTest {
      */
     @Spy
     private MailService mailService;
-
-    /**
-     * A sample report message.
-     */
-    static final ReportMessage REPORT_MESSAGE = new ReportMessage(
-            "JohnDoe",
-            "Test subject",
-            "Test description"
-    );
-
-    /**
-     * A sample report.
-     */
-    static final Report REPORT = Report.builder()
-            .issuerUsername(REPORT_MESSAGE.getUsername())
-            .subject(REPORT_MESSAGE.getSubject())
-            .description(REPORT_MESSAGE.getDescription())
-            .build();
 
     @Test
     void shouldFetchAllReportsTest() {

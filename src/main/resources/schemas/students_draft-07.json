@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/student"
+  },
+  "definitions": {
+    "student": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "minimum": 1
+        },
+        "firstName": {
+          "type": "string",
+          "pattern": "^[A-Z][a-z]*$"
+        },
+        "lastName": {
+          "type": "string",
+          "pattern": "^[A-Z][a-z]*$"
+        },
+        "gender": {
+          "oneOf": [{ "type": "string", "enum": ["Male", "Female"] }]
+        },
+        "birthDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "countryOfCitizenship": {
+          "type": "string"
+        },
+        "dateOfExpiry": {
+          "type": "string",
+          "format": "date"
+        },
+        "dateOfIssue": {
+          "type": "string",
+          "format": "date"
+        },
+        "passportNumber": {
+          "type": "string"
+        },
+        "placeOfBirth": {
+          "type": "string"
+        },
+        "validity": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "gender",
+        "birthDate",
+        "countryOfCitizenship",
+        "dateOfExpiry",
+        "dateOfIssue",
+        "passportNumber",
+        "placeOfBirth",
+        "validity"
+      ],
+      "additionalItems": false
+    }
+  }
+}

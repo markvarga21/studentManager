@@ -1,7 +1,7 @@
 package com.markvarga21.studentmanager.mapping;
 
 import com.google.gson.Gson;
-import com.markvarga21.studentmanager.util.DateValidator;
+import com.markvarga21.studentmanager.util.validation.DateValidator;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Student;
 import com.markvarga21.studentmanager.util.DateDeserializer;

@@ -3,6 +3,8 @@ package com.markvarga21.studentmanager.service;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import org.springframework.data.domain.Page;
 
+import java.util.Optional;
+
 /**
  * An interface which contains essential methods
  * for manipulating student information.
@@ -21,9 +23,15 @@ public interface StudentService {
      * Validates and then persists a student in the database.
      *
      * @param studentDto The student itself.
+     * @param username The username of the user who created the student.
+     * @param roles The roles of the user who created the student.
      * @return The newly modified student.
      */
-    StudentDto createStudent(StudentDto studentDto);
+    StudentDto createStudent(
+            StudentDto studentDto,
+            String username,
+            String roles
+    );
 
     /**
      * Retrieves a student from the application using its ID.
@@ -70,4 +78,12 @@ public interface StudentService {
      * @return {@code true} if the passport number is valid, {@code false} otherwise.
      */
     boolean validPassportNumber(String passportNumber);
+
+    /**
+     * Retrieves a student by its username.
+     *
+     * @param username The username of the student.
+     * @return The student's DTO.
+     */
+    Optional<StudentDto> getStudentByUsername(String username);
 }

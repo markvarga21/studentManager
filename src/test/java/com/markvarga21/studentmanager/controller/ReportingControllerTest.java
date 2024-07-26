@@ -3,6 +3,7 @@ package com.markvarga21.studentmanager.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markvarga21.studentmanager.dto.ReportMessage;
 import com.markvarga21.studentmanager.entity.Report;
+import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.report.ReportService;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.markvarga21.studentmanager.data.TestingData.PAGE;
-import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -47,6 +47,12 @@ class ReportingControllerTest {
     private JwtService jwtService;
 
     /**
+     * The {@code TokenManagementService} for mocking the token management.
+     */
+    @MockBean
+    private TokenManagementService tokenManagementService;
+
+    /**
      * The {@code ObjectMapper} used for mapping students to JSON strings.
      */
     @Autowired
@@ -56,17 +62,6 @@ class ReportingControllerTest {
      * The API URL for the report endpoints.
      */
     static final String API_URL = "/api/v1/report";
-
-    /**
-     * A sample report for testing purposes.
-     */
-    static final Report REPORT = new Report(
-            1L,
-            "issuer",
-            "subject",
-            "description",
-            LocalDateTime.now()
-    );
 
     @WithMockUser(roles = "ADMIN")
     @Test
@@ -90,7 +85,7 @@ class ReportingControllerTest {
     @Test
     void shouldDeleteReportTest() throws Exception {
         // Given
-        Long id = REPORT.getId();
+        Long id = 1L;
         String expected = String.format(
                 "The report with the id '%d' was deleted.",
                 id

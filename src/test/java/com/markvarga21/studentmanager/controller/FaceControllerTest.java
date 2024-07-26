@@ -1,6 +1,6 @@
 package com.markvarga21.studentmanager.controller;
 
-import com.markvarga21.studentmanager.dto.FaceApiResponse;
+import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static com.markvarga21.studentmanager.data.TestingData.FACE_API_RESPONSE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -47,12 +48,10 @@ class FaceControllerTest {
     private JwtService jwtService;
 
     /**
-     * A face api response used for testing.
+     * The {@code TokenManagementService} for mocking the token management.
      */
-    static final FaceApiResponse FACE_API_RESPONSE = new FaceApiResponse(
-            true,
-            0.95
-    );
+    @MockBean
+    private TokenManagementService tokenManagementService;
 
     /**
      * A simple mock image.

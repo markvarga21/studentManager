@@ -12,8 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static com.markvarga21.studentmanager.data.TestingData.PAGE;
-import static com.markvarga21.studentmanager.data.TestingData.SIZE;
+import static com.markvarga21.studentmanager.data.TestingData.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -39,30 +38,6 @@ class FacialValidationServiceImplTest {
 
     @Spy
     private FacialValidationDataRepository repository;
-
-    /**
-     * A static passport number for testing purposes.
-     */
-    static final String PASSPORT_NUMBER = "123456";
-
-    /**
-     * A valid static mock facial validation data.
-     */
-    static final FacialValidationData VALID_FACIAL_VALIDATION_DATA = FacialValidationData.builder()
-            .passportNumber(PASSPORT_NUMBER)
-            .isValid(true)
-            .percentage(0.9)
-            .build();
-
-    /**
-     * An invalid static mock facial validation data.
-     */
-    static final FacialValidationData INVALID_FACIAL_VALIDATION_DATA = FacialValidationData.builder()
-            .passportNumber(PASSPORT_NUMBER)
-            .isValid(false)
-            .percentage(0.2)
-            .build();
-
 
     @Test
     void shouldSaveFacialValidationDataIfPresentTest() {

@@ -1,0 +1,62 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:simpleType name="month">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1" />
+            <xs:maxInclusive value="12" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="day">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1" />
+            <xs:maxInclusive value="31" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="date">
+        <xs:sequence>
+            <xs:element type="xs:integer" name="year" />
+            <xs:element type="month" name="month" />
+            <xs:element type="day" name="day" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="validity">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="valid" />
+            <xs:enumeration value="invalid" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="gender">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="male" />
+            <xs:enumeration value="female" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="student">
+        <xs:sequence>
+            <xs:element name="name">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element type="xs:string" name="firstName" />
+                        <xs:element type="xs:string" name="lastName" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element type="date" name="dateOfBirth" />
+            <xs:element type="xs:string" name="placeOfBirth" />
+            <xs:element type="xs:string" name="countryOfCitizenship" />
+            <xs:element type="gender" name="gender" />
+            <xs:element type="xs:string" name="passportNumber" />
+            <xs:element type="date" name="dateOfIssue" />
+            <xs:element type="date" name="dateOfExpiry" />
+            <xs:element type="validity" name="status" />
+        </xs:sequence>
+        <xs:attribute type="xs:byte" name="id" use="required" />
+    </xs:complexType>
+    <xs:element name="students">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="student" name="student" maxOccurs="unbounded" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
