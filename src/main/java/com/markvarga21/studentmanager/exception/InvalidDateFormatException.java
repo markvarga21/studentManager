@@ -3,7 +3,7 @@ package com.markvarga21.studentmanager.exception;
 import com.markvarga21.studentmanager.util.Generated;
 
 /**
- * A custom exception for when the date format is invalid.
+ * A custom exception for if the date format is invalid.
  */
 @Generated
 public class InvalidDateFormatException extends RuntimeException {

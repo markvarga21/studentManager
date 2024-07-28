@@ -18,7 +18,8 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * The AppUserServiceImpl class is used to implement the AppUserService interface.
+ * The {@code AppUserServiceImpl} class is used to implement
+ * the {@code AppUserService} interface.
  */
 @RequiredArgsConstructor
 @Transactional
@@ -26,7 +27,7 @@ import java.util.Set;
 @Service
 public class AppUserServiceImpl implements AppUserService {
     /**
-     * The AppUserRepository object.
+     * The {@code AppUserRepository} object.
      */
     private final AppUserRepository repository;
 
@@ -34,7 +35,7 @@ public class AppUserServiceImpl implements AppUserService {
      * This method is used to get the user by the username.
      *
      * @param username The username of the user.
-     * @return The AppUser object.
+     * @return The {@code AppUser} object.
      */
     @Override
     public Optional<AppUser> getUserByUsername(final String username) {
@@ -45,7 +46,7 @@ public class AppUserServiceImpl implements AppUserService {
      * This method is used to register a user.
      *
      * @param user The user object.
-     * @return The AppUser object.
+     * @return The {@code AppUser} object.
      */
     @Override
     public AppUser registerUser(final AppUser user) {
@@ -65,11 +66,11 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     /**
-     * This method is used to get all the users.
+     * This method is used to fetch all users.
      *
      * @param page The page number.
-     * @param size The size of the page.
-     * @return The list of users.
+     * @param size The number of users in a single page.
+     * @return A page of users.
      */
     @Override
     public Page<AppUser> getAllUsers(final Integer page, final Integer size) {
@@ -103,10 +104,10 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     /**
-     * Method for fetching a user by the id.
+     * Method for fetching a user by its id.
      *
      * @param id the id of the user.
-     * @return The AppUser object.
+     * @return The {@code AppUser} object.
      */
     @Override
     public AppUser getUserById(final Long id) {

@@ -22,24 +22,26 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/faces")
 @RequiredArgsConstructor
 @CrossOrigin
-@Tag(name = "Facial services", description = "The Face API related endpoints.")
+@Tag(
+    name = "Facial services",
+    description = "The Face API related endpoints."
+)
 public class FaceController {
     /**
-     * Face service.
+     * The face service.
      */
     private final FaceApiService faceApiService;
 
     /**
      * Compares the faces found on the passport and the
-     * selfie, and then sends it back to the client.
+     * uploaded selfie, which is then sent back to the client.
      *
      * @param passport The student's passport.
      * @param selfiePhoto The selfie of the student.
-     * @return The validity and the percentage of the matching.
+     * @return The validity- and the percentage of the faces matching.
      */
     @Operation(
-            summary = "Compares the faces found on the passport and the selfie, and then sends it back to the client.",
-            description = "Compares the faces found on the passport and the selfie, and then sends it back to the client."
+        summary = "Compares the faces found on the passport and the selfie, and then sends it back to the client.",
     )
     @PostMapping("/validate")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

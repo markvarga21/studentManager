@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 /**
- * The FileUploadServiceImpl class is used to store and manipulate the
+ * The {@code FileUploadServiceImpl} class is used to store and manipulate the
  * images of a student.
  */
 @RequiredArgsConstructor
@@ -32,14 +32,14 @@ import java.util.Optional;
 @Service
 public class FileUploadServiceImpl implements FileUploadService {
     /**
-     * The StudentImageRepository is used to store
-     * the image in the database.
+     * The {@code StudentImageRepository} is used to store
+     * the student's images in the database.
      */
     private final StudentImageRepository studentImageRepository;
 
     /**
-     * The uploadFile method is used to store the
-     * image in the database.
+     * A method used to store the
+     * images in the database.
      *
      * @param studentId The id of the student.
      * @param passportImage The passport file.
@@ -83,7 +83,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     /**
-     * The getAllImages method is used to get
+     * A method used to get
      * all the student images from the database.
      *
      * @param page The page number.
@@ -101,8 +101,9 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     /**
-     * A method is used to delete
-     * the images from the database.
+     * A method used to delete
+     * the images from the database for
+     * a given student id.
      *
      * @param studentId The id of the student.
      */
@@ -139,8 +140,9 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     /**
-     * The getImageForType method is used to get
-     * the image for the given type.
+     * A method which is used to get
+     * the image for the given type and
+     * student id.
      *
      * @param studentId The id of the student.
      * @param type The image type.
@@ -177,8 +179,8 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     /**
-     * The changeImage method is used to change
-     * the image for the given type.
+     * A method which is used to change
+     * the image for the given type and student id.
      *
      * @param studentId The id of the student.
      * @param imageType The image type.
@@ -227,7 +229,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     /**
-     * The getStudentImageById method is used to get
+     * A method which is used to get
      * the image for the given student ID.
      *
      * @param studentId The id of the student.

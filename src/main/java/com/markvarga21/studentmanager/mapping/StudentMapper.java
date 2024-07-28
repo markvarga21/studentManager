@@ -23,7 +23,7 @@ public class StudentMapper {
     private final Gson gson;
 
     /**
-     * Maps an {@code StudentDto} to an {@code Student} entity.
+     * Maps a {@code StudentDto} to a {@code Student} entity.
      *
      * @param studentDto The DTO object to be mapped to an entity class.
      * @return The converted {@code Student} entity.
@@ -86,7 +86,7 @@ public class StudentMapper {
     }
 
     /**
-     * Maps a JSON string to an {@code StudentDto}.
+     * Maps a JSON string to a {@code StudentDto}.
      *
      * @param studentJson the JSON string to be mapped to a DTO class.
      * @return the converted {@code StudentDto}.

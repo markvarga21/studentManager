@@ -23,7 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/form")
 @RequiredArgsConstructor
 @CrossOrigin
-@Tag(name = "Form services", description = "The Form Recognizer related endpoints.")
+@Tag(
+    name = "Form services",
+    description = "The Form Recognizer related endpoints."
+)
 public class FormRecognizerController {
     /**
      * Form recognizer service.
@@ -31,14 +34,13 @@ public class FormRecognizerController {
     private final FormRecognizerService formRecognizerService;
 
     /**
-     * Extracts and returns the data from the passport.
+     * Extracts- and returns the data from the passport.
      *
      * @param passport The photo of the passport.
      * @return The extracted {@code StudentDto} object.
      */
     @Operation(
-            summary = "Extracts and returns the data from the passport.",
-            description = "Extracts and returns the data from the passport."
+        summary = "Extracts and returns the data from the passport.",
     )
     @PostMapping("/extractData")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

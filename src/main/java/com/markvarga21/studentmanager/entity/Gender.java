@@ -8,11 +8,11 @@ import com.markvarga21.studentmanager.util.Generated;
 @Generated
 public enum Gender {
     /**
-     * The female gender.
+     * The FEMALE gender.
      */
     FEMALE,
     /**
-     * The male gender.
+     * The MALE gender.
      */
     MALE
 }

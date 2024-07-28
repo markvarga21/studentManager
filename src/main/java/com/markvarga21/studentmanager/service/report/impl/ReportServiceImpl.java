@@ -33,9 +33,11 @@ public class ReportServiceImpl implements ReportService {
     private final MailService mailService;
 
     /**
-     * Retrieves all the reports.
+     * Retrieves all reports.
      *
-     * @return A list of all the reports.
+     * @param page The actual page.
+     * @param size The number of reports in a single page.
+     * @return A page containing a subset of reports.
      */
     @Override
     public Page<Report> getAllReports(
@@ -50,7 +52,7 @@ public class ReportServiceImpl implements ReportService {
      * Sends a report to the system.
      *
      * @param reportMessage The report message object.
-     * @return An informational/status message.
+     * @return An informational message.
      */
 
     @Override

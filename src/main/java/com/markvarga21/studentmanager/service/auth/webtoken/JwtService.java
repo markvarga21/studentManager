@@ -39,13 +39,13 @@ public final class JwtService {
     private Long expirationTimeInMinutes;
 
     /**
-     * The issuer of a JWT token.
+     * The issuer of the JWT token.
      */
     @Value("${jwt.token.issuer}")
     private String jwtTokenIssuer;
 
     /**
-     * The audience of a JWT token.
+     * The audience of the JWT token.
      */
     @Value("${jwt.token.audience}")
     private String jwtTokenAudience;
@@ -121,10 +121,10 @@ public final class JwtService {
     }
 
     /**
-     * A method for checking if a JWT token is valid.
+     * A method for checking if a JWT token is valid or not.
      *
      * @param token The JWT token.
-     * @return A boolean indicating if the token is valid.
+     * @return A boolean indicating if the token is valid or not.
      */
     public boolean isValidToken(final String token) {
         Claims claims = extractClaims(token);

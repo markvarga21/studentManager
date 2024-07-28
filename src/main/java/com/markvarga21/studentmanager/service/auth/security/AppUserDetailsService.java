@@ -13,22 +13,23 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 /**
- * The AppUserDetailsService class is used to implement the UserDetailsService interface.
+ * The {@code AppUserDetailsService} class is used to implement
+ * the {@code UserDetailsService} interface.
  */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AppUserDetailsService implements UserDetailsService {
     /**
-     * The AppUserRepository object.
+     * The {@code AppUserRepository} object.
      */
     private final AppUserService appUserService;
 
     /**
-     * This method is used to load the user by the username.
+     * This method is used to load the user by its username.
      *
      * @param username The username of the user.
-     * @return The UserDetails object.
+     * @return The {@code UserDetails} object.
      * @throws UsernameNotFoundException If the username is not found.
      */
     @Override

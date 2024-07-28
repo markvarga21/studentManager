@@ -8,21 +8,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * Represents a student data transfer object in the application.
+ * Represents a student DTO in the application.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Slf4j
 @Generated
 public class StudentDto {
     /**
-     * A unique identifier for the student.
+     * A unique identifier of the student.
      */
     private Long id;
 
@@ -39,7 +37,7 @@ public class StudentDto {
     private String lastName;
 
     /**
-     * The birthdate name of the student.
+     * The birthdate of the student.
      */
     @NotNull(message = "Date of birth cannot be null!")
     private String birthDate;
@@ -83,7 +81,7 @@ public class StudentDto {
     private String passportDateOfIssue;
 
     /**
-     * The validity of the student's data
+     * The validity of the student's data,
      * which can be set by either an admin
      * or by an automatic checking procedure.
      */
@@ -99,32 +97,11 @@ public class StudentDto {
      */
     private static final int MULTIPLIER_NON_ZERO_ODD_NUMBER = 31;
 
-//    /**
-//     * Clone a student.
-//     *
-//     * @return A clone of the student.
-//     */
-//    public StudentDto clone() {
-//        return StudentDto.builder()
-//                .id(this.id)
-//                .firstName(this.firstName)
-//                .lastName(this.lastName)
-//                .birthDate(this.birthDate)
-//                .placeOfBirth(this.placeOfBirth)
-//                .countryOfCitizenship(this.countryOfCitizenship)
-//                .gender(this.gender)
-//                .passportNumber(this.passportNumber)
-//                .passportDateOfIssue(this.passportDateOfIssue)
-//                .passportDateOfExpiry(this.passportDateOfExpiry)
-//                .build();
-//    }
-
     /**
      * Checks if two students are equal.
      *
      * @param o The other student.
-     * @return {@code true} if the students are equal,
-     * {@code false} otherwise.
+     * @return {@code true} if the students are equal, {@code false} otherwise.
      */
     @SuppressWarnings("checkstyle:LineLength")
     public boolean equals(final Object o) {
@@ -182,7 +159,7 @@ public class StudentDto {
     /**
      * Generates a hash code for the student.
      *
-     * @return The hash code.
+     * @return The generated hash code.
      */
     @SuppressWarnings("checkstyle:LineLength")
     public int hashCode() {

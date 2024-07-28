@@ -1,7 +1,7 @@
 package com.markvarga21.studentmanager.util;
 
 /**
- * The StudentImageType enum is used to
+ * The {@code StudentImageType} enum is used to
  * determine the type of the image.
  */
 @Generated
@@ -14,5 +14,9 @@ public enum StudentImageType {
      * The selfie image.
      */
     SELFIE,
+    /**
+     * For handling invalid types and
+     * default cases.
+     */
     OTHER
 }

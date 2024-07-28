@@ -13,10 +13,11 @@ import org.springframework.stereotype.Component;
 @Generated
 public class CountryNameFetcher {
     /**
-     * Retrieves the name of the country for the given country code.
+     * Retrieves the official name of the country
+     * for the given country code.
      *
      * @param countryCode The country code.
-     * @return The name of the country.
+     * @return The official name of the country.
      */
     public String getCountryNameForCode(final String countryCode) {
         JSONObject jsonObj = new JSONObject(CountryNames.COUNTRIES);

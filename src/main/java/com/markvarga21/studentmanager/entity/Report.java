@@ -58,7 +58,7 @@ public class Report {
 
     /**
      * Util method for automatically generating the timestamp
-     * for the report.
+     * field for the report.
      */
     @PrePersist
     protected void prePersist() {

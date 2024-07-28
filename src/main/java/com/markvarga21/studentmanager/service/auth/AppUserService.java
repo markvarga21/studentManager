@@ -7,15 +7,16 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 /**
- * The AppUserService interface.
+ * The {@code AppUserService} interface containing
+ * methods for handling user related operations.
  */
 @Service
 public interface AppUserService {
     /**
-     * This method is used to get the user by the username.
+     * This method is used to get the user by its username.
      *
      * @param username The username of the user.
-     * @return The AppUser object.
+     * @return The {@code AppUser} object.
      */
     Optional<AppUser> getUserByUsername(String username);
 
@@ -23,16 +24,16 @@ public interface AppUserService {
      * This method is used to register a user.
      *
      * @param user The user object.
-     * @return The AppUser object.
+     * @return The {@code AppUser} object.
      */
     AppUser registerUser(AppUser user);
 
     /**
-     * This method is used to get all the users.
+     * This method is used to fetch all users.
      *
      * @param page The page number.
-     * @param size The size of the page.
-     * @return The list of users.
+     * @param size The number of users in a single page.
+     * @return A page of users.
      */
     Page<AppUser> getAllUsers(Integer page, Integer size);
 
@@ -45,10 +46,10 @@ public interface AppUserService {
     String deleteUserById(Long id);
 
     /**
-     * Method for fetching a user by the id.
+     * Method for fetching a user by its id.
      *
      * @param id the id of the user.
-     * @return The AppUser object.
+     * @return The {@code AppUser} object.
      */
     AppUser getUserById(Long id);
 }

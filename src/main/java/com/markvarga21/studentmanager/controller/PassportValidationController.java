@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * A controller which is used to make access
+ * A controller which is used to access
  * validation (face and form) data.
  */
 @RestController
@@ -34,7 +34,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @CrossOrigin
 @Slf4j
-@Tag(name = "Validation services", description = "The validation related endpoints.")
+@Tag(
+    name = "Validation services",
+    description = "The validation related endpoints."
+)
 public class PassportValidationController {
     /**
      * A service which is used to access passport
@@ -51,12 +54,11 @@ public class PassportValidationController {
      * Retrieves all the passport validation data.
      *
      * @param page The page number.
-     * @param size The page size.
-     * @return The list of passport validation data.
+     * @param size The number of elements in a single page.
+     * @return A page containing passport validations.
      */
     @Operation(
-            summary = "Retrieves all the passport validation data.",
-            description = "Retrieves all the passport validation data."
+        summary = "Retrieves all the passport validation data.",
     )
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -69,14 +71,13 @@ public class PassportValidationController {
     }
 
     /**
-     * Deletes the passport validation data with the given ID.
+     * Deletes a passport validation data with the given ID.
      *
      * @param passportNumber The passport number of the student.
-     * @return A {@code ResponseEntity} object.
+     * @return A {@code ResponseEntity} object containing some feedback.
      */
     @Operation(
-            summary = "Deletes the passport validation data with the given ID.",
-            description = "Deletes the passport validation data with the given ID."
+        summary = "Deletes the passport validation data with the given ID.",
     )
     @DeleteMapping("/{passportNumber}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -97,8 +98,7 @@ public class PassportValidationController {
      * @return A {@code PassportValidationResponse} object.
      */
     @Operation(
-            summary = "Validates the data entered by the user against the data which can be found on the passport.",
-            description = "Validates the data entered by the user against the data which can be found on the passport."
+        summary = "Validates the data entered by the user against the data which can be found on the passport.",
     )
     @PostMapping("/validate")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -113,14 +113,13 @@ public class PassportValidationController {
     }
 
     /**
-     * Validates the passport manually (usually by an admin).
+     * Validates the passport manually.
      *
      * @param studentId The id of the student.
-     * @return {@code HttpStatus.OK} if the validation was successful,
+     * @return A {@code ResponseEntity} containing some feedback.
      */
     @Operation(
-            summary = "Validates the passport manually (usually by an admin).",
-            description = "Validates the passport manually (usually by an admin)."
+        summary = "Validates the passport manually.",
     )
     @PostMapping("/validateManually")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -137,14 +136,13 @@ public class PassportValidationController {
     }
 
     /**
-     * Checks if the user is valid.
+     * Checks whether the user is valid or not.
      *
      * @param passportNumber The passport number.
-     * @return {@code HttpStatus.OK} if the user is valid.
+     * @return A {@code ResponseEntity} containing some feedback.
      */
     @Operation(
-            summary = "Checks if the user is valid.",
-            description = "Checks if the user is valid."
+        summary = "Checks if the user is valid or not",
     )
     @GetMapping("/isUserValid/{passportNumber}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -161,11 +159,10 @@ public class PassportValidationController {
      * Creates a new passport validation data.
      *
      * @param passportValidationData The passport validation data itself.
-     * @return The created passport validation data.
+     * @return The recently created passport validation data.
      */
     @Operation(
-            summary = "Creates a new passport validation data.",
-            description = "Creates a new passport validation data."
+        summary = "Creates a new passport validation data.",
     )
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -182,15 +179,14 @@ public class PassportValidationController {
     }
 
     /**
-     * Retrieves {@code StudentDto} object from
-     * the validation data by passport number.
+     * Retrieves the {@code StudentDto} object from
+     * the validation data identified by the passport number.
      *
      * @param passportNumber The passport number of the student.
      * @return The {@code StudentDto} object.
      */
     @Operation(
-        summary = "Retrieves StudentDto object from the validation data by passport number.",
-        description = "Retrieves StudentDto object from the validation data by passport number."
+        summary = "Retrieves StudentDto object from the validation data identified by passport number.",
     )
     @GetMapping("/{passportNumber}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

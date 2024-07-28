@@ -1,11 +1,11 @@
 package com.markvarga21.studentmanager.exception;
 
 /**
- * Exception thrown when a user is not found in the database.
+ * Exception used if a user is not found in the database.
  */
 public class UserNotFoundException extends RuntimeException {
     /**
-     * Constructor for the UserNotFoundException class.
+     * Constructor for the {@code UserNotFoundException} class.
      *
      * @param message The message to display.
      */

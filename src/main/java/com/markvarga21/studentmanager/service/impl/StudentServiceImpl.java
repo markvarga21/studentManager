@@ -55,7 +55,9 @@ public class StudentServiceImpl implements StudentService {
     /**
      * Retrieves all the students from the application.
      *
-     * @return All to students stored in a {@code List}.
+     * @param page The actual page.
+     * @param size The number of elements in a single page.
+     * @return A subset of students inside a {@code Page} object.
      * @since 1.0
      */
     @Override
@@ -69,7 +71,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     /**
-     * Validates and then persists the student
+     * Validates-, and then persists the student
      * into the database.
      *
      * @param studentDto The student itself.
@@ -214,6 +216,7 @@ public class StudentServiceImpl implements StudentService {
      * Validates and then modifies the student's information.
      *
      * @param studentDto The user itself.
+     * @param studentId The is of the student.
      * @return The updated {@code StudentDto}.
      * @since 1.0
      */
@@ -287,7 +290,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     /**
-     * Validates the passport manually (usually by an admin).
+     * Validates the passport manually.
      *
      * @param studentId The id of the student.
      * @param valid The validity of the passport.

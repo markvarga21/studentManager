@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /**
- * The entry point for the authentication regarding the authentication.
+ * The entry point for the application regarding the authentication.
  */
 @Component
 public class AppAuthenticationEntryPoint implements AuthenticationEntryPoint {

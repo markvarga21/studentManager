@@ -7,19 +7,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * The FileUploadService interface is used to
- * store the image in the database.
+ * The {@code FileUploadService} interface is used to
+ * store the images in the database.
  */
 @Service
 public interface FileUploadService {
     /**
-     * The uploadFile method is used to store
-     * the image in the database.
+     * A method used to store
+     * the images in the database.
      *
      * @param studentId The id of the student.
      * @param passportFile The passport file.
      * @param selfieFile The selfie file.
-     * @return The message.
+     * @return A feedback message.
      */
     String uploadFile(
             Long studentId,
@@ -28,27 +28,28 @@ public interface FileUploadService {
     );
 
     /**
-     * The getAllImages method is used to get
+     * A method which is used to get
      * all the student images from the database.
      *
      * @param page The page number.
-     * @param size The number of elements in a page.
-     * @return The images.
+     * @param size The number of elements in a single page.
+     * @return A page containing the student's images.
      */
     Page<StudentImage> getAllImages(Integer page, Integer size);
 
     /**
-     * The deleteImage method is used to delete
-     * the image from the database.
+     * A method which is used to delete
+     * the images from the database.
      *
      * @param studentId The id of the student.
-     * @return The message.
+     * @return An informational message.
      */
     String deleteImage(Long studentId);
 
     /**
-     * The getImageForType method is used to get
-     * the image for the given type.
+     * A method which is used to get
+     * the images for the given type and
+     * student id.
      *
      * @param studentId The id of the student.
      * @param type The image type.
@@ -57,8 +58,8 @@ public interface FileUploadService {
     byte[] getImageForType(Long studentId, StudentImageType type);
 
     /**
-     * The changeImage method is used to change
-     * the image for the given type.
+     * A method which is used to change
+     * the images for the given type and student.
      *
      * @param studentId The id of the student.
      * @param imageType The image type.
@@ -68,8 +69,8 @@ public interface FileUploadService {
     StudentImage changeImage(Long studentId, StudentImageType imageType, MultipartFile file);
 
     /**
-     * The getStudentImageById method is used to get
-     * the image for the given student.
+     * A method which is used to get
+     * the images for the given student.
      *
      * @param studentId The id of the student.
      * @return The images of the student.

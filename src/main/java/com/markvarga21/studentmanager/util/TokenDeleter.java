@@ -6,14 +6,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * The TokenDeleter class is used to periodically
+ * The {@code TokenDeleter} class is used to periodically
  * delete expired tokens.
  */
 @Component
 @RequiredArgsConstructor
 public class TokenDeleter {
     /**
-     * The token database.
+     * The token management service.
      */
     private final TokenManagementService tokenManagementService;
 

@@ -28,7 +28,7 @@ public class PassportValidationServiceImpl
         implements PassportValidationService {
     /**
      * A repository which is used to store the data extracted
-     * from the passport while validation.
+     * from the passport.
      */
     private final PassportValidationDataRepository passportValidationDataRepository;
 
@@ -36,8 +36,8 @@ public class PassportValidationServiceImpl
      * Retrieves all passport validation data.
      *
      * @param page The page number.
-     * @param size The page size.
-     * @return The list of passport validation data.
+     * @param size The number of elements in s single page.
+     * @return A page of {@code PassportValidationData}.
      */
     @Override
     public Page<PassportValidationData> getAllPassportValidationData(
@@ -73,7 +73,7 @@ public class PassportValidationServiceImpl
     }
 
     /**
-     * Retrieves a student by passport number.
+     * Retrieves a student by the passport number.
      *
      * @param passportNumber The passport number of the student.
      * @return The student optional.
@@ -116,7 +116,7 @@ public class PassportValidationServiceImpl
 
     /**
      * Retrieves {@code StudentDto} object from
-     * the validation data by passport number.
+     * the validation data indentified by passport number.
      *
      * @param passportNumber The passport number of the student.
      * @return The {@code StudentDto} object.

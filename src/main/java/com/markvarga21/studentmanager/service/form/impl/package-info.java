@@ -1,4 +1,5 @@
 /**
- * A package containing service implementations related to Azure.
+ * A package containing service implementations related
+ * to Azure's Form Recognizer's services.
  */
 package com.markvarga21.studentmanager.service.form.impl;

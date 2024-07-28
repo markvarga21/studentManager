@@ -7,15 +7,15 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
- * The repository holding the student in the application.
+ * The repository containing the students in the application.
  */
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
     /**
-     * Finds a student by passport number.
+     * Fetches a student by the passport number.
      *
      * @param passportNumber The students passport number.
-     * @return The student.
+     * @return The found student.
      */
     Optional<Student> findStudentByPassportNumber(String passportNumber);
 }

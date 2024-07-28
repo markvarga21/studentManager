@@ -46,7 +46,7 @@ import java.util.Map;
 @Generated
 public class ApplicationExceptionHandler {
     /**
-     * A bullet point character in unicode.
+     * A bullet point character in unicode format.
      */
     public static final String POINT_UNICODE = "\u2022";
 
@@ -54,7 +54,7 @@ public class ApplicationExceptionHandler {
      * Handles if the user did not input the information correctly when using
      * the application's endpoints.
      *
-     * @param ex The exception caused by the invalid field value.
+     * @param ex The exception is caused by the invalid field value.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -135,7 +135,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles if the input fields are invalid.
      *
-     * @param ex The exception caused by a constraint violation.
+     * @param ex The exception is caused by a constraint violation.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(ConstraintViolationException.class)
@@ -190,7 +190,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles if the user cannot be found in the database.
      *
-     * @param ex The exception caused by not founding the user.
+     * @param ex The exception is caused by not founding the user.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(UserNotFoundException.class)
@@ -216,7 +216,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles if the user's credentials are invalid.
      *
-     * @param ex The exception caused by the invalid user credentials.
+     * @param ex The exception is caused by the invalid user credentials.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(InvalidUserCredentialsException.class)
@@ -242,7 +242,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles the exception if a student cannot be found in the database.
      *
-     * @param ex The exception caused by not founding the student.
+     * @param ex The exception is caused by not founding the student.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(StudentNotFoundException.class)
@@ -268,7 +268,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles the exception if a report could not be found in the database.
      *
-     * @param ex The exception caused by not founding the report.
+     * @param ex The exception is caused by not founding the report.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(ReportNotFoundException.class)
@@ -324,7 +324,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles if the date is invalid.
      *
-     * @param ex The exception caused by the invalid date.
+     * @param ex The exception is caused by the invalid date.
      * @return A readable {@code ResponseEntity} containing useful information about the error.
      */
     @ExceptionHandler(InvalidDateException.class)
@@ -350,7 +350,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles the exception if the inputted gender is invalid.
      *
-     * @param ex The exception caused by the invalid gender.
+     * @param ex The exception is caused by the invalid gender.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -395,7 +395,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles the exception if the passport is invalid.
      *
-     * @param ex The exception caused by the invalid passport.
+     * @param ex The exception is caused by the invalid passport.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(InvalidPassportException.class)
@@ -421,7 +421,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles the exception if the faces are not identical.
      *
-     * @param ex The exception caused by the faces not being identical.
+     * @param ex The exception is caused by the faces not being identical.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(InvalidFacesException.class)
@@ -445,7 +445,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles the exception if the student's data are invalid.
      *
-     * @param ex The exception caused by the invalid field.
+     * @param ex The exception is caused by an invalid field.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(InvalidStudentException.class)
@@ -471,7 +471,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles the exception if the faces are not identical.
      *
-     * @param ex The exception caused by the faces not being identical.
+     * @param ex The exception is caused by the faces not being identical.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(TokenNotFoundException.class)
@@ -497,7 +497,7 @@ public class ApplicationExceptionHandler {
     /**
      * Handles the exception if the JWT token has expired.
      *
-     * @param ex The exception caused by the expired JWT token.
+     * @param ex The exception is caused by the expired JWT token.
      * @return A readable {@code ResponseEntity} containing useful information.
      */
     @ExceptionHandler(ExpiredJwtException.class)
@@ -521,7 +521,7 @@ public class ApplicationExceptionHandler {
     }
 
     /**
-     * Extracts the exceptions stacktrace into a
+     * Extracts the exception's stacktrace into a
      * more readable {@code String} format.
      *
      * @param throwable The throwable object.

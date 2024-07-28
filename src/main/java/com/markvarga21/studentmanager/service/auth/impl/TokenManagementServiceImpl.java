@@ -34,9 +34,10 @@ public class TokenManagementServiceImpl implements TokenManagementService {
     private Long expirationTimeInMinutes;
 
     /**
-     * Blacklist a token.
+     * Blacklist a token for revoking further
+     * usages of it.
      *
-     * @param token the token to blacklist.
+     * @param token The token to blacklist.
      */
     @Override
     public void blacklistToken(final String token) {
@@ -54,10 +55,10 @@ public class TokenManagementServiceImpl implements TokenManagementService {
     }
 
     /**
-     * Checks if a token is blacklisted.
+     * Checks if a token is blacklisted or not.
      *
-     * @param token the token to check.
-     * @return true if the token is blacklisted, false otherwise
+     * @param token The token to check.
+     * @return {@code true} if the token is blacklisted, {@code false} otherwise.
      */
     @Override
     public boolean isBlacklisted(final String token) {
@@ -67,9 +68,9 @@ public class TokenManagementServiceImpl implements TokenManagementService {
     }
 
     /**
-     * Add a token to the database.
+     * Adds a token to the database.
      *
-     * @param token the token to add.
+     * @param token The token to add.
      */
     @Override
     public void addToken(final String token) {
@@ -83,7 +84,7 @@ public class TokenManagementServiceImpl implements TokenManagementService {
     }
 
     /**
-     * Delete expired tokens from the database.
+     * Deletes expired tokens from the database.
      */
     @Override
     public void deleteExpiredTokens() {

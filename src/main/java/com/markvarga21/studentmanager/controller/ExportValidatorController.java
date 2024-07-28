@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.markvarga21.studentmanager.util.validation.JsonValidator;
 import com.markvarga21.studentmanager.util.validation.XmlValidator;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +16,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * The ExportValidatorController class is used to validate exported
- * XML and JSON data.
+ * A controller class, which is used to validate exported
+ * XML and JSON data with predefined schemas.
  */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/export")
 @CrossOrigin
 @Slf4j
+@Tag(
+    name = "Export validations",
+    description = "A util controller which validates the exported XML and JSON data."
+)
 public class ExportValidatorController {
     /**
      * The invalid data status code.

@@ -3,7 +3,7 @@ package com.markvarga21.studentmanager.exception;
 import com.markvarga21.studentmanager.util.Generated;
 
 /**
- * A custom exception for when the face validation data
+ * A custom exception when the facial validation data
  * is not found in the database.
  */
 @Generated

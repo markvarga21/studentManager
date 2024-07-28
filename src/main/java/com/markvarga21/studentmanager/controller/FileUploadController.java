@@ -31,57 +31,58 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * The FileUploadController is used to manipulate the
- * image in the database.
+ * A controller class which is used to manipulate the
+ * student's images in the database.
  */
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
 @RequestMapping("/api/v1/files")
 @Slf4j
-@Tag(name = "File upload services", description = "The file upload related endpoints.")
+@Tag(
+    name = "File upload services",
+    description = "The file upload related endpoints."
+)
 public class FileUploadController {
     /**
-     * The FileUploadService is used to manipulate
-     * the image in the database.
+     * A service class used to manipulate
+     * the images in the database.
      */
     private final FileUploadService fileUploadService;
 
     /**
-     * The StudentService is used to manipulate
-     * the student in the database.
+     * A service class used to manipulate
+     * students in the database.
      */
     private final StudentService studentService;
 
     /**
-     * The FaceApiService is used to manipulate
-     * face related data.
+     * A service class used to manipulate
+     * face related operations.
      */
     private final FaceApiService faceApiService;
 
     /**
-     * The FormRecognizerService is used to
+     * A service class used to
      * extract data from the passport.
      */
     private final FormRecognizerService formRecognizerService;
 
     /**
-     * The PassportValidationService is used to
+     * A service class used to
      * validate the passport.
      */
     private final PassportValidationService passportValidationService;
 
     /**
-     * The getAllImages method is used to get
-     * all the images from the database.
+     * Fetches all the images from the database.
      *
      * @param page The page number.
-     * @param size The number of elements in a page.
-     * @return The images.
+     * @param size The number of elements in a single page.
+     * @return A page containing the student's images.
      */
     @Operation(
-            summary = "Retrieves all the images.",
-            description = "Retrieves all the images of a student.")
+        summary = "Retrieves all the images.",
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<StudentImage> getAllImages(
@@ -92,16 +93,15 @@ public class FileUploadController {
     }
 
     /**
-     * The deleteImage method is used to delete
-     * the image from the database.
+     * Deletes the student's passport- and portrait image
+     * from the database using their id's.
      *
      * @param studentId The id of the student.
      * @return A message which indicates whether the deletion
      * was successful or not.
      */
     @Operation(
-            summary = "Deletes the image with the given student ID.",
-            description = "Deletes the image with the given student ID."
+        summary = "Deletes the image with the given student ID.",
     )
     @DeleteMapping("/{studentId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -113,16 +113,15 @@ public class FileUploadController {
     }
 
     /**
-     * The getImageForType method is used to get
-     * the image for the specified type.
+     * Retrieves a single image of the give type for
+     * a student identified by it's id.
      *
-     * @param studentId The if of the student.
-     * @param imageType The type of image.
-     * @return The image for the specified type.
+     * @param studentId The id of the student.
+     * @param imageType The type of the image, portrait or passport.
+     * @return The student's image of the specified type.
      */
     @Operation(
-            summary = "Retrieves the image for the specified type.",
-            description = "Retrieves the image for the specified type."
+        summary = "Retrieves the image of a specified type.",
     )
     @GetMapping("/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -139,8 +138,8 @@ public class FileUploadController {
     }
 
     /**
-     * The uploadImage method is used to upload
-     * the image(s) to the database.
+     * Uploades both images for the given student identified
+     * by their id.
      *
      * @param studentId The id of the student.
      * @param passport The passport image.
@@ -148,8 +147,7 @@ public class FileUploadController {
      * @return A response entity.
      */
     @Operation(
-            summary = "Uploads the image(s) to the database.",
-            description = "Uploads the image(s) to the database."
+        summary = "Uploads the image(s) to the database.",
     )
     @PostMapping("/upload/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -164,8 +162,7 @@ public class FileUploadController {
     }
 
     /**
-     * The changeImage method is used to change
-     * the image(s) in the database.
+     * Modifies the given type of image of the student.
      *
      * @param studentId The id of the student.
      * @param imageType The type of image.
@@ -173,8 +170,7 @@ public class FileUploadController {
      * @return A response entity.
      */
     @Operation(
-            summary = "Changes the image(s) in the database.",
-            description = "Changes the image(s) in the database."
+        summary = "Changes the image(s) in the database.",
     )
     @PostMapping("/changeImage/{studentId}/{imageType}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -220,12 +216,15 @@ public class FileUploadController {
     }
 
     /**
-     * The getImagesForStudentId method is used to get
-     * the images for the specified student id.
+     * Fetches both the pictures of the student by
+     * their id.
      *
      * @param studentId The id of the student.
-     * @return The image for the specified student id.
+     * @return The images for the specified student id.
      */
+    @Operation(
+        summary = "Fetches both images for a student.",
+    )
     @GetMapping("/combined/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentImage> getImagesForStudentId(

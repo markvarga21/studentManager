@@ -8,7 +8,7 @@ import com.markvarga21.studentmanager.util.Generated;
 @Generated
 public class InvalidImageTypeException extends RuntimeException {
     /**
-     * The constructor for the InvalidImageTypeException.
+     * The constructor for the {@code InvalidImageTypeException} class.
      *
      * @param message The message to be displayed.
      */

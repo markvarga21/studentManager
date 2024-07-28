@@ -13,7 +13,7 @@ public interface MailService {
      * Sends an email to the specified address.
      *
      * @param report The report to send.
-     * @return An informational/status message.
+     * @return An informational message.
      */
     String sendMail(Report report) throws MessagingException;
 }

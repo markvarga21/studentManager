@@ -19,7 +19,7 @@ import java.io.IOException;
 
 /**
  * This class is responsible for filtering the requests and responses
- * and checking if the user is authenticated.
+ * while checking the user's permissions/roles.
  */
 @Configuration
 @RequiredArgsConstructor
@@ -35,12 +35,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
 
     /**
-     * The service for managing token blacklisting.
+     * The service for managing tokens.
      */
     private final TokenManagementService tokenManagementService;
 
     /**
-     * The index where the token starts.
+     * The index where the token starts in the Authorization
+     * header value.
      */
     static final int TOKEN_START_INDEX = 7;
 

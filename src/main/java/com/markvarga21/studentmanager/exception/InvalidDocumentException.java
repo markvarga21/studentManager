@@ -3,7 +3,7 @@ package com.markvarga21.studentmanager.exception;
 import com.markvarga21.studentmanager.util.Generated;
 
 /**
- * A custom exception class which is used when the selfie is invalid.
+ * A custom exception class which is used if the selfie is invalid.
  */
 @Generated
 public class InvalidDocumentException extends RuntimeException {

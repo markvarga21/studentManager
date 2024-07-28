@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import java.util.Properties;
 
 /**
- * Configuration class for setting up the beans.
+ * Configuration class for setting up the application's beans.
  */
 @Configuration
 @RequiredArgsConstructor
@@ -38,14 +38,14 @@ import java.util.Properties;
         info = @io.swagger.v3.oas.annotations.info.Info(
                 title = "Student Manager API",
                 version = "1.0",
-                description = "API for managing students."
+                description = "API for managing students and their data."
         )
 )
 @Generated
 public class ApplicationConfiguration {
     /**
      * The header name used by Azure's Face API
-     * for using its services.
+     * for accessing its services.
      */
     public static final String AZURE_API_KEY_HEADER
             = "Ocp-Apim-Subscription-Key";
@@ -133,8 +133,8 @@ public class ApplicationConfiguration {
     }
 
     /**
-     * A bean created for talking with the APIs like
-     * Azure's Face API and Rest Countries API.
+     * A bean created for talking with the APIs, like
+     * Azure's Face API.
      *
      * @return The created bean.
      */

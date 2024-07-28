@@ -14,7 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A util class for initiating the administrator user.
+ * A util class for initiating the administrator user
+ * on startup if not already existing.
  */
 @Component
 @RequiredArgsConstructor

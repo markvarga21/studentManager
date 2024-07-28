@@ -32,7 +32,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
- * Configuration class for setting up the security.
+ * Configuration class for setting up the security related
+ * configurations.
  */
 @RequiredArgsConstructor
 @Configuration
@@ -40,22 +41,22 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 public class SecurityConfiguration {
     /**
-     * The base url for authentication services.
+     * The base URL for authentication services.
      */
     static final String BASE_AUTH_URL = "/api/v1/auth";
 
     /**
-     * The AppUserDetailsService object.
+     * The {@code AppUserDetailsService} object.
      */
     private final AppUserDetailsService appUserDetailsService;
 
     /**
-     * The AppAccessDeniedHandler object.
+     * The {@code AppAccessDeniedHandler} object.
      */
     private final AppAccessDeniedHandler appAccessDeniedHandler;
 
     /**
-     * The authentication entrypoint of the application.
+     * The entrypoint of the application.
      */
     private final AppAuthenticationEntryPoint entryPoint;
 
@@ -64,13 +65,16 @@ public class SecurityConfiguration {
      */
     private final ApplicationContext applicationContext;
 
+    /**
+     * The URL for the frontend.
+     */
     @Value("${frontend.url}")
     private String frontendUrl;
 
     /**
      * This method is used to configure the CORS configuration source.
      *
-     * @return The CorsConfigurationSource object.
+     * @return The built {@code CorsConfigurationSource} object.
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -88,8 +92,8 @@ public class SecurityConfiguration {
     /**
      * This method is used to configure the security filter chain.
      *
-     * @param httpSecurity The HttpSecurity object to configure the security filter chain.
-     * @return The SecurityFilterChain object.
+     * @param httpSecurity The {@code HttpSecurity} object to configure the security filter chain.
+     * @return The {@code SecurityFilterChain} object.
      */
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
@@ -125,9 +129,9 @@ public class SecurityConfiguration {
     }
 
     /**
-     * This method is used to create an AuthenticationManager bean.
+     * This method is used to create an {@code AuthenticationManager} bean.
      *
-     * @return the created AuthenticationManager bean.
+     * @return the created {@code AuthenticationManager} bean.
      */
     @Bean
     public AuthenticationManager authenticationManager() {
@@ -135,9 +139,9 @@ public class SecurityConfiguration {
     }
 
     /**
-     * This method is used to create a UserDetailsService object.
+     * This method is used to create a {@code UserDetailsService} bean.
      *
-     * @return The UserDetailsService object.
+     * @return The {@code UserDetailsService} object.
      */
     @Bean
     public UserDetailsService userDetailsService() {
@@ -145,9 +149,9 @@ public class SecurityConfiguration {
     }
 
     /**
-     * This method is used to create an AuthenticationProvider object.
+     * This method is used to create an {@code AuthenticationProvider} bean.
      *
-     * @return The AuthenticationProvider object.
+     * @return The {@code AuthenticationProvider} object.
      */
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -160,7 +164,7 @@ public class SecurityConfiguration {
     /**
      * The password encoder bean.
      *
-     * @return a BCryptPasswordEncoder object.
+     * @return a {@code BCryptPasswordEncoder} object.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {

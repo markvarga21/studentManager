@@ -20,7 +20,7 @@ public interface FormRecognizerService {
     StudentDto extractDataFromPassport(MultipartFile passport);
 
     /**
-     * Extracts all the fields from the uploaded passport.
+     * Extracts all fields from the uploaded passport.
      *
      * @param passport The uploaded passport.
      * @return The extracted fields stored in a {@code Map}.
@@ -31,7 +31,8 @@ public interface FormRecognizerService {
 
     /**
      * Validates the data entered by the user against the data
-     * which can be found on the passport.
+     * which can be found-, and has been extracted
+     * from the passport.
      *
      * @param studentDto The student itself.
      * @param passport The photo of the passport.
@@ -43,25 +44,26 @@ public interface FormRecognizerService {
     );
 
     /**
-     * Deletes the passport validation data by the passport number.
+     * Deletes a passport validation data
+     * identified by the passport number.
      *
      * @param passportNumber the passport number.
-     * @return The message.
+     * @return A feedback message.
      */
     String deletePassportValidationByPassportNumber(
             String passportNumber
     );
 
     /**
-     * Validates the passport manually (usually by an admin).
+     * Validates the passport manually.
      *
      * @param studentId The id of the student.
-     * @return The message.
+     * @return An informational message.
      */
     String validatePassportManually(Long studentId);
 
     /**
-     * Checks if the user is valid.
+     * Checks if the user is valid or not.
      *
      * @param passportNumber The passport number.
      * @return {@code true} if the user is valid, {@code false} otherwise.

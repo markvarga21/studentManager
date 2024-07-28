@@ -11,7 +11,7 @@ import java.util.Locale;
 import static java.time.ZoneId.systemDefault;
 
 /**
- * A utility class which is used to deserialize
+ * A utility class which is used to deserialize the
  * {@code String} representation of a date.
  */
 @Slf4j
@@ -37,6 +37,7 @@ public final class DateDeserializer {
             "dd MMM yy",
             "dd MMM yyyy",
     };
+
     private DateDeserializer() {
 
     }
@@ -46,7 +47,7 @@ public final class DateDeserializer {
      * to a {@code LocalDate} object.
      *
      * @param dateString The {@code String} representation of a date.
-     * @return The {@code LocalDate} object.
+     * @return The converted {@code LocalDate} object.
      */
     public static LocalDate mapDateStringToLocalDate(
             final String dateString

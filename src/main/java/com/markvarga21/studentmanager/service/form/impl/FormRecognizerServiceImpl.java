@@ -37,7 +37,7 @@ import java.util.Optional;
 /**
  * A service which is used to verify the data entered by the user
  * against the data which can be found on the uploaded passport.
- * It uses Azure's Form Recognizer.
+ * It uses Azure's Form Recognizer services.
  */
 @Component
 @RequiredArgsConstructor
@@ -68,28 +68,28 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
 
     /**
      * A repository which is used to store the data extracted
-     * from the passport while validation.
+     * from the passport.
      */
     private final PassportValidationDataRepository validationRepository;
 
     /**
-     * A service which is used to manipulate the student data.
+     * A service which is used to manipulate student data.
      */
     private final StudentService studentService;
 
     /**
-     * A service which is used to manipulate the face data.
+     * A service which is used to manipulate facial data.
      */
     private final FaceApiService faceApiService;
 
     /**
-     * A mapper which is used to map the student data
-     * from JSON string to POJO.
+     * A mapper which is used to map student data
+     * from JSON {@code String} to POJO.
      */
     private final StudentMapper studentMapper;
 
     /**
-     * Extracts all the fields from the uploaded passport.
+     * Extracts all fields from the uploaded passport.
      *
      * @param passport The uploaded passport.
      * @return The extracted fields stored in a {@code Map}.
@@ -181,7 +181,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
      *
      * @param fields The fields {@code Map}.
      * @param fieldName The name of the field.
-     * @return The extracted field in a {@code String}.
+     * @return The extracted field in a {@code String} representation.
      */
     private String getFieldValue(
             final Map<String, DocumentField> fields,
@@ -196,10 +196,11 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     }
 
     /**
-     * Validates the data entered by the user against the data
-     * which can be found on the passport.
+     * Validates the data entered by the user against the data,
+     * which can be found-, and has been extracted
+     * from the passport.
      *
-     * @param studentJson The student itself in a JSON string.
+     * @param studentJson The student itself in a JSON {@code String} format.
      * @param passport The passport file.
      * @return A {@code PassportValidationResponse} object.
      */
@@ -280,9 +281,10 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     }
 
     /**
-     * Deletes the passport validation data by the passport number.
+     * Deletes a passport validation data
+     * identified by the passport number.
      *
-     * @param passportNumber the passport number.
+     * @param passportNumber The passport number.
      */
     @Override
     @Transactional
@@ -309,7 +311,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     }
 
     /**
-     * Validates the passport manually (usually by an admin).
+     * Validates the passport manually.
      *
      * @param studentId The id of the student.
      */
@@ -319,7 +321,7 @@ public class FormRecognizerServiceImpl implements FormRecognizerService {
     }
 
     /**
-     * Checks if the user is valid.
+     * Checks if the user is valid or not.
      *
      * @param passportNumber The passport number.
      * @return {@code true} if the user is valid, {@code false} otherwise.

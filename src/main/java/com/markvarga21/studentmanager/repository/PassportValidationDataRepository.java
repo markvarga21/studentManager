@@ -8,20 +8,20 @@ import java.util.Optional;
 
 /**
  * A repository which is used to store the data extracted
- * from the passport while validation.
+ * from the passport.
  */
 @Repository
 public interface PassportValidationDataRepository extends
         JpaRepository<PassportValidationData, String> {
     /**
-     * Deletes the passport validation data by the passport number.
+     * Deletes a passport validation data by the passport number.
      *
      * @param passportNumber The passport number.
      */
     void deletePassportValidationDataByPassportNumber(String passportNumber);
 
     /**
-     * Retrieves the passport validation data by the passport number.
+     * Retrieves a passport validation data by the passport number.
      *
      * @param passportNumber The passport number.
      * @return The passport validation data.

@@ -3,6 +3,8 @@ package com.markvarga21.studentmanager.controller;
 import com.markvarga21.studentmanager.dto.ReportMessage;
 import com.markvarga21.studentmanager.entity.Report;
 import com.markvarga21.studentmanager.service.report.ReportService;
+
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/report")
 @RequiredArgsConstructor
 @CrossOrigin
-@Slf4j
-@Tag(name = "Reporting services", description = "The reporting related endpoints.")
+@Tag(
+    name = "Reporting services",
+    description = "The reporting related endpoints."
+)
 public class ReportingController {
     /**
      * The service which handles the reports.
@@ -40,9 +44,12 @@ public class ReportingController {
      * Retrieves all the reports.
      *
      * @param page The page number.
-     * @param size The size of the page.
-     * @return A list of all the reports.
+     * @param size The number of elements in a single page.
+     * @return A page containing the reports.
      */
+    @Operation(
+        summary = "Retrieves all reports from the database.",
+    )
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<Report> getReports(
@@ -58,6 +65,9 @@ public class ReportingController {
      * @param id The id of the report.
      * @return An informational message.
      */
+    @Operation(
+        summary = "Deltes a report with a given id."
+    )
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteReport(@PathVariable final Long id) {
@@ -70,11 +80,14 @@ public class ReportingController {
     }
 
     /**
-     * Sends a report to the system.
+     * Submits a report.
      *
-     * @param reportMessage The report message object.
-     * @return An informational/status message.
+     * @param reportMessage The message of the report.
+     * @return An informational message.
      */
+    @Operation(
+        summary = "Submits a report to the system.",
+    )
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> sendReport(

@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The StudentImage class represents the images of a student.
+ * Represents the images of students.
  */
 @Entity
 @Data
@@ -27,14 +27,14 @@ public class StudentImage {
     private Long studentId;
 
     /**
-     * The image of the student.
+     * The passport image of the student.
      */
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] passportImage;
 
     /**
-     * The selfie of the student.
+     * The selfie image of the student.
      */
     @Lob
     @Column(columnDefinition = "LONGBLOB")

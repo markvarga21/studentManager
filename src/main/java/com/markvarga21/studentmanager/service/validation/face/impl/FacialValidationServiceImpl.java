@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 /**
- * The FacialValidationServiceImpl class is used to manipulate
+ * The {@code FacialValidationServiceImpl} class is used to manipulate
  * facial validation data.
  */
 @Service
@@ -27,7 +27,7 @@ public class FacialValidationServiceImpl implements FacialValidationService {
     private final FacialValidationDataRepository repository;
 
     /**
-     * Saves the facial validation data to the database.
+     * Saves the facial validation data in the database.
      *
      * @param data The facial validation data to be saved.
      */
@@ -45,7 +45,7 @@ public class FacialValidationServiceImpl implements FacialValidationService {
     }
 
     /**
-     * Gets the facial validation data by passport number.
+     * Fetches the facial validation data by passport number.
      *
      * @param passportNumber The passport number of the facial validation data.
      * @return The facial validation data.
@@ -60,8 +60,10 @@ public class FacialValidationServiceImpl implements FacialValidationService {
     }
 
     /**
-     * Retrieves all the facial validation data.
+     * Retrieves all facial validation data.
      *
+     * @param page The actual page.
+     * @param size The number of elements in a single page.
      * @return All the facial validation data.
      */
     @Override
@@ -74,7 +76,7 @@ public class FacialValidationServiceImpl implements FacialValidationService {
     }
 
     /**
-     * Deletes the facial validation data by passport number.
+     * Deletes a facial validation data by passport number.
      *
      * @param passportNumber The passport number of the facial validation data.
      */

@@ -18,22 +18,23 @@ public final class ImageCompressor {
     private ImageCompressor() { }
 
     /**
-     * The scale of which the scale of the image is decreased.
+     * The scale of which the image is decreased
+     * in each step.
      */
     public static final float SCALE_DECREASE_STEP = 0.1F;
 
     /**
-     * The maximum file size accepted by the database.
+     * The maximum file size accepted by the database in bytes.
      */
     public static final int DEFAULT_SIZE_LIMIT = 4_194_304;
 
     /**
      * Converts the given image to a byte array.
      *
-     * @param bi The image to convert.
+     * @param bi The image to be converted.
      * @param format The format of the image.
      * @return The byte array of the image.
-     * @throws IOException If the image could not be converted.
+     * @throws IOException If the image cannot be written.
      */
     @Generated
     public static byte[] toByteArray(

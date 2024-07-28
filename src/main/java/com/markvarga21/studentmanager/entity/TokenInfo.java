@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * Represents a token in the application.
+ * Represents a token in the application with some
+ * useful metainformation.
  */
 @Entity
 @Data
@@ -22,7 +23,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TokenInfo {
     /**
-     * The unique identifier for the token.
+     * The unique identifier of the token.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -8,17 +8,17 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 /**
- * A service which is used to access passport
+ * A service which is used to manipulate passport
  * validation data.
  */
 @Service
 public interface PassportValidationService {
     /**
-     * Retrieves all passport validation data.
+     * Fetches all passport validation data.
      *
      * @param page The page number.
-     * @param size The page size.
-     * @return The list of passport validation data.
+     * @param size The number of elements in a single page.
+     * @return The page of passport validation data.
      */
     Page<PassportValidationData> getAllPassportValidationData(
             Integer page,
@@ -26,10 +26,10 @@ public interface PassportValidationService {
     );
 
     /**
-     * Deletes the passport validation data with the given ID.
+     * Deletes a passport validation data with the given ID.
      *
      * @param passportNumber The passport number of the student.
-     * @return The message.
+     * @return An informational message.
      */
     String deletePassportValidationData(String passportNumber);
 
@@ -37,7 +37,7 @@ public interface PassportValidationService {
      * Retrieves a student by passport number.
      *
      * @param passportNumber The passport number of the student.
-     * @return The student.
+     * @return A feedback message.
      */
     Optional<PassportValidationData> getPassportValidationDataByPassportNumber(
             String passportNumber
@@ -54,7 +54,7 @@ public interface PassportValidationService {
     );
 
     /**
-     * Retrieves {@code StudentDto} object from
+     * Retrieves a {@code StudentDto} object from
      * the validation data by passport number.
      *
      * @param passportNumber The passport number of the student.

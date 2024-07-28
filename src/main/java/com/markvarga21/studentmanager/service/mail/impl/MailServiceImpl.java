@@ -21,18 +21,18 @@ import java.time.format.DateTimeFormatter;
 @Getter
 public class MailServiceImpl implements MailService {
     /**
-     * The JavaMailSender object used to send emails.
+     * The {@code JavaMailSender} object used to send emails.
      */
     private final JavaMailSender mailSender;
 
     /**
-     * The email address to send the email to.
+     * The address to send the email to.
      */
     @Value("${mail.to}")
     private String mailTo;
 
     /**
-     * The email address to send the email from.
+     * The address to send the email from.
      */
     @Value("${mail.from}")
     private String mailFrom;
@@ -68,7 +68,7 @@ public class MailServiceImpl implements MailService {
      * The method responsible for sending an email.
      *
      * @param report The report to send.
-     * @return An informational/status message.
+     * @return An informational message.
      */
     @Override
     public String sendMail(final Report report) throws MessagingException {

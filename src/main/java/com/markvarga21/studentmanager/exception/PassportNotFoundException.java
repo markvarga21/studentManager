@@ -9,7 +9,7 @@ import com.markvarga21.studentmanager.util.Generated;
 @Generated
 public class PassportNotFoundException extends RuntimeException {
     /**
-     * Creates a new passport not found exception.
+     * Creates a new {@code PassportNotFoundException}.
      *
      * @param message The message of the exception.
      */

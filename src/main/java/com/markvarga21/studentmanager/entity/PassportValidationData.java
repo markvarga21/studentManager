@@ -60,7 +60,7 @@ public class PassportValidationData {
     private String placeOfBirth;
 
     /**
-     * The nationality of the student.
+     * The country of citizenship of the student.
      */
     private String countryOfCitizenship;
 
@@ -76,21 +76,21 @@ public class PassportValidationData {
     private String passportNumber;
 
     /**
-     * The student's passports expiry date.
+     * The student's passports date of expiry.
      */
     private LocalDate passportDateOfExpiry;
 
     /**
-     * The student's passports issue date.
+     * The student's passports date of issue.
      */
     private LocalDate passportDateOfIssue;
 
     /**
-     * Creates a new passport {@code StudentDto} object from
+     * Creates a new {@code StudentDto} object from
      * the provided {@code PassportValidationData}.
      *
      * @param passportValidationData The passport validation data.
-     * @return A new {@code StudentDto} object.
+     * @return A newly created {@code StudentDto} object.
      */
     @SuppressWarnings("checkstyle:LineLength")
     public static StudentDto getStudentDtoFromValidationData(
@@ -113,7 +113,7 @@ public class PassportValidationData {
      * Creates a new passport validation data from the provided
      * {@code StudentDto}.
      *
-     * @param studentDto The student DTO.
+     * @param studentDto The extracted student DTO.
      * @return A new {@code PassportValidationData} object.
      */
     public static PassportValidationData createPassportValidationDataForStudent(

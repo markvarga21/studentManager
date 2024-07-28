@@ -1,4 +1,4 @@
 /**
- * This package contains a custom exception handler.
+ * This package contains custom exception handlers.
  */
 package com.markvarga21.studentmanager.exception.handler;

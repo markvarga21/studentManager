@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Generated
 public class StudentNotFoundException extends RuntimeException {
     /**
-     * The type of the operation the user just did, which caused the exception.
+     * The type of the operation the user just did,
+     * which caused the exception to raise.
      */
     private final OperationType type;
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
- * The repository for the student application user.
+ * The repository for the student application users.
  */
 @Repository
 public interface StudentAppUserRepository

@@ -3,7 +3,7 @@ package com.markvarga21.studentmanager.exception;
 import com.markvarga21.studentmanager.util.Generated;
 
 /**
- * A class for representing the operation which the user just did,
+ * A class representing the operation the user just did,
  * thus causing an exception to raise.
  */
 @Generated

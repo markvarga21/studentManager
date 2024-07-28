@@ -25,14 +25,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * A controller which is used to make create, read,
- * update and delete students.
+ * A controller which is used to make- create-, read-,
+ * update- and delete students.
  */
 @RestController
 @RequestMapping("/api/v1/students")
 @RequiredArgsConstructor
 @CrossOrigin
-@Tag(name = "Student services", description = "The student related endpoints.")
+@Tag(
+    name = "Student services",
+    description = "The student related endpoints."
+)
 public class StudentController {
     /**
      * Student service.
@@ -58,10 +61,10 @@ public class StudentController {
      * Retrieves all the students from the application.
      *
      * @param page The page number.
-     * @param size The size of the page.
+     * @param size The number of elements in a single page.
      * @return All the students stored in a {@code Page}.
      */
-    @Operation(summary = "Get all students", description = "Retrieves all the students.")
+    @Operation(summary = "Retrieves all students from the database.")
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<StudentDto> getAllStudents(
@@ -79,7 +82,7 @@ public class StudentController {
      * @param roles The roles of the user who created the student.
      * @return The saved {@code StudentDto}.
      */
-    @Operation(summary = "Create a student", description = "Creates a student.")
+    @Operation(summary = "Creates a student.")
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentDto> createStudent(
@@ -98,9 +101,9 @@ public class StudentController {
      * then returns it.
      *
      * @param id The ID of the student which we want to retrieve.
-     * @return The searched student if present.
+     * @return The wanted student if present.
      */
-    @Operation(summary = "Get a student by ID", description = "Retrieves a student by ID.")
+    @Operation(summary = "Fetches a student by ID.")
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentDto> getStudentById(
@@ -117,7 +120,7 @@ public class StudentController {
      * @param studentId The ID of the student which has to be updated.
      * @return The updated {@code StudentDto}.
      */
-    @Operation(summary = "Update a student by ID", description = "Updates a student by ID.")
+    @Operation(summary = "Update a student indentified by it's ID.")
     @PutMapping("/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentDto> updateStudentById(
@@ -135,7 +138,7 @@ public class StudentController {
      * @param id The ID of the student which we want to delete.
      * @return The recently deleted student DTO object.
      */
-    @Operation(summary = "Delete a student by ID", description = "Deletes a student by ID.")
+    @Operation(summary = "Delete a student by ID.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<StudentDto> deleteStudentById(

@@ -12,8 +12,8 @@ public interface FaceApiService {
      * Compares the faces found on the passport and the
      * selfie, and then sends it back to the client.
      *
-     * @param passport The student's passport.
-     * @param selfiePhoto The selfie of the student.
+     * @param passport The student's passport image.
+     * @param selfiePhoto The selfie image of the student.
      * @return The validity and the percentage of the matching.
      */
     FaceApiResponse getValidityOfFaces(

@@ -12,27 +12,27 @@ import lombok.Data;
 @Generated
 public class FaceRectangle {
     /**
-     * The top coordinate of the rectangle.
+     * The top coordinate of the bounding rectangle.
      */
     private Integer top;
 
     /**
-     * The left coordinate of the rectangle.
+     * The left coordinate of the bounding rectangle.
      */
     private Integer left;
 
     /**
-     * The width and height of the rectangle.
+     * The width and height of the bounding rectangle.
      */
     private Integer width;
 
     /**
-     * The height of the rectangle.
+     * The height of the bounding rectangle.
      */
     private Integer height;
 
     /**
-     * Calculates the area of the rectangle
+     * Calculates the area of the bounding rectangle
      * representing the face.
      *
      * @return The area of the rectangle bounding the face.

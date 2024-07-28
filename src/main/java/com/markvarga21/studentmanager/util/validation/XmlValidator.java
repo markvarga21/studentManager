@@ -15,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * A utility class which is used to validate XML files.
+ * A utility class which is used to validate XML content.
  */
 @Component
 @Slf4j
@@ -26,10 +26,10 @@ public class XmlValidator {
     private static final String XML_SCHEMA_PATH = "src/main/resources/schemas/students.xsd";
 
     /**
-     * Validates the XML file.
+     * Validates the XML content.
      *
-     * @param xml The XML file to be validated.
-     * @return Whether the XML file is valid.
+     * @param xml The XML content to be validated.
+     * @return Whether the XML content is valid.
      */
     public boolean isXmlValid(final String xml) throws IOException {
         Path tempFile = Files.createTempFile("temp", ".xml");
@@ -42,7 +42,7 @@ public class XmlValidator {
             Validator validator = schema.newValidator();
             validator.validate(new StreamSource(tempFile.toFile()));
         } catch (SAXException e) {
-            log.error("Invalid XML file: " + e.getMessage());
+            log.error("Invalid XML content: " + e.getMessage());
             return false;
         }
         return true;

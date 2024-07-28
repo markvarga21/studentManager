@@ -51,7 +51,7 @@ public class Student {
     private String placeOfBirth;
 
     /**
-     * The nationality of the student.
+     * The country of citizenship of the student.
      */
     private String countryOfCitizenship;
 
@@ -67,17 +67,17 @@ public class Student {
     private String passportNumber;
 
     /**
-     * The student's passports expiry date.
+     * The student's passports date of expiry.
      */
     private LocalDate passportDateOfExpiry;
 
     /**
-     * The student's passports issue date.
+     * The student's passports date of issue.
      */
     private LocalDate passportDateOfIssue;
 
     /**
-     * The validity of the student's data
+     * The validity of the student's data,
      * which can be set by either an admin
      * or by an automatic checking procedure.
      */

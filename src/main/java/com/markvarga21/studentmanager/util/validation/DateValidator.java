@@ -24,9 +24,9 @@ public final class DateValidator {
     }
 
     /**
-     * Validates the passport date of expiry.
+     * Validates the passport date of issue.
      *
-     * @param date The passport date of expiry to be validated.
+     * @param date The passport date of issue to be validated.
      */
     public static void validatePassportIssueDate(final LocalDate date) {
         if (date.isAfter(LocalDate.now())) {

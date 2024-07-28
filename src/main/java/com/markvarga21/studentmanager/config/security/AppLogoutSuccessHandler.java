@@ -18,7 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AppLogoutSuccessHandler implements LogoutSuccessHandler {
     /**
-     * The service for managing token blacklisting.
+     * The service for managing tokens.
      */
     private final TokenManagementService tokenManagementService;
 

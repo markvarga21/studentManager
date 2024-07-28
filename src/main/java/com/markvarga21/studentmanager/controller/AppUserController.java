@@ -7,6 +7,7 @@ import com.markvarga21.studentmanager.service.auth.AppUserService;
 import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,6 +45,10 @@ import java.io.IOException;
 @RequestMapping("/api/v1/auth")
 @Slf4j
 @CrossOrigin
+@Tag(
+    name = "User controller",
+    description = "A controller used to manipulate users in the app."
+)
 public class AppUserController {
     /**
      * The user service.
@@ -51,32 +56,32 @@ public class AppUserController {
     private final AppUserService appUserService;
 
     /**
-     * The PasswordEncoder object.
+     * The {@code PasswordEncoder} object.
      */
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * The AuthenticationManager object.
+     * The {@code AuthenticationManager} object.
      */
     private final AuthenticationManager authenticationManager;
 
     /**
-     * The JwtService object for creating JWT tokens.
+     * The {@code JwtService} object for creating JWT tokens.
      */
     private final JwtService jwtService;
 
     /**
-     * The UserDetailsService object.
+     * The {@code UserDetailsService} object.
      */
     private final UserDetailsService userDetailsService;
 
     /**
-     * The TokenManagementService object.
+     * The {@code TokenManagementService} object.
      */
     private final TokenManagementService tokenManagementService;
 
     /**
-     * The LogoutSuccessHandler object.
+     * The {@code LogoutSuccessHandler} object.
      */
     private final LogoutSuccessHandler logoutSuccessHandler;
 
@@ -84,8 +89,8 @@ public class AppUserController {
      * Endpoint for fetching all users.
      *
      * @param page The page number.
-     * @param size The size of the page.
-     * @return The list of users.
+     * @param size The size of elements inside a single page.
+     * @return A page of the users.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Fetches all users from the database.")
@@ -134,7 +139,7 @@ public class AppUserController {
      * Endpoint for logging in a user.
      *
      * @param user The user object.
-     * @return The JWT token.
+     * @return The created JWT token.
      */
     @Operation(summary = "Logs in a user.")
     @PostMapping("/login")
@@ -186,13 +191,13 @@ public class AppUserController {
     }
 
     /**
-     * Endpoint for fetching a user by the id.
+     * Endpoint for fetching a user by its id.
      *
      * @param id The id of the user.
      * @return The user object.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Fetches a user by the id.")
+    @Operation(summary = "Fetches a user using it's id.")
     @GetMapping("/users/{id}")
     public ResponseEntity<AppUser> getUserById(@PathVariable final Long id) {
         return ResponseEntity.ok(appUserService.getUserById(id));

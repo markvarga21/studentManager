@@ -5,15 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * A DTO class which is used when sending back passport
- * validation information.
+ * A DTO class which is used when sending back
+ * passport validation information.
  */
 @Data
 @Builder
 @Generated
 public class PassportValidationResponse {
     /**
-     * The validity of the passport and the
+     * The validity of the passport data and the
      * data entered by the user.
      */
     private Boolean isValid;

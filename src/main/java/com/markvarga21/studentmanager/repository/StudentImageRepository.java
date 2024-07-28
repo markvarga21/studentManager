@@ -5,13 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * A repository which is used to store the student images.
+ * A repository which is used to store the students images.
  */
 @Repository
 public interface StudentImageRepository
         extends JpaRepository<StudentImage, Long> {
     /**
-     * Deletes images using the passport number.
+     * Deletes images using the students id's.
      *
      * @param studentId The id of the student.
      */

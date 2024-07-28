@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 /**
- * A utility class which is used to validate JSON files.
+ * A utility class which is used to validate JSON content.
  */
 @Component
 @Slf4j
@@ -22,16 +22,16 @@ public class JsonValidator {
     private final JsonSchema jsonSchema;
 
     /**
-     * Validates the JSON file.
+     * Validates the JSON content.
      *
-     * @param json The JSON file to be validated.
-     * @return Whether the JSON file is valid.
+     * @param json The JSON content to be validated.
+     * @return Whether the JSON content is valid or not.
      */
     public boolean isJsonValid(final JsonNode json) {
         Set<ValidationMessage> validationMessages = this.jsonSchema
                 .validate(json);
         if (!validationMessages.isEmpty()) {
-            log.error("Invalid JSON file: " + validationMessages);
+            log.error("Invalid JSON content: " + validationMessages);
             return false;
         }
         return true;

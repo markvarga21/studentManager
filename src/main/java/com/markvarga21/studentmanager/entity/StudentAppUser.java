@@ -7,8 +7,9 @@ import jakarta.persistence.Id;
 import lombok.Data;
 
 /**
- * The entity for the student app user used for managing the
- * relationship between the student's user profile and their data.
+ * The entity for the student app user used, which manages the
+ * relationship between the student's user profile and their
+ * already submitted data.
  */
 @Entity
 @Data

@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 import java.util.Set;
 
 /**
- * The AppUser class is used to represent the user entity.
+ * The {@code AppUser} class is used to represent the user entity.
  */
 @Entity
 @Data

@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * A service which uses Azure's Face API to compare two faces.
  * It is then used for comparing the face on the
- * passport and the students selfie which has been uploaded.
+ * passport- and the students selfie image which has been uploaded.
  */
 @Component
 @RequiredArgsConstructor
@@ -38,13 +38,13 @@ import java.util.List;
 @Generated
 public class FaceApiServiceImpl implements FaceApiService {
     /**
-     * The endpoint of the Face API.
+     * The endpoint of the Face API cloud service.
      */
     @Value("${knopp.services.endpoint}")
     private String faceApiUrl;
 
     /**
-     * The key of the Face API.
+     * The key of the Face API cloud service.
      */
     @Value("${knopp.services.key}")
     private String faceApiKey;
@@ -66,12 +66,12 @@ public class FaceApiServiceImpl implements FaceApiService {
 
     /**
      * A simple multiplier for converting floating point percentage
-     * to decimal percentage.
+     * to decimal percentage, out of readability reasons.
      */
     public static final int PERCENT_MULTIPLIER = 100;
 
     /**
-     * Returns the headers for the API call.
+     * Returns the configured headers for the API call.
      *
      * @return The headers for the API call.
      */
@@ -89,8 +89,8 @@ public class FaceApiServiceImpl implements FaceApiService {
     /**
      * Returns the face ID for the given file.
      *
-     * @param file the file to be processed.
-     * @return the face ID for the given file.
+     * @param file The file to be processed.
+     * @return The face ID for the given file.
      */
     @SuppressWarnings("checkstyle:LineLength")
     @Override
@@ -142,7 +142,7 @@ public class FaceApiServiceImpl implements FaceApiService {
     /**
      * Returns the list type for the face detection response.
      *
-     * @return the list type for the face detection response.
+     * @return The list type for the face detection response.
      */
     public Type getListType() {
         return new TypeToken<List<FaceDetectionResponse>>() { }
@@ -152,8 +152,8 @@ public class FaceApiServiceImpl implements FaceApiService {
     /**
      * Returns the face ID for the given byte array.
      *
-     * @param fileBytes the file to be processed.
-     * @return the face ID for the given file.
+     * @param fileBytes The file to be processed.
+     * @return The face ID for the given file.
      */
     @SuppressWarnings("checkstyle:LineLength")
     public String getFaceIdForFile(final byte[] fileBytes) {
@@ -195,8 +195,8 @@ public class FaceApiServiceImpl implements FaceApiService {
      * Compares the faces found on the passport and the
      * selfie, and then sends it back to the client.
      *
-     * @param passport The user's passport.
-     * @param selfiePhoto The selfie of the user.
+     * @param passport The student's passport image.
+     * @param selfiePhoto The selfie image of the student.
      * @return The validity and the percentage of the matching.
      */
     private FaceApiResponse compareFaces(
@@ -241,10 +241,11 @@ public class FaceApiServiceImpl implements FaceApiService {
 
     /**
      * Compares the faces found on the passport and the
-     * selfie, and then sends it back to the client.
+     * selfie, and then sends it back to the client. It
+     * does this using byte arrays instead of {@code MultipartFile}.
      *
-     * @param passport The user's passport.
-     * @param selfiePhoto The selfie of the user.
+     * @param passport The student's passport image.
+     * @param selfiePhoto The selfie image of the student.
      * @return The validity and the percentage of the matching.
      */
     private FaceApiResponse compareFaces(
@@ -289,10 +290,11 @@ public class FaceApiServiceImpl implements FaceApiService {
 
     /**
      * Compares the faces found on the passport and the
-     * selfie, and then sends it back to the client.
+     * selfie, and then sends it back to the client. It
+     * combines the predefined method(s).
      *
-     * @param passport The student's passport.
-     * @param selfiePhoto The selfie of the student.
+     * @param passport The student's passport image.
+     * @param selfiePhoto The selfie image of the student.
      * @return The validity and the percentage of the matching.
      */
     @Override
@@ -306,10 +308,11 @@ public class FaceApiServiceImpl implements FaceApiService {
 
     /**
      * Compares the faces found on the passport and the
-     * selfie, and then sends it back to the client.
+     * selfie, and then sends it back to the client. It
+     * combines the predefined method(s).
      *
-     * @param passport The student's passport.
-     * @param selfiePhoto The selfie of the student.
+     * @param passport The student's passport image.
+     * @param selfiePhoto The selfie image of the student.
      * @return The validity and the percentage of the matching.
      */
     public FaceApiResponse getValidityOfFaces(

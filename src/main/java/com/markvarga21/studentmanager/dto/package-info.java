@@ -1,4 +1,4 @@
 /**
- * This package contains the DTOs of the application.
+ * This package contains the DTO's of the application.
  */
 package com.markvarga21.studentmanager.dto;

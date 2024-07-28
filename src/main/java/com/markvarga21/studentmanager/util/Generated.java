@@ -10,7 +10,8 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * It is used to exclude classes from the test coverage report.
+ * It is used to exclude classes from the Jacoco
+ * test coverage report.
  */
 @Documented
 @Retention(RUNTIME)

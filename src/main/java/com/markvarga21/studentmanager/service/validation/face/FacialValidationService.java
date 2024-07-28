@@ -5,20 +5,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 /**
- * The FacialValidationService interface is used to manipulate
+ * The {@code FacialValidationService} interface is used to manipulate
  * facial validation data.
  */
 @Service
 public interface FacialValidationService {
     /**
-     * Saves the facial validation data to the database.
+     * Saves the facial validation data in the database.
      *
      * @param data The facial validation data to be saved.
      */
     void saveFacialValidationData(FacialValidationData data);
 
     /**
-     * Gets the facial validation data by passport number.
+     * Fetches the facial validation data by passport number.
      *
      * @param passportNumber The passport number of the facial validation data.
      * @return The facial validation data.
@@ -31,7 +31,7 @@ public interface FacialValidationService {
      * Deletes the facial validation data by passport number.
      *
      * @param passportNumber The passport number of the facial validation data.
-     * @return The message.
+     * @return An informational message.
      */
     String deleteFacialValidationDataByPassportNumber(
             String passportNumber
@@ -41,18 +41,18 @@ public interface FacialValidationService {
      * Sets the facial validity by passport number.
      *
      * @param passportNumber The passport number of the facial validation data.
-     * @return The message.
+     * @return A feedback message.
      */
     String setFacialValidationToValid(
             String passportNumber
     );
 
     /**
-     * Retrieves all facial validation data.
+     * Fetches all facial validation data.
      *
      * @param page The page number.
-     * @param size The page size.
-     * @return The facial validation data.
+     * @param size The number of elements inside a single page.
+     * @return A page containing a subset of {@code FacialValidationData}.
      */
     Page<FacialValidationData> getAllFacialValidationData(
             Integer page,

@@ -14,9 +14,9 @@ import java.util.Optional;
 public interface FacialValidationDataRepository
         extends JpaRepository<FacialValidationData, Long> {
     /**
-     * Gets the facial validation data by passport number.
+     * Fetches a facial validation data by passport number.
      *
-     * @param passportNumber The passport number of the facial validation data.
+     * @param passportNumber The passport number associated with the facial validation data.
      * @return The facial validation data.
      */
     Optional<FacialValidationData> getFacialValidationDataByPassportNumber(
@@ -24,7 +24,7 @@ public interface FacialValidationDataRepository
     );
 
     /**
-     * Deletes the facial validation data by passport number.
+     * Deletes a facial validation data indentified by passport number.
      *
      * @param passportNumber The passport number of the facial validation data.
      */

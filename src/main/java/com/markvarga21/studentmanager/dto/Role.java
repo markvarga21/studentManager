@@ -1,15 +1,15 @@
 package com.markvarga21.studentmanager.dto;
 
 /**
- * The role enumeration.
+ * The role enum..
  */
 public enum Role {
     /**
-     * The user role.
+     * The USER role.
      */
     USER,
     /**
-     * The admin role.
+     * The ADMIN role.
      */
     ADMIN
 }
