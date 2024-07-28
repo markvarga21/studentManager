@@ -48,7 +48,7 @@ public class ReportingController {
      * @return A page containing the reports.
      */
     @Operation(
-        summary = "Retrieves all reports from the database.",
+        summary = "Retrieves all reports from the database."
     )
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -86,7 +86,7 @@ public class ReportingController {
      * @return An informational message.
      */
     @Operation(
-        summary = "Submits a report to the system.",
+        summary = "Submits a report to the system."
     )
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")

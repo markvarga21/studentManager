@@ -40,7 +40,7 @@ public class FormRecognizerController {
      * @return The extracted {@code StudentDto} object.
      */
     @Operation(
-        summary = "Extracts and returns the data from the passport.",
+        summary = "Extracts and returns the data from the passport."
     )
     @PostMapping("/extractData")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

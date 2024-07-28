@@ -45,7 +45,7 @@ public class FacialValidationController {
      * @return A page storing facial validations.
      */
     @Operation(
-        summary = "Retrieves all the facial validation data.",
+        summary = "Retrieves all the facial validation data."
     )
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -65,7 +65,7 @@ public class FacialValidationController {
      */
     @SuppressWarnings("checkstyle:LineLength")
     @Operation(
-        summary = "Retrieves the facial validation data for the given passport number.",
+        summary = "Retrieves the facial validation data for the given passport number."
     )
     @GetMapping("/{passportNumber}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -88,7 +88,7 @@ public class FacialValidationController {
      * deletion was successful or not.
      */
     @Operation(
-        summary = "Deletes a facial validation data for the given passport number.",
+        summary = "Deletes a facial validation data for the given passport number."
     )
     @DeleteMapping("/{passportNumber}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -108,7 +108,7 @@ public class FacialValidationController {
      * was successful or not.
      */
     @Operation(
-        summary = "Sets the facial validation data to valid.",
+        summary = "Sets the facial validation data to valid."
     )
     @PostMapping("/setFacialValidationDataToValid")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

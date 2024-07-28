@@ -82,7 +82,8 @@ public class FileUploadController {
      * @return A page containing the student's images.
      */
     @Operation(
-        summary = "Retrieves all the images.",
+        summary = "Retrieves all the images."
+    )
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<StudentImage> getAllImages(
@@ -101,7 +102,7 @@ public class FileUploadController {
      * was successful or not.
      */
     @Operation(
-        summary = "Deletes the image with the given student ID.",
+        summary = "Deletes the image with the given student ID."
     )
     @DeleteMapping("/{studentId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -121,7 +122,7 @@ public class FileUploadController {
      * @return The student's image of the specified type.
      */
     @Operation(
-        summary = "Retrieves the image of a specified type.",
+        summary = "Retrieves the image of a specified type."
     )
     @GetMapping("/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -147,7 +148,7 @@ public class FileUploadController {
      * @return A response entity.
      */
     @Operation(
-        summary = "Uploads the image(s) to the database.",
+        summary = "Uploads the image(s) to the database."
     )
     @PostMapping("/upload/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -170,7 +171,7 @@ public class FileUploadController {
      * @return A response entity.
      */
     @Operation(
-        summary = "Changes the image(s) in the database.",
+        summary = "Changes the image(s) in the database."
     )
     @PostMapping("/changeImage/{studentId}/{imageType}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -223,7 +224,7 @@ public class FileUploadController {
      * @return The images for the specified student id.
      */
     @Operation(
-        summary = "Fetches both images for a student.",
+        summary = "Fetches both images for a student."
     )
     @GetMapping("/combined/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")

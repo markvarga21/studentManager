@@ -58,7 +58,7 @@ public class PassportValidationController {
      * @return A page containing passport validations.
      */
     @Operation(
-        summary = "Retrieves all the passport validation data.",
+        summary = "Retrieves all the passport validation data."
     )
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -77,7 +77,7 @@ public class PassportValidationController {
      * @return A {@code ResponseEntity} object containing some feedback.
      */
     @Operation(
-        summary = "Deletes the passport validation data with the given ID.",
+        summary = "Deletes the passport validation data with the given ID."
     )
     @DeleteMapping("/{passportNumber}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -98,7 +98,7 @@ public class PassportValidationController {
      * @return A {@code PassportValidationResponse} object.
      */
     @Operation(
-        summary = "Validates the data entered by the user against the data which can be found on the passport.",
+        summary = "Validates the data entered by the user against the data which can be found on the passport."
     )
     @PostMapping("/validate")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -119,7 +119,7 @@ public class PassportValidationController {
      * @return A {@code ResponseEntity} containing some feedback.
      */
     @Operation(
-        summary = "Validates the passport manually.",
+        summary = "Validates the passport manually."
     )
     @PostMapping("/validateManually")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -142,7 +142,7 @@ public class PassportValidationController {
      * @return A {@code ResponseEntity} containing some feedback.
      */
     @Operation(
-        summary = "Checks if the user is valid or not",
+        summary = "Checks if the user is valid or not"
     )
     @GetMapping("/isUserValid/{passportNumber}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -162,7 +162,7 @@ public class PassportValidationController {
      * @return The recently created passport validation data.
      */
     @Operation(
-        summary = "Creates a new passport validation data.",
+        summary = "Creates a new passport validation data."
     )
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -186,7 +186,7 @@ public class PassportValidationController {
      * @return The {@code StudentDto} object.
      */
     @Operation(
-        summary = "Retrieves StudentDto object from the validation data identified by passport number.",
+        summary = "Retrieves StudentDto object from the validation data identified by passport number."
     )
     @GetMapping("/{passportNumber}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

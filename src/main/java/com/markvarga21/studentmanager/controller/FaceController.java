@@ -41,7 +41,7 @@ public class FaceController {
      * @return The validity- and the percentage of the faces matching.
      */
     @Operation(
-        summary = "Compares the faces found on the passport and the selfie, and then sends it back to the client.",
+        summary = "Compares the faces found on the passport and the selfie, and then sends it back to the client."
     )
     @PostMapping("/validate")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

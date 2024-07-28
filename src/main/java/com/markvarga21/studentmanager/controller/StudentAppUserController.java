@@ -38,7 +38,7 @@ public class StudentAppUserController {
      * @return The found student ID.
      */
     @Operation(
-        summary = "Retrieves the student id of a user identified by its username.",
+        summary = "Retrieves the student id of a user identified by its username."
     )
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{username}")
