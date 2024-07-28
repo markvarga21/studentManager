@@ -13,7 +13,6 @@ public class InvalidFacesException extends RuntimeException {
      * The percentage of the faces matching.
      */
     private final Double percentage;
-    
     /**
      * The default constructor.
      *
