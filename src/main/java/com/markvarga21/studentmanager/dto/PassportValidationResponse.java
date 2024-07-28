@@ -1,6 +1,8 @@
 package com.markvarga21.studentmanager.dto;
 
 import com.markvarga21.studentmanager.util.Generated;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,6 +13,7 @@ import lombok.Data;
 @Data
 @Builder
 @Generated
+@AllArgsConstructor
 public class PassportValidationResponse {
     /**
      * The validity of the passport data and the

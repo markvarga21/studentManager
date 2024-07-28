@@ -1,17 +1,21 @@
 package com.markvarga21.studentmanager.service.impl;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
+import com.markvarga21.studentmanager.entity.AppUser;
 import com.markvarga21.studentmanager.entity.Gender;
 import com.markvarga21.studentmanager.entity.Student;
+import com.markvarga21.studentmanager.entity.StudentAppUser;
 import com.markvarga21.studentmanager.exception.InvalidStudentException;
 import com.markvarga21.studentmanager.exception.StudentNotFoundException;
 import com.markvarga21.studentmanager.mapping.StudentMapper;
+import com.markvarga21.studentmanager.repository.AppUserRepository;
 import com.markvarga21.studentmanager.repository.StudentAppUserRepository;
 import com.markvarga21.studentmanager.repository.StudentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,6 +58,12 @@ class StudentServiceImplTest {
      */
     @Mock
     private StudentAppUserRepository studentAppUserRepository;
+
+    /**
+     * The user repository.
+     */
+    @Spy
+    private AppUserRepository appUserRepository;
 
     @Test
     void shouldReturnAllStudentsTest() {
@@ -84,10 +95,13 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void shouldCreateStudentWhenExistsTest() {
+    void shouldCreateStudentByUserWhenExistsTest() {
         // Given
         String username = "john12";
         String roles = "ROLE_USER";
+        StudentAppUser studentAppUser = new StudentAppUser();
+        studentAppUser.setStudentId(INVALID_STUDENT.getId());
+        studentAppUser.setUsername(username);
 
         // When
         when(this.studentRepository.findStudentByPassportNumber(anyString()))
@@ -102,7 +116,63 @@ class StudentServiceImplTest {
                 .createStudent(INVALID_STUDENT_DTO, username, roles);
 
         // Then
+        verify(this.studentAppUserRepository)
+                .save(studentAppUser);
         assertEquals(INVALID_STUDENT_DTO, actual);
+    }
+
+    @Test
+    void shouldCreateAdminByUserWhenExistsTest() {
+        // Given
+        String username = "john12";
+        String roles = "ROLE_ADMIN";
+        StudentAppUser studentAppUser = new StudentAppUser();
+        studentAppUser.setStudentId(INVALID_STUDENT.getId());
+        studentAppUser.setUsername(username);
+        AppUser appUser = AppUser.builder()
+                .username(username)
+                .build();
+
+        // When
+        when(this.studentRepository.findStudentByPassportNumber(anyString()))
+                .thenReturn(Optional.empty());
+        when(this.studentMapper.mapStudentDtoToEntity(INVALID_STUDENT_DTO))
+                .thenReturn(INVALID_STUDENT);
+        when(this.studentMapper.mapStudentEntityToDto(INVALID_STUDENT))
+                .thenReturn(INVALID_STUDENT_DTO);
+        when(this.studentRepository.save(INVALID_STUDENT))
+                .thenReturn(INVALID_STUDENT);
+        when(this.appUserRepository.findByFirstNameAndLastName(anyString(), anyString()))
+                .thenReturn(Optional.of(appUser));
+        StudentDto actual = this.studentService
+                .createStudent(INVALID_STUDENT_DTO, username, roles);
+
+        // Then
+        verify(this.studentAppUserRepository)
+                .save(studentAppUser);
+        assertEquals(INVALID_STUDENT_DTO, actual);
+    }
+
+    @Test
+    void shouldThrowExceptionUponCreateStudentByAdminIfNotExistsTest() {
+        // Given
+        String username = "john12";
+        String roles = "ROLE_ADMIN";
+
+        // When
+        when(this.studentRepository.findStudentByPassportNumber(anyString()))
+                .thenReturn(Optional.empty());
+        when(this.studentMapper.mapStudentDtoToEntity(INVALID_STUDENT_DTO))
+                .thenReturn(INVALID_STUDENT);
+        when(this.studentRepository.save(INVALID_STUDENT))
+                .thenReturn(INVALID_STUDENT);
+
+        // Then
+        assertThrows(
+                StudentNotFoundException.class,
+                () -> this.studentService
+                        .createStudent(INVALID_STUDENT_DTO, username, roles)
+        );
     }
 
     @Test
@@ -274,5 +344,61 @@ class StudentServiceImplTest {
                 StudentNotFoundException.class,
                 () -> this.studentService.setValidity(studentId, true)
         );
+    }
+
+    @Test
+    void shouldThrowExceptionUponGetStudentByUsernameIfNotStudentUserPresentTest() {
+        // Given
+        String username = "john12";
+
+        // When
+        when(this.studentAppUserRepository.findByUsername(anyString()))
+                .thenReturn(Optional.empty());
+
+        // Then
+        assertThrows(
+                StudentNotFoundException.class,
+                () -> this.studentService
+                        .getStudentByUsername(username)
+        );
+    }
+
+    @Test
+    void shouldThrowExceptionUponGetStudentByUsernameTest() {
+        // Given
+        StudentAppUser appUser = new StudentAppUser();
+        appUser.setUsername("john12");
+        
+        // When
+        when(this.studentAppUserRepository.findByUsername(appUser.getUsername()))
+                .thenReturn(Optional.of(appUser));
+
+        // Then
+        assertThrows(
+                StudentNotFoundException.class,
+                () -> this.studentService.getStudentByUsername(appUser.getUsername())
+        );
+    }
+
+    @Test
+    void shouldGetStudentByUsernameTest() {
+        // Given
+        StudentAppUser studentAppUser = new StudentAppUser();
+        studentAppUser.setUsername("john12");
+        studentAppUser.setStudentId(STUDENT.getId());
+        Optional<StudentDto> expected = Optional.of(STUDENT_DTO);
+
+        // When
+        when(this.studentAppUserRepository.findByUsername(studentAppUser.getUsername()))
+                .thenReturn(Optional.of(studentAppUser));
+        when(this.studentRepository.findById(studentAppUser.getStudentId()))
+                .thenReturn(Optional.of(STUDENT));
+        when(this.studentMapper.mapStudentEntityToDto(any(Student.class)))
+                .thenReturn(STUDENT_DTO);
+        Optional<StudentDto> actual = this.studentService
+                .getStudentByUsername(studentAppUser.getUsername());
+        
+        // Then
+        assertEquals(expected, actual);
     }
 }

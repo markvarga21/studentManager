@@ -190,7 +190,7 @@ public class StudentServiceImpl implements StudentService {
                 .findByUsername(username);
         if (studentAppUser.isEmpty()) {
             String message = String.format(
-                "Student cant be retrieved! Cause: user not found with username: %s",
+                "Student can't be retrieved! Cause: user not found with username: %s",
                 username
             );
             log.error(message);
@@ -201,7 +201,7 @@ public class StudentServiceImpl implements StudentService {
                 .findById(studentUser.getStudentId());
         if (student.isEmpty()) {
             String message = String.format(
-                "Student cant be retrieved! Cause: user not found with username: %s",
+                "Student can't be retrieved! Cause: user not found with username: %s",
                 username
             );
             log.error(message);
