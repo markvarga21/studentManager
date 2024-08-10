@@ -1,9 +1,9 @@
 name: Documentation deploy
 on:
   push:
-    branches: ["temp"]
+    branches: ["master"]
   pull_request:
-    branches: ["temp"]
+    branches: ["master"]
 jobs:
   build:
     runs-on: ubuntu-latest
