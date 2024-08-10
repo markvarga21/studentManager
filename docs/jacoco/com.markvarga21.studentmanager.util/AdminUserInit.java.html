@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminUserInit.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.util</a> &gt; <span class="el_source">AdminUserInit.java</span></div><h1>AdminUserInit.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.util;
+
+import com.markvarga21.studentmanager.dto.Role;
+import com.markvarga21.studentmanager.entity.AppUser;
+import com.markvarga21.studentmanager.repository.AppUserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * A util class for initiating the administrator user
+ * on startup if not already existing.
+ */
+@Component
+@RequiredArgsConstructor
+public class AdminUserInit
+        implements ApplicationListener&lt;ContextRefreshedEvent&gt; {
+    /**
+     * The app user repository.
+     */
+    private final AppUserRepository appUserRepository;
+
+    /**
+     * The password encoder.
+     */
+    private final PasswordEncoder passwordEncoder;
+
+    /**
+     * The default admin password.
+     */
+    @Value(&quot;${default.admin.password}&quot;)
+    private String defaultAdminPassword;
+
+    /**
+     * This method is used to initiate the admin user.
+     *
+     * @param event The context refreshed event.
+     */
+    @Override
+    public void onApplicationEvent(final ContextRefreshedEvent event) {
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        if (this.appUserRepository.findByUsername(&quot;admin&quot;).isEmpty()) {</span>
+<span class="fc" id="L48">            AppUser admin = new AppUser();</span>
+<span class="fc" id="L49">            admin.setUsername(&quot;admin&quot;);</span>
+<span class="fc" id="L50">            admin.setEmail(&quot;admin@domain.com&quot;);</span>
+<span class="fc" id="L51">            admin.setFirstName(&quot;Admin&quot;);</span>
+<span class="fc" id="L52">            admin.setLastName(&quot;Admin&quot;);</span>
+<span class="fc" id="L53">            admin.setPassword(</span>
+<span class="fc" id="L54">                    this.passwordEncoder.encode(this.defaultAdminPassword)</span>
+            );
+
+<span class="fc" id="L57">            Set&lt;Role&gt; adminRoles = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L58">            adminRoles.add(Role.ADMIN);</span>
+<span class="fc" id="L59">            adminRoles.add(Role.USER);</span>
+<span class="fc" id="L60">            admin.setRoles(adminRoles);</span>
+<span class="fc" id="L61">            this.appUserRepository.save(admin);</span>
+        }
+<span class="fc" id="L63">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

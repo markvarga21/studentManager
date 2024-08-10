@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReportServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.service.report.impl</a> &gt; <span class="el_source">ReportServiceImpl.java</span></div><h1>ReportServiceImpl.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.service.report.impl;
+
+import com.markvarga21.studentmanager.dto.ReportMessage;
+import com.markvarga21.studentmanager.entity.Report;
+import com.markvarga21.studentmanager.exception.ReportNotFoundException;
+import com.markvarga21.studentmanager.repository.ReportRepository;
+import com.markvarga21.studentmanager.service.mail.MailService;
+import com.markvarga21.studentmanager.service.report.ReportService;
+import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+/**
+ * A service which handles error reporting.
+ */
+@Service
+<span class="fc" id="L22">@Slf4j</span>
+@RequiredArgsConstructor
+public class ReportServiceImpl implements ReportService {
+    /**
+     * The repository holding the reports.
+     */
+    private final ReportRepository repository;
+
+    /**
+     * The mail service used to send emails.
+     */
+    private final MailService mailService;
+
+    /**
+     * Retrieves all reports.
+     *
+     * @param page The actual page.
+     * @param size The number of reports in a single page.
+     * @return A page containing a subset of reports.
+     */
+    @Override
+    public Page&lt;Report&gt; getAllReports(
+            final Integer page,
+            final Integer size
+    ) {
+<span class="fc" id="L47">        PageRequest pageRequest = PageRequest.of(page, size);</span>
+<span class="fc" id="L48">        return this.repository.findAll(pageRequest);</span>
+    }
+
+    /**
+     * Sends a report to the system.
+     *
+     * @param reportMessage The report message object.
+     * @return An informational message.
+     */
+
+    @Override
+    public String sendReport(final ReportMessage reportMessage)  {
+        try {
+<span class="fc" id="L61">            Report report = Report.builder()</span>
+<span class="fc" id="L62">                    .issuerUsername(reportMessage.getUsername())</span>
+<span class="fc" id="L63">                    .subject(reportMessage.getSubject())</span>
+<span class="fc" id="L64">                    .description(reportMessage.getDescription())</span>
+<span class="fc" id="L65">                    .build();</span>
+<span class="fc" id="L66">            this.repository</span>
+<span class="fc" id="L67">                    .save(report);</span>
+<span class="fc" id="L68">            String emailStatusMessage = this.mailService</span>
+<span class="fc" id="L69">                    .sendMail(report);</span>
+<span class="fc" id="L70">            log.info(emailStatusMessage);</span>
+<span class="fc" id="L71">            return &quot;Report sent successfully.&quot;;</span>
+<span class="fc" id="L72">        } catch (MessagingException e) {</span>
+<span class="fc" id="L73">            log.error(&quot;An error occurred while sending the report.&quot;);</span>
+<span class="fc" id="L74">            return &quot;An error occurred while sending the report.&quot;;</span>
+        }
+    }
+
+    /**
+     * Deletes a report.
+     *
+     * @param id The ID of the report.
+     */
+    @Override
+    public void deleteReport(final Long id) {
+<span class="fc" id="L85">        Optional&lt;Report&gt; report = this.repository.findById(id);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (report.isEmpty()) {</span>
+<span class="fc" id="L87">            String message = String.format(</span>
+                    &quot;The report with the ID %d was not found.&quot;,
+                    id
+            );
+<span class="fc" id="L91">            log.error(message);</span>
+<span class="fc" id="L92">            throw new ReportNotFoundException(message);</span>
+        }
+<span class="fc" id="L94">        this.repository.deleteById(id);</span>
+<span class="fc" id="L95">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FileUploadServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.service.file.impl</a> &gt; <span class="el_source">FileUploadServiceImpl.java</span></div><h1>FileUploadServiceImpl.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.service.file.impl;
+
+import com.markvarga21.studentmanager.entity.StudentImage;
+import com.markvarga21.studentmanager.exception.InvalidDocumentException;
+import com.markvarga21.studentmanager.exception.InvalidImageTypeException;
+import com.markvarga21.studentmanager.exception.InvalidStudentException;
+import com.markvarga21.studentmanager.exception.OperationType;
+import com.markvarga21.studentmanager.exception.StudentNotFoundException;
+import com.markvarga21.studentmanager.repository.StudentImageRepository;
+import com.markvarga21.studentmanager.service.file.FileUploadService;
+import com.markvarga21.studentmanager.util.ImageCompressor;
+import com.markvarga21.studentmanager.util.StudentImageType;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
+
+/**
+ * The {@code FileUploadServiceImpl} class is used to store and manipulate the
+ * images of a student.
+ */
+@RequiredArgsConstructor
+<span class="fc" id="L31">@Slf4j</span>
+@Service
+public class FileUploadServiceImpl implements FileUploadService {
+    /**
+     * The {@code StudentImageRepository} is used to store
+     * the student's images in the database.
+     */
+    private final StudentImageRepository studentImageRepository;
+
+    /**
+     * A method used to store the
+     * images in the database.
+     *
+     * @param studentId The id of the student.
+     * @param passportImage The passport file.
+     * @param selfieImage The selfie file.
+     */
+    @Override
+    @Transactional
+    public String uploadFile(
+            final Long studentId,
+            final MultipartFile passportImage,
+            final MultipartFile selfieImage
+    ) {
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (passportImage.isEmpty()) {</span>
+<span class="fc" id="L56">            String message = &quot;Passport image is empty&quot;;</span>
+<span class="fc" id="L57">            log.error(message);</span>
+<span class="fc" id="L58">            throw new InvalidDocumentException(message);</span>
+        }
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (selfieImage.isEmpty()) {</span>
+<span class="fc" id="L61">            String message = &quot;Selfie image is empty&quot;;</span>
+<span class="fc" id="L62">            log.error(message);</span>
+<span class="fc" id="L63">            throw new InvalidDocumentException(message);</span>
+        }
+
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (this.studentImageRepository.findById(studentId).isPresent()) {</span>
+<span class="nc" id="L67">            String message = String.format(</span>
+                    &quot;Student with ID '%s' already has images&quot;,
+                    studentId
+            );
+<span class="nc" id="L71">            log.error(message);</span>
+<span class="nc" id="L72">            throw new InvalidStudentException(message);</span>
+        }
+
+<span class="fc" id="L75">        StudentImage studentImage = StudentImage.builder()</span>
+<span class="fc" id="L76">                .studentId(studentId)</span>
+<span class="fc" id="L77">                .passportImage(ImageCompressor.compressImage(passportImage))</span>
+<span class="fc" id="L78">                .selfieImage(ImageCompressor.compressImage(selfieImage))</span>
+<span class="fc" id="L79">                .build();</span>
+<span class="fc" id="L80">        log.info(&quot;Saving images for studentId &quot; + studentId);</span>
+<span class="fc" id="L81">        this.studentImageRepository.save(studentImage);</span>
+<span class="fc" id="L82">        return String.format(&quot;Images saved successfully for user '%s'&quot;, studentId);</span>
+    }
+
+    /**
+     * A method used to get
+     * all the student images from the database.
+     *
+     * @param page The page number.
+     * @param size The number of elements in a page.
+     * @return The images.
+     */
+    @Override
+    public Page&lt;StudentImage&gt; getAllImages(
+            final Integer page,
+            final Integer size
+    ) {
+<span class="fc" id="L98">        return this.studentImageRepository.findAll(</span>
+<span class="fc" id="L99">                PageRequest.of(page, size)</span>
+        );
+    }
+
+    /**
+     * A method used to delete
+     * the images from the database for
+     * a given student id.
+     *
+     * @param studentId The id of the student.
+     */
+    @Override
+    @Transactional
+    @CacheEvict(value = &quot;studentImage&quot;, key = &quot;#studentId&quot;)
+    public String deleteImage(
+            final Long studentId
+    ) {
+<span class="fc" id="L116">        Optional&lt;StudentImage&gt; studentImageOptional =</span>
+<span class="fc" id="L117">                this.studentImageRepository.findById(studentId);</span>
+
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (studentImageOptional.isPresent()) {</span>
+<span class="fc" id="L120">            this.studentImageRepository.deleteStudentImageByStudentId(</span>
+                    studentId
+            );
+<span class="fc" id="L123">            return String.format(</span>
+                    &quot;Images deleted successfully for user '%s'&quot;,
+                    studentId
+            );
+        } else {
+<span class="fc" id="L128">            log.error(String.format(</span>
+                    &quot;Student with the ID '%s' does not exist&quot;,
+                    studentId
+            ));
+<span class="fc" id="L132">            throw new StudentNotFoundException(</span>
+<span class="fc" id="L133">                    String.format(</span>
+                            &quot;Student with ID '%s' doesn't exist&quot;,
+                            studentId
+                    ),
+                    OperationType.DELETE
+            );
+        }
+    }
+
+    /**
+     * A method which is used to get
+     * the image for the given type and
+     * student id.
+     *
+     * @param studentId The id of the student.
+     * @param type The image type.
+     * @return The image.
+     */
+    @Override
+    public byte[] getImageForType(
+            final Long studentId,
+            final StudentImageType type
+    ) {
+<span class="fc bfc" id="L156" title="All 6 branches covered.">        if (type == null || !type.equals(StudentImageType.PASSPORT) &amp;&amp; !type.equals(StudentImageType.SELFIE)) {</span>
+<span class="fc" id="L157">            String message = &quot;Image type not provided or not valid!\nValid image types are: PASSPORT, SELFIE&quot;;</span>
+<span class="fc" id="L158">            log.error(message);</span>
+<span class="fc" id="L159">            throw new InvalidImageTypeException(message);</span>
+        }
+<span class="fc" id="L161">        Optional&lt;StudentImage&gt; studentImageOptional =</span>
+<span class="fc" id="L162">                this.studentImageRepository.findById(studentId);</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        if (studentImageOptional.isEmpty()) {</span>
+<span class="fc" id="L164">            String message = String.format(</span>
+                    &quot;Student with ID '%s' does not exist&quot;,
+                    studentId
+            );
+<span class="fc" id="L168">            throw new StudentNotFoundException(message, OperationType.READ);</span>
+        }
+<span class="pc bpc" id="L170" title="1 of 3 branches missed.">        return switch (type) {</span>
+<span class="fc" id="L171">            case PASSPORT -&gt; studentImageOptional</span>
+<span class="fc" id="L172">                                    .get()</span>
+<span class="fc" id="L173">                                    .getPassportImage();</span>
+<span class="fc" id="L174">            case SELFIE -&gt; studentImageOptional</span>
+<span class="fc" id="L175">                                    .get()</span>
+<span class="fc" id="L176">                                    .getSelfieImage();</span>
+<span class="nc" id="L177">            default -&gt; throw new InvalidImageTypeException(&quot;Invalid image type provided&quot;);</span>
+        };
+    }
+
+    /**
+     * A method which is used to change
+     * the image for the given type and student id.
+     *
+     * @param studentId The id of the student.
+     * @param imageType The image type.
+     * @param file The new image.
+     * @return The updated student image group.
+     */
+    @Override
+    @CachePut(value = &quot;studentImage&quot;, key = &quot;#studentId&quot;)
+    public StudentImage changeImage(
+            final Long studentId,
+            final StudentImageType imageType,
+            final MultipartFile file
+    ) {
+<span class="fc bfc" id="L197" title="All 2 branches covered.">        if (file == null) {</span>
+<span class="fc" id="L198">            String message = &quot;File not provided!&quot;;</span>
+<span class="fc" id="L199">            log.error(message);</span>
+<span class="fc" id="L200">            throw new InvalidDocumentException(message);</span>
+        }
+
+<span class="fc" id="L203">        StudentImage studentImage = this.studentImageRepository</span>
+<span class="fc" id="L204">                .findById(studentId)</span>
+<span class="fc" id="L205">                .orElseThrow(() -&gt; new StudentNotFoundException(</span>
+<span class="fc" id="L206">                        String.format(</span>
+                                &quot;Student with id '%s' does not exist&quot;,
+                                studentId
+                        ),
+                        OperationType.UPDATE
+                ));
+<span class="fc bfc" id="L212" title="All 3 branches covered.">        switch (imageType) {</span>
+            case SELFIE -&gt; {
+<span class="fc" id="L214">                log.info(&quot;Changing selfie image for student with ID: {}&quot;, studentId);</span>
+<span class="fc" id="L215">                studentImage.setSelfieImage(ImageCompressor.compressImage(file));</span>
+<span class="fc" id="L216">                return this.studentImageRepository.save(studentImage);</span>
+            }
+            case PASSPORT -&gt; {
+<span class="fc" id="L219">                log.info(&quot;Changing passport image for student with ID: {}&quot;, studentId);</span>
+<span class="fc" id="L220">                studentImage.setPassportImage(ImageCompressor.compressImage(file));</span>
+<span class="fc" id="L221">                return this.studentImageRepository.save(studentImage);</span>
+            }
+            default -&gt; {
+<span class="fc" id="L224">                String message = &quot;Image type not provided or not valid!\nValid image types are: PASSPORT, SELFIE&quot;;</span>
+<span class="fc" id="L225">                log.error(message);</span>
+<span class="fc" id="L226">                throw new InvalidImageTypeException(message);</span>
+            }
+        }
+    }
+
+    /**
+     * A method which is used to get
+     * the image for the given student ID.
+     *
+     * @param studentId The id of the student.
+     * @return The student's images.
+     */
+    @Override
+    @Cacheable(value = &quot;studentImage&quot;, key = &quot;#studentId&quot;)
+    public StudentImage getStudentImageById(final Long studentId) {
+<span class="fc" id="L241">        Optional&lt;StudentImage&gt; studentImageOptional = this.studentImageRepository</span>
+<span class="fc" id="L242">                .findById(studentId);</span>
+<span class="fc bfc" id="L243" title="All 2 branches covered.">        if (studentImageOptional.isEmpty()) {</span>
+<span class="fc" id="L244">            String message = String.format(</span>
+                    &quot;Student with the ID '%s' does not exist&quot;,
+                    studentId
+            );
+<span class="fc" id="L248">            log.error(message);</span>
+<span class="fc" id="L249">            throw new StudentNotFoundException(</span>
+                    message,
+                    OperationType.READ
+            );
+        }
+<span class="fc" id="L254">        return studentImageOptional.get();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

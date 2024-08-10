@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DateValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.util.validation</a> &gt; <span class="el_source">DateValidator.java</span></div><h1>DateValidator.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.util.validation;
+
+import com.markvarga21.studentmanager.exception.InvalidDateException;
+
+import java.time.LocalDate;
+
+/**
+ * A utility class which is used to validate dates.
+ */
+public final class DateValidator {
+    private DateValidator() {
+
+    }
+
+    /**
+     * Validates the birthdate.
+     *
+     * @param birthdate The birthdate to be validated.
+     */
+    public static void validateBirthdate(final LocalDate birthdate) {
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (birthdate.isAfter(LocalDate.now())) {</span>
+<span class="fc" id="L22">            throw new InvalidDateException(&quot;Birthdate cannot be in the future!&quot;);</span>
+        }
+<span class="fc" id="L24">    }</span>
+
+    /**
+     * Validates the passport date of issue.
+     *
+     * @param date The passport date of issue to be validated.
+     */
+    public static void validatePassportIssueDate(final LocalDate date) {
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (date.isAfter(LocalDate.now())) {</span>
+<span class="fc" id="L33">            throw new InvalidDateException(&quot;Passport date of issue cannot be in the future!&quot;);</span>
+        }
+<span class="fc" id="L35">    }</span>
+
+    /**
+     * Validates the passport date of expiry.
+     *
+     * @param date The passport date of expiry to be validated.
+     */
+    public static void validatePassportExpiryDate(final LocalDate date) {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (date.isBefore(LocalDate.now())) {</span>
+<span class="fc" id="L44">            throw new InvalidDateException(&quot;Passport date of expiry cannot be in the past!&quot;);</span>
+        }
+<span class="fc" id="L46">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

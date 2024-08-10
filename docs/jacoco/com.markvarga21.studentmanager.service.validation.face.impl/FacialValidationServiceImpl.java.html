@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FacialValidationServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.service.validation.face.impl</a> &gt; <span class="el_source">FacialValidationServiceImpl.java</span></div><h1>FacialValidationServiceImpl.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.service.validation.face.impl;
+
+import com.markvarga21.studentmanager.entity.FacialValidationData;
+import com.markvarga21.studentmanager.repository.FacialValidationDataRepository;
+import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+/**
+ * The {@code FacialValidationServiceImpl} class is used to manipulate
+ * facial validation data.
+ */
+@Service
+@RequiredArgsConstructor
+<span class="fc" id="L21">@Slf4j</span>
+public class FacialValidationServiceImpl implements FacialValidationService {
+    /**
+     * A repository which is used to access facial
+     * validation data.
+     */
+    private final FacialValidationDataRepository repository;
+
+    /**
+     * Saves the facial validation data in the database.
+     *
+     * @param data The facial validation data to be saved.
+     */
+    @Override
+    @Transactional
+    public void saveFacialValidationData(
+            final FacialValidationData data
+    ) {
+<span class="fc" id="L39">        Optional&lt;FacialValidationData&gt; facialValidationData</span>
+<span class="fc" id="L40">                = this.repository.getFacialValidationDataByPassportNumber(data.getPassportNumber());</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (facialValidationData.isPresent()) {</span>
+<span class="fc" id="L42">            this.repository.deleteFacialValidationDataByPassportNumber(data.getPassportNumber());</span>
+        }
+<span class="fc" id="L44">        this.repository.save(data);</span>
+<span class="fc" id="L45">    }</span>
+
+    /**
+     * Fetches the facial validation data by passport number.
+     *
+     * @param passportNumber The passport number of the facial validation data.
+     * @return The facial validation data.
+     */
+    @Override
+    public FacialValidationData getFacialValidationDataByPassportNumber(
+            final String passportNumber
+    ) {
+<span class="fc" id="L57">        Optional&lt;FacialValidationData&gt; facialValidationDataOptional = this.repository</span>
+<span class="fc" id="L58">                .getFacialValidationDataByPassportNumber(passportNumber);</span>
+<span class="fc" id="L59">        return facialValidationDataOptional.orElse(null);</span>
+    }
+
+    /**
+     * Retrieves all facial validation data.
+     *
+     * @param page The actual page.
+     * @param size The number of elements in a single page.
+     * @return All the facial validation data.
+     */
+    @Override
+    public Page&lt;FacialValidationData&gt; getAllFacialValidationData(
+            final Integer page,
+            final Integer size
+    ) {
+<span class="fc" id="L74">        return this.repository</span>
+<span class="fc" id="L75">                .findAll(PageRequest.of(page, size));</span>
+    }
+
+    /**
+     * Deletes a facial validation data by passport number.
+     *
+     * @param passportNumber The passport number of the facial validation data.
+     */
+    @Override
+    @Transactional
+    public String deleteFacialValidationDataByPassportNumber(
+            final String passportNumber
+    ) {
+<span class="fc" id="L88">        Optional&lt;FacialValidationData&gt; facialValidationDataOptional = this.repository</span>
+<span class="fc" id="L89">                .getFacialValidationDataByPassportNumber(passportNumber);</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if (facialValidationDataOptional.isEmpty()) {</span>
+<span class="nc" id="L91">            String message = &quot;Facial validation data not found!&quot;;</span>
+<span class="nc" id="L92">            log.error(message);</span>
+        }
+<span class="fc" id="L94">        this.repository</span>
+<span class="fc" id="L95">                .deleteFacialValidationDataByPassportNumber(passportNumber);</span>
+<span class="fc" id="L96">        return String.format(&quot;Facial validation data for passport number '%s' deleted successfully!&quot;, passportNumber);</span>
+    }
+
+    /**
+     * Sets the facial validity by passport number.
+     *
+     * @param passportNumber The passport number of the facial validation data.
+     */
+    @Override
+    @Transactional
+    public String setFacialValidationToValid(
+            final String passportNumber
+    ) {
+<span class="fc" id="L109">        FacialValidationData data =</span>
+<span class="fc" id="L110">            this.getFacialValidationDataByPassportNumber(passportNumber);</span>
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">        if (data == null) {</span>
+<span class="nc" id="L112">            log.info(&quot;Facial validation data not found, creating new one.&quot;);</span>
+<span class="nc" id="L113">            data = new FacialValidationData();</span>
+<span class="nc" id="L114">            data.setPassportNumber(passportNumber);</span>
+<span class="nc" id="L115">            data.setIsValid(true);</span>
+<span class="nc" id="L116">            data.setPercentage(1.0);</span>
+<span class="nc" id="L117">            this.repository.save(data);</span>
+        }
+<span class="fc" id="L119">        log.info(&quot;Setting facial validation data to valid.&quot;);</span>
+<span class="fc" id="L120">        data.setIsValid(true);</span>
+<span class="fc" id="L121">        data.setPercentage(1.0);</span>
+<span class="fc" id="L122">        this.repository.save(data);</span>
+<span class="fc" id="L123">        return String.format(&quot;Facial validation data for passport number '%s' set to valid!&quot;, passportNumber);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

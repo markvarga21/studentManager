@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PassportValidationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.controller</a> &gt; <span class="el_source">PassportValidationController.java</span></div><h1>PassportValidationController.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.controller;
+
+
+import com.markvarga21.studentmanager.dto.PassportValidationResponse;
+import com.markvarga21.studentmanager.dto.StudentDto;
+import com.markvarga21.studentmanager.entity.PassportValidationData;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
+import com.markvarga21.studentmanager.service.form.FormRecognizerService;
+import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ * A controller which is used to access
+ * validation (face and form) data.
+ */
+@RestController
+@RequestMapping(&quot;/api/v1/validations&quot;)
+@RequiredArgsConstructor
+@CrossOrigin
+<span class="fc" id="L41">@Slf4j</span>
+@Tag(
+    name = &quot;Validation services&quot;,
+    description = &quot;The validation related endpoints.&quot;
+)
+public class PassportValidationController {
+    /**
+     * A service which is used to access passport
+     * validation data.
+     */
+    private final PassportValidationService passportValidationService;
+
+    /**
+     * Form recognizer service.
+     */
+    private final FormRecognizerService formRecognizerService;
+
+    /**
+     * Retrieves all the passport validation data.
+     *
+     * @param page The page number.
+     * @param size The number of elements in a single page.
+     * @return A page containing passport validations.
+     */
+    @Operation(
+        summary = &quot;Retrieves all the passport validation data.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;A page of passport validation data.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = Page.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @GetMapping
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    public Page&lt;PassportValidationData&gt; getAllPassportValidationData(
+            @RequestParam(defaultValue = &quot;0&quot;) final Integer page,
+            @RequestParam(defaultValue = &quot;10&quot;) final Integer size
+    ) {
+<span class="fc" id="L85">        return this.passportValidationService</span>
+<span class="fc" id="L86">                .getAllPassportValidationData(page, size);</span>
+    }
+
+    /**
+     * Deletes a passport validation data with the given ID.
+     *
+     * @param passportNumber The passport number of the student.
+     * @return A {@code ResponseEntity} object containing some feedback.
+     */
+    @Operation(
+        summary = &quot;Deletes the passport validation data with the given ID.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;A status message about the deletion.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @DeleteMapping(&quot;/{passportNumber}&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;String&gt; deletePassportValidationData(
+            @PathVariable(&quot;passportNumber&quot;) final String passportNumber
+    ) {
+<span class="nc" id="L114">        String message = this.passportValidationService</span>
+<span class="nc" id="L115">                .deletePassportValidationData(passportNumber);</span>
+<span class="nc" id="L116">        return new ResponseEntity&lt;&gt;(message, HttpStatus.OK);</span>
+    }
+
+    /**
+     * Validates the data entered by the user against the data
+     * which can be found on the passport.
+     *
+     * @param studentJson The student itself.
+     * @param passport The photo of the passport.
+     * @return A {@code PassportValidationResponse} object.
+     */
+    @Operation(
+        summary = &quot;Validates the data entered by the user against the data which can be found on the passport.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;The validation information for the given passport.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PassportValidationResponse.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PostMapping(&quot;/validate&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;PassportValidationResponse&gt; validatePassport(
+            @RequestParam final String studentJson,
+            @RequestParam(&quot;passport&quot;) final MultipartFile passport
+    ) {
+<span class="nc" id="L147">        PassportValidationResponse passportValidationResponse =</span>
+                this.formRecognizerService
+<span class="nc" id="L149">                        .validatePassport(studentJson, passport);</span>
+<span class="nc" id="L150">        return new ResponseEntity&lt;&gt;(passportValidationResponse, HttpStatus.OK);</span>
+    }
+
+    /**
+     * Validates the passport manually.
+     *
+     * @param studentId The id of the student.
+     * @return A {@code ResponseEntity} containing some feedback.
+     */
+    @Operation(
+        summary = &quot;Validates the passport manually.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;A status message of manually setting the validity.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PostMapping(&quot;/validateManually&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;String&gt; validatePassportManually(
+            @RequestParam(&quot;studentId&quot;) final Long studentId
+    ) {
+<span class="fc" id="L178">        log.info(</span>
+                &quot;Manually validating passport for user with ID '{}'&quot;,
+                studentId
+        );
+<span class="fc" id="L182">        String message = this.formRecognizerService</span>
+<span class="fc" id="L183">                .validatePassportManually(studentId);</span>
+<span class="fc" id="L184">        return new ResponseEntity&lt;&gt;(message, HttpStatus.OK);</span>
+    }
+
+    /**
+     * Checks whether the user is valid or not.
+     *
+     * @param passportNumber The passport number.
+     * @return A {@code ResponseEntity} containing some feedback.
+     */
+    @Operation(
+        summary = &quot;Checks if the student is valid or not.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;The validity of the student.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = Boolean.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @GetMapping(&quot;/isUserValid/{passportNumber}&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    public ResponseEntity&lt;Boolean&gt; isUserValid(
+            @PathVariable(&quot;passportNumber&quot;) final String passportNumber
+    ) {
+<span class="fc" id="L212">        return new ResponseEntity&lt;&gt;(</span>
+<span class="fc" id="L213">                this.formRecognizerService.isUserValid(passportNumber),</span>
+                HttpStatus.OK
+        );
+    }
+
+    /**
+     * Creates a new passport validation data.
+     *
+     * @param passportValidationData The passport validation data itself.
+     * @return The recently created passport validation data.
+     */
+    @Operation(
+        summary = &quot;Creates a new passport validation data.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;The generated passport validation data.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PassportValidationData.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PostMapping
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    public ResponseEntity&lt;PassportValidationData&gt; createPassportValidationData(
+            @RequestBody final PassportValidationData passportValidationData
+    ) {
+<span class="fc" id="L243">        PassportValidationData createdPassportValidationData =</span>
+                this.passportValidationService
+<span class="fc" id="L245">                        .createPassportValidationData(passportValidationData);</span>
+<span class="fc" id="L246">        return new ResponseEntity&lt;&gt;(</span>
+                createdPassportValidationData,
+                HttpStatus.CREATED
+        );
+    }
+
+    /**
+     * Retrieves the {@code StudentDto} object from
+     * the validation data identified by the passport number.
+     *
+     * @param passportNumber The passport number of the student.
+     * @return The {@code StudentDto} object.
+     */
+    @Operation(
+        summary = &quot;Retrieves StudentDto object from the validation data identified by passport number.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;The fetched passport validation data for the student.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = StudentDto.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @GetMapping(&quot;/{passportNumber}&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;StudentDto&gt; getPassportValidationByPassportNumber(
+            @PathVariable(&quot;passportNumber&quot;) final String passportNumber
+    ) {
+<span class="fc" id="L278">        StudentDto studentDto = this.passportValidationService</span>
+<span class="fc" id="L279">                .getStudentFromPassportValidation(passportNumber);</span>
+<span class="fc" id="L280">        return new ResponseEntity&lt;&gt;(studentDto, HttpStatus.OK);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

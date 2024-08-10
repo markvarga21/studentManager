@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TokenManagementServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.service.auth.impl</a> &gt; <span class="el_source">TokenManagementServiceImpl.java</span></div><h1>TokenManagementServiceImpl.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.service.auth.impl;
+
+import com.markvarga21.studentmanager.entity.TokenInfo;
+import com.markvarga21.studentmanager.exception.TokenNotFoundException;
+import com.markvarga21.studentmanager.repository.TokenInfoRepository;
+import com.markvarga21.studentmanager.service.auth.TokenManagementService;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+/**
+ * Service for managing tokens.
+ */
+@Service
+<span class="fc" id="L20">@Slf4j</span>
+@RequiredArgsConstructor
+@Getter
+public class TokenManagementServiceImpl implements TokenManagementService {
+    /**
+     * The token database.
+     */
+    private final TokenInfoRepository tokenInfoRepository;
+
+    /**
+     * The expiration time for the JWT token
+     * measured in milliseconds.
+     */
+    @Value(&quot;${jwt.expiration.time.minutes}&quot;)
+    private Long expirationTimeInMinutes;
+
+    /**
+     * Blacklist a token for revoking further
+     * usages of it.
+     *
+     * @param token The token to blacklist.
+     */
+    @Override
+    public void blacklistToken(final String token) {
+<span class="fc" id="L44">        Optional&lt;TokenInfo&gt; tokenInfo = this.tokenInfoRepository</span>
+<span class="fc" id="L45">                .getTokenInfoByToken(token);</span>
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">        if (tokenInfo.isPresent() &amp;&amp; tokenInfo.get().isBlacklisted()) {</span>
+<span class="fc" id="L47">            String message = &quot;Token already blacklisted.&quot;;</span>
+<span class="fc" id="L48">            log.error(message);</span>
+<span class="fc" id="L49">            throw new TokenNotFoundException(message);</span>
+        }
+<span class="fc" id="L51">        TokenInfo tokenToUpdate = tokenInfo.get();</span>
+<span class="fc" id="L52">        tokenToUpdate.setBlacklisted(true);</span>
+<span class="fc" id="L53">        this.tokenInfoRepository.save(tokenToUpdate);</span>
+<span class="fc" id="L54">        log.info(&quot;Token blacklisted.&quot;);</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Checks if a token is blacklisted or not.
+     *
+     * @param token The token to check.
+     * @return {@code true} if the token is blacklisted, {@code false} otherwise.
+     */
+    @Override
+    public boolean isBlacklisted(final String token) {
+<span class="fc" id="L65">        Optional&lt;TokenInfo&gt; tokenInfo = this.tokenInfoRepository</span>
+<span class="fc" id="L66">                .getTokenInfoByToken(token);</span>
+<span class="fc" id="L67">        return tokenInfo.get().isBlacklisted();</span>
+    }
+
+    /**
+     * Adds a token to the database.
+     *
+     * @param token The token to add.
+     */
+    @Override
+    public void addToken(final String token) {
+<span class="fc" id="L77">        TokenInfo tokenInfo = TokenInfo.builder()</span>
+<span class="fc" id="L78">                .token(token)</span>
+<span class="fc" id="L79">                .blacklisted(false)</span>
+<span class="fc" id="L80">                .issueDate(LocalDateTime.now())</span>
+<span class="fc" id="L81">                .build();</span>
+<span class="fc" id="L82">        this.tokenInfoRepository.save(tokenInfo);</span>
+<span class="fc" id="L83">        log.info(&quot;Token saved in the database.&quot;);</span>
+<span class="fc" id="L84">    }</span>
+
+    /**
+     * Deletes expired tokens from the database.
+     */
+    @Override
+    public void deleteExpiredTokens() {
+<span class="fc" id="L91">        this.tokenInfoRepository</span>
+<span class="fc" id="L92">                .findAll()</span>
+<span class="fc" id="L93">                .stream()</span>
+<span class="fc" id="L94">                .filter(tokenInfo -&gt; tokenInfo</span>
+<span class="fc" id="L95">                        .getIssueDate()</span>
+<span class="fc" id="L96">                        .isBefore(</span>
+<span class="fc" id="L97">                            LocalDateTime.now()</span>
+<span class="fc" id="L98">                                .minusMinutes(this.getExpirationTimeInMinutes())</span>
+                        ))
+<span class="fc" id="L100">                .forEach(this.tokenInfoRepository::delete);</span>
+<span class="fc" id="L101">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

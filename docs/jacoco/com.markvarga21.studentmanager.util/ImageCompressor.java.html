@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageCompressor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.util</a> &gt; <span class="el_source">ImageCompressor.java</span></div><h1>ImageCompressor.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.util;
+
+import com.markvarga21.studentmanager.exception.PassportNotFoundException;
+import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+/**
+ * A class which is used to compress images.
+ */
+<span class="fc" id="L16">@Slf4j</span>
+public final class ImageCompressor {
+    private ImageCompressor() { }
+
+    /**
+     * The scale of which the image is decreased
+     * in each step.
+     */
+    public static final float SCALE_DECREASE_STEP = 0.1F;
+
+    /**
+     * The maximum file size accepted by the database in bytes.
+     */
+    public static final int DEFAULT_SIZE_LIMIT = 4_194_304;
+
+    /**
+     * Converts the given image to a byte array.
+     *
+     * @param bi The image to be converted.
+     * @param format The format of the image.
+     * @return The byte array of the image.
+     * @throws IOException If the image cannot be written.
+     */
+    @Generated
+    public static byte[] toByteArray(
+            final BufferedImage bi,
+            final String format
+    )
+            throws IOException {
+
+        ByteArrayOutputStream byteArrayOutputStream =
+                new ByteArrayOutputStream();
+        ImageIO.write(bi, format, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    /**
+     * Compresses the given image.
+     *
+     * @param image The image to compress.
+     * @return The compressed image.
+     */
+    public static byte[] compressImage(final MultipartFile image) {
+        try {
+<span class="fc" id="L60">            byte[] imageBytes = image.getBytes();</span>
+<span class="fc" id="L61">            long sizeInBytes = imageBytes.length;</span>
+<span class="fc" id="L62">            log.info(</span>
+                    &quot;File size before compression: {}B&quot;,
+<span class="fc" id="L64">                    getFileSize(imageBytes)</span>
+            );
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">            if (sizeInBytes &lt;= DEFAULT_SIZE_LIMIT) {</span>
+<span class="nc" id="L67">                return imageBytes;</span>
+            }
+
+<span class="fc" id="L70">            log.error(&quot;File size is too big, compressing...&quot;);</span>
+<span class="fc" id="L71">            float scale = 1.0F;</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">            while (sizeInBytes &gt; DEFAULT_SIZE_LIMIT) {</span>
+<span class="fc" id="L73">                log.info(</span>
+                        &quot;Current file size: {}MB&quot;,
+<span class="fc" id="L75">                        getFileSize(imageBytes)</span>
+                );
+<span class="fc" id="L77">                BufferedImage bufferedImage = Thumbnails</span>
+<span class="fc" id="L78">                        .of(image.getInputStream())</span>
+<span class="fc" id="L79">                        .scale(scale)</span>
+<span class="fc" id="L80">                        .asBufferedImage();</span>
+<span class="fc" id="L81">                imageBytes = toByteArray(bufferedImage, &quot;jpg&quot;);</span>
+<span class="fc" id="L82">                sizeInBytes = imageBytes.length;</span>
+<span class="fc" id="L83">                scale -= SCALE_DECREASE_STEP;</span>
+<span class="fc" id="L84">            }</span>
+
+<span class="fc" id="L86">            log.info(</span>
+                    &quot;File size after compression: {}B&quot;,
+<span class="fc" id="L88">                    getFileSize(imageBytes)</span>
+            );
+
+<span class="fc" id="L91">            return imageBytes;</span>
+<span class="nc" id="L92">        } catch (IOException e) {</span>
+<span class="nc" id="L93">            String message = &quot;The file could not be found.&quot;;</span>
+<span class="nc" id="L94">            throw new PassportNotFoundException(message);</span>
+        }
+    }
+
+    /**
+     * Returns the size of the given file in MB.
+     *
+     * @param file The file to get the size of.
+     * @return The size of the given file in MB.
+     */
+    @Generated
+    private static String getFileSize(final byte[] file) {
+        return String.format(String.valueOf(file.length));
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

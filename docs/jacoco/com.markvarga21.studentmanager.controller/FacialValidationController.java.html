@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FacialValidationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.controller</a> &gt; <span class="el_source">FacialValidationController.java</span></div><h1>FacialValidationController.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.controller;
+
+import com.markvarga21.studentmanager.entity.FacialValidationData;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
+import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * A controller which is used to make facial validations.
+ */
+@RestController
+@RequestMapping(&quot;/api/v1/facialValidations&quot;)
+@RequiredArgsConstructor
+@CrossOrigin
+@Tag(
+    name = &quot;Facial validation services&quot;,
+    description = &quot;The facial validation related endpoints.&quot;
+)
+public class FacialValidationController {
+    /**
+     * A service which is used to access facial
+     * validation data.
+     */
+    private final FacialValidationService facialValidationService;
+
+    /**
+     * Retrieves all the facial validation data.
+     *
+     * @param page The page number.
+     * @param size The number of elements inside a single page.
+     * @return A page storing facial validations.
+     */
+    @Operation(
+        summary = &quot;Retrieves all the facial validation data.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;A page of facial validation data.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = Page.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @GetMapping
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    public Page&lt;FacialValidationData&gt; getAllFacialValidationData(
+            @RequestParam(defaultValue = &quot;0&quot;) final Integer page,
+            @RequestParam(defaultValue = &quot;10&quot;) final Integer size
+    ) {
+<span class="fc" id="L71">        return this.facialValidationService</span>
+<span class="fc" id="L72">                .getAllFacialValidationData(page, size);</span>
+    }
+
+    /**
+     * Retrieves the facial validation data for the given passport number.
+     *
+     * @param passportNumber The passport number of the student.
+     * @return The facial validation data.
+     */
+    @SuppressWarnings(&quot;checkstyle:LineLength&quot;)
+    @Operation(
+        summary = &quot;Retrieves the facial validation data for the given passport number.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;The fetched passport validation data.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = FacialValidationData.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @GetMapping(&quot;/{passportNumber}&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    public ResponseEntity&lt;FacialValidationData&gt; getFacialValidationDataByPassportNumber(
+            @PathVariable final String passportNumber
+    ) {
+<span class="fc" id="L101">        FacialValidationData facialValidationData = this.facialValidationService</span>
+<span class="fc" id="L102">                .getFacialValidationDataByPassportNumber(passportNumber);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (facialValidationData == null) {</span>
+<span class="fc" id="L104">            return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</span>
+        }
+<span class="fc" id="L106">        return new ResponseEntity&lt;&gt;(facialValidationData, HttpStatus.OK);</span>
+    }
+
+    /**
+     * Deletes a facial validation data with the given passport number.
+     *
+     * @param passportNumber The passport number of the student.
+     * @return A message which indicates whether the
+     * deletion was successful or not.
+     */
+    @Operation(
+        summary = &quot;Deletes a facial validation data for the given passport number.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;An informational message of the deletion.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @DeleteMapping(&quot;/{passportNumber}&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;String&gt; deleteFacialValidationDataByPassportNumber(
+            @PathVariable final String passportNumber
+    ) {
+<span class="fc" id="L135">        String message = this.facialValidationService</span>
+<span class="fc" id="L136">                .deleteFacialValidationDataByPassportNumber(passportNumber);</span>
+<span class="fc" id="L137">        return new ResponseEntity&lt;&gt;(message, HttpStatus.OK);</span>
+    }
+
+    /**
+     * Sets the facial validation data to valid.
+     *
+     * @param passportNumber The passport number of the student.
+     * @return A message which indicates whether the operation
+     * was successful or not.
+     */
+    @Operation(
+        summary = &quot;Sets the facial validation data to valid.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;A status message.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PostMapping(&quot;/setFacialValidationDataToValid&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;String&gt; setFacialValidationDataToValid(
+            @RequestParam final String passportNumber
+    ) {
+<span class="fc" id="L166">        String message = this.facialValidationService</span>
+<span class="fc" id="L167">                .setFacialValidationToValid(passportNumber);</span>
+<span class="fc" id="L168">        return new ResponseEntity&lt;&gt;(message, HttpStatus.OK);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

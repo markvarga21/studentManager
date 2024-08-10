@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DateDeserializer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.util</a> &gt; <span class="el_source">DateDeserializer.java</span></div><h1>DateDeserializer.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.util;
+
+import com.markvarga21.studentmanager.exception.InvalidDateFormatException;
+import lombok.extern.slf4j.Slf4j;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
+import static java.time.ZoneId.systemDefault;
+
+/**
+ * A utility class which is used to deserialize the
+ * {@code String} representation of a date.
+ */
+<span class="fc" id="L17">@Slf4j</span>
+public final class DateDeserializer {
+    /**
+     * The length of the standard passport date components.
+     */
+    public static final int PASSPORT_DATE_COMPONENT_LENGTH = 3;
+
+    /**
+     * The predefined date formats.
+     */
+<span class="fc" id="L27">    private static final String[] DATE_FORMATS = {</span>
+            &quot;yyyy/MM/dd&quot;,
+            &quot;yyyy-MM-dd&quot;,
+            &quot;yyyy.MM.dd&quot;,
+            &quot;dd/MM/yyyy&quot;,
+            &quot;dd-MM-yyyy&quot;,
+            &quot;dd.MM.yyyy&quot;,
+            &quot;dd/MM/yy&quot;,
+            &quot;dd-MM-yy&quot;,
+            &quot;dd.MM.yy&quot;,
+            &quot;dd MMM yy&quot;,
+            &quot;dd MMM yyyy&quot;,
+    };
+
+    private DateDeserializer() {
+
+    }
+
+    /**
+     * Maps the {@code String} representation of a date
+     * to a {@code LocalDate} object.
+     *
+     * @param dateString The {@code String} representation of a date.
+     * @return The converted {@code LocalDate} object.
+     */
+    public static LocalDate mapDateStringToLocalDate(
+            final String dateString
+    ) {
+<span class="pc bpc" id="L55" title="1 of 4 branches missed.">        if (dateString == null || dateString.isEmpty()) {</span>
+<span class="fc" id="L56">            log.error(&quot;Date string is null or empty.&quot;);</span>
+<span class="fc" id="L57">            return null;</span>
+        }
+<span class="fc" id="L59">        log.info(&quot;Date to deserialize: {}&quot;, dateString);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (dateString.split(&quot;/&quot;).length == 2</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">                || dateString.split(&quot; &quot;).length == PASSPORT_DATE_COMPONENT_LENGTH) {</span>
+<span class="fc" id="L62">            return mapStandardPassportDateStringToLocalDate(dateString);</span>
+        }
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        for (String dateFormat : DATE_FORMATS) {</span>
+            try {
+<span class="fc" id="L66">                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateFormat);</span>
+<span class="fc" id="L67">                LocalDate passportDate = LocalDate.parse(dateString, dateTimeFormatter);</span>
+<span class="fc" id="L68">                log.info(&quot;Date from passport: {}&quot;, passportDate);</span>
+<span class="fc" id="L69">                return passportDate;</span>
+<span class="fc" id="L70">            } catch (Exception e) {</span>
+                // Ignore.
+            }
+        }
+<span class="fc" id="L74">        throw new InvalidDateFormatException(dateString);</span>
+    }
+
+    /**
+     * Maps a standard passport date string to a {@code LocalDate}.
+     *
+     * @param dateString The date string.
+     * @return The mapped {@code LocalDate} from the string itself.
+     */
+    public static LocalDate mapStandardPassportDateStringToLocalDate(
+            final String dateString
+    ) {
+        String formattedDate;
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (dateString.contains(&quot;/&quot;)) {</span>
+<span class="fc" id="L88">            String[] birthDateComponents = dateString.split(&quot;/&quot;);</span>
+<span class="fc" id="L89">            String day = birthDateComponents[0].strip().charAt(0) + String.valueOf(birthDateComponents[0].strip().charAt(1));</span>
+<span class="fc" id="L90">            String month = birthDateComponents[1].strip().split(&quot; &quot;)[0].strip();</span>
+<span class="fc" id="L91">            String year = birthDateComponents[1].strip().split(&quot; &quot;)[1].strip();</span>
+<span class="fc" id="L92">            formattedDate = String.format(&quot;%s %s %s&quot;, day, month, year);</span>
+<span class="fc" id="L93">        } else {</span>
+<span class="fc" id="L94">            formattedDate = dateString;</span>
+        }
+
+<span class="fc" id="L97">        log.info(&quot;Formatted standard passport date: {}&quot;, formattedDate);</span>
+
+<span class="fc" id="L99">        SimpleDateFormat[] formatters = {</span>
+                new SimpleDateFormat(&quot;dd MMM yy&quot;, Locale.ENGLISH),
+                new SimpleDateFormat(&quot;dd MMM yyyy&quot;, Locale.ENGLISH),
+        };
+
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        for (SimpleDateFormat formatter : formatters) {</span>
+            try {
+<span class="fc" id="L106">                return formatter</span>
+<span class="fc" id="L107">                        .parse(formattedDate)</span>
+<span class="fc" id="L108">                        .toInstant()</span>
+<span class="fc" id="L109">                        .atZone(systemDefault())</span>
+<span class="fc" id="L110">                        .toLocalDate();</span>
+<span class="nc" id="L111">            } catch (Exception e) {</span>
+<span class="nc" id="L112">                log.error(&quot;Invalid date format: {}&quot;, formattedDate);</span>
+            }
+        }
+<span class="nc" id="L115">        throw new InvalidDateFormatException(formattedDate);</span>
+    }
+
+    /**
+     * Maps a {@code LocalDate} object to a {@code String}.
+     *
+     * @param date The {@code LocalDate} object.
+     * @return The {@code String} representation of the date.
+     */
+    public static String mapLocalDateToDateString(final LocalDate date) {
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        if (date == null) {</span>
+<span class="nc" id="L126">            return &quot;&quot;;</span>
+        }
+<span class="fc" id="L128">        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd&quot;);</span>
+<span class="fc" id="L129">        return date.format(formatter);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

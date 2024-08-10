@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.mapping</a> &gt; <span class="el_source">StudentMapper.java</span></div><h1>StudentMapper.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.mapping;
+
+import com.google.gson.Gson;
+import com.markvarga21.studentmanager.util.validation.DateValidator;
+import com.markvarga21.studentmanager.dto.StudentDto;
+import com.markvarga21.studentmanager.entity.Student;
+import com.markvarga21.studentmanager.util.DateDeserializer;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+
+/**
+ * A utility class which is used for mapping between
+ * the application's student entities and DTOs and backwards.
+ */
+@Component
+@RequiredArgsConstructor
+public class StudentMapper {
+    /**
+     * A GSON converter.
+     */
+    private final Gson gson;
+
+    /**
+     * Maps a {@code StudentDto} to a {@code Student} entity.
+     *
+     * @param studentDto The DTO object to be mapped to an entity class.
+     * @return The converted {@code Student} entity.
+     */
+    public Student mapStudentDtoToEntity(final StudentDto studentDto) {
+<span class="fc" id="L32">        LocalDate birthDate = DateDeserializer</span>
+<span class="fc" id="L33">                .mapDateStringToLocalDate(studentDto.getBirthDate());</span>
+<span class="fc" id="L34">        LocalDate passportDateOfIssue = DateDeserializer</span>
+<span class="fc" id="L35">                .mapDateStringToLocalDate(studentDto.getPassportDateOfIssue());</span>
+<span class="fc" id="L36">        LocalDate passportDateOfExpiry = DateDeserializer</span>
+<span class="fc" id="L37">                .mapDateStringToLocalDate(studentDto.getPassportDateOfExpiry());</span>
+
+<span class="fc" id="L39">        DateValidator.validateBirthdate(birthDate);</span>
+<span class="fc" id="L40">        DateValidator.validatePassportIssueDate(passportDateOfIssue);</span>
+<span class="fc" id="L41">        DateValidator.validatePassportExpiryDate(passportDateOfExpiry);</span>
+
+<span class="fc" id="L43">        return Student.builder()</span>
+<span class="fc" id="L44">                .id(studentDto.getId())</span>
+<span class="fc" id="L45">                .firstName(studentDto.getFirstName())</span>
+<span class="fc" id="L46">                .lastName(studentDto.getLastName())</span>
+<span class="fc" id="L47">                .birthDate(birthDate)</span>
+<span class="fc" id="L48">                .passportDateOfIssue(passportDateOfIssue)</span>
+<span class="fc" id="L49">                .passportDateOfExpiry(passportDateOfExpiry)</span>
+<span class="fc" id="L50">                .gender(studentDto.getGender())</span>
+<span class="fc" id="L51">                .passportNumber(studentDto.getPassportNumber())</span>
+<span class="fc" id="L52">                .placeOfBirth(studentDto.getPlaceOfBirth())</span>
+<span class="fc" id="L53">                .countryOfCitizenship(studentDto.getCountryOfCitizenship())</span>
+<span class="fc" id="L54">                .valid(studentDto.isValid())</span>
+<span class="fc" id="L55">                .build();</span>
+    }
+
+    /**
+     * Maps an {@code Student} entity to an {@code StudentDto}.
+     *
+     * @param student The entity object to be mapped to a DTO class.
+     * @return The converted {@code StudentDto}.
+     */
+    public StudentDto mapStudentEntityToDto(final Student student) {
+<span class="fc" id="L65">        LocalDate birthDate = student.getBirthDate();</span>
+<span class="fc" id="L66">        LocalDate passportDateOfIssue = student.getPassportDateOfIssue();</span>
+<span class="fc" id="L67">        LocalDate passportDateOfExpiry = student.getPassportDateOfExpiry();</span>
+
+<span class="fc" id="L69">        DateValidator.validateBirthdate(birthDate);</span>
+<span class="fc" id="L70">        DateValidator.validatePassportIssueDate(passportDateOfIssue);</span>
+<span class="fc" id="L71">        DateValidator.validatePassportExpiryDate(passportDateOfExpiry);</span>
+
+<span class="fc" id="L73">        return StudentDto.builder()</span>
+<span class="fc" id="L74">                .id(student.getId())</span>
+<span class="fc" id="L75">                .firstName(student.getFirstName())</span>
+<span class="fc" id="L76">                .lastName(student.getLastName())</span>
+<span class="fc" id="L77">                .birthDate(DateDeserializer.mapLocalDateToDateString(birthDate))</span>
+<span class="fc" id="L78">                .passportDateOfIssue(DateDeserializer.mapLocalDateToDateString(passportDateOfIssue))</span>
+<span class="fc" id="L79">                .passportDateOfExpiry(DateDeserializer.mapLocalDateToDateString(passportDateOfExpiry))</span>
+<span class="fc" id="L80">                .passportNumber(student.getPassportNumber())</span>
+<span class="fc" id="L81">                .gender(student.getGender())</span>
+<span class="fc" id="L82">                .placeOfBirth(student.getPlaceOfBirth())</span>
+<span class="fc" id="L83">                .countryOfCitizenship(student.getCountryOfCitizenship())</span>
+<span class="fc" id="L84">                .valid(student.isValid())</span>
+<span class="fc" id="L85">                .build();</span>
+    }
+
+    /**
+     * Maps a JSON string to a {@code StudentDto}.
+     *
+     * @param studentJson the JSON string to be mapped to a DTO class.
+     * @return the converted {@code StudentDto}.
+     */
+    public StudentDto mapJsonToDto(final String studentJson) {
+<span class="fc" id="L95">        return this.gson.fromJson(studentJson, StudentDto.class);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

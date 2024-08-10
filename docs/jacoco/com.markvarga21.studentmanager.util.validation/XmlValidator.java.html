@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XmlValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.util.validation</a> &gt; <span class="el_source">XmlValidator.java</span></div><h1>XmlValidator.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.util.validation;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.xml.sax.SAXException;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/**
+ * A utility class which is used to validate XML content.
+ */
+@Component
+<span class="fc" id="L21">@Slf4j</span>
+<span class="fc" id="L22">public class XmlValidator {</span>
+    /**
+     * The path to the XML schema.
+     */
+    private static final String XML_SCHEMA_PATH = &quot;src/main/resources/schemas/students.xsd&quot;;
+
+    /**
+     * Validates the XML content.
+     *
+     * @param xml The XML content to be validated.
+     * @return Whether the XML content is valid.
+     */
+    public boolean isXmlValid(final String xml) throws IOException {
+<span class="fc" id="L35">        Path tempFile = Files.createTempFile(&quot;temp&quot;, &quot;.xml&quot;);</span>
+<span class="fc" id="L36">        Files.writeString(tempFile, xml);</span>
+<span class="fc" id="L37">        SchemaFactory factory = SchemaFactory</span>
+<span class="fc" id="L38">                .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);</span>
+<span class="fc" id="L39">        File xmlSchema = new File(XML_SCHEMA_PATH);</span>
+        try {
+<span class="fc" id="L41">            Schema schema = factory.newSchema(xmlSchema);</span>
+<span class="fc" id="L42">            Validator validator = schema.newValidator();</span>
+<span class="fc" id="L43">            validator.validate(new StreamSource(tempFile.toFile()));</span>
+<span class="fc" id="L44">        } catch (SAXException e) {</span>
+<span class="fc" id="L45">            log.error(&quot;Invalid XML content: &quot; + e.getMessage());</span>
+<span class="fc" id="L46">            return false;</span>
+<span class="fc" id="L47">        }</span>
+<span class="fc" id="L48">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

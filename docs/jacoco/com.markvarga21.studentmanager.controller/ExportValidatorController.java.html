@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExportValidatorController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.controller</a> &gt; <span class="el_source">ExportValidatorController.java</span></div><h1>ExportValidatorController.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.controller;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
+import com.markvarga21.studentmanager.util.validation.JsonValidator;
+import com.markvarga21.studentmanager.util.validation.XmlValidator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * A controller class, which is used to validate exported
+ * XML and JSON data with predefined schemas.
+ */
+@RequiredArgsConstructor
+@RestController
+@RequestMapping(&quot;/api/v1/export&quot;)
+@CrossOrigin
+<span class="fc" id="L31">@Slf4j</span>
+@Tag(
+    name = &quot;Export validations&quot;,
+    description = &quot;A util controller which validates the exported XML and JSON data.&quot;
+)
+public class ExportValidatorController {
+    /**
+     * The invalid data status code.
+     */
+<span class="fc" id="L40">    private static final Integer INVALID_DATA = 500;</span>
+    /**
+     * The XML validator.
+     */
+    private final XmlValidator xmlValidator;
+
+    /**
+     * The JSON validator.
+     */
+    private final JsonValidator jsonValidator;
+
+    /**
+     * Validates the exported XML data.
+     *
+     * @param xml The exported XML data.
+     * @return The validation result.
+     */
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PostMapping(&quot;/validate/xml&quot;)
+    @Operation(
+        summary = &quot;Validates an XML document.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;The validity of the provided XML document.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = Boolean.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+    }
+    )
+    public ResponseEntity&lt;Boolean&gt; validateXmlExport(
+            @RequestBody final String xml
+    ) {
+<span class="fc" id="L76">        log.info(&quot;Validating XML data.&quot;);</span>
+        try {
+<span class="fc" id="L78">            return ResponseEntity.ok(this.xmlValidator.isXmlValid(xml));</span>
+<span class="fc" id="L79">        } catch (Exception e) {</span>
+<span class="fc" id="L80">            return ResponseEntity</span>
+<span class="fc" id="L81">                    .status(INVALID_DATA)</span>
+<span class="fc" id="L82">                    .body(false);</span>
+        }
+    }
+
+    /**
+     * Validates the exported JSON data.
+     *
+     * @param json The exported JSON data.
+     * @return The validation result.
+     */
+    @PostMapping(&quot;/validate/json&quot;)
+    @Operation(
+        summary = &quot;Validates a JSON document.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;The validity of the provided JSON document.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = Boolean.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;Boolean&gt; validateJsonExport(@RequestBody final JsonNode json) {
+        try {
+<span class="fc" id="L110">            return ResponseEntity.ok(this.jsonValidator.isJsonValid(json));</span>
+<span class="fc" id="L111">        } catch (Exception e) {</span>
+<span class="fc" id="L112">            return ResponseEntity</span>
+<span class="fc" id="L113">                    .status(INVALID_DATA)</span>
+<span class="fc" id="L114">                    .body(false);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
