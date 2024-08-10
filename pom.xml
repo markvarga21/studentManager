@@ -218,8 +218,15 @@
 						</goals>
 					</execution>
 					<execution>
-						<id>report</id>
+						<id>test-report</id>
 						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>generate-jacoco-report</id>
+						<phase>install</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
@@ -266,17 +273,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<id>javadoc</id>
-						<goals>
-							<goal>javadoc</goal>
-						</goals>
-						<configuration>
-							<reportOutputDirectory>${project.basedir}/docs/javadoc</reportOutputDirectory>
-						</configuration>
-					</execution>
-				</executions>
+				<configuration>
+					<outputDirectory>${project.basedir}/docs/javadoc</outputDirectory>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
