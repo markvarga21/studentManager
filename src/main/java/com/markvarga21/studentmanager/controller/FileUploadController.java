@@ -4,6 +4,8 @@ import com.azure.core.annotation.QueryParam;
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
 import com.markvarga21.studentmanager.entity.StudentImage;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
 import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
@@ -11,6 +13,9 @@ import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
 import com.markvarga21.studentmanager.util.StudentImageType;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -82,7 +87,18 @@ public class FileUploadController {
      * @return A page containing the student's images.
      */
     @Operation(
-        summary = "Retrieves all the images."
+        summary = "Retrieves all the images.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A page of student images.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -102,7 +118,18 @@ public class FileUploadController {
      * was successful or not.
      */
     @Operation(
-        summary = "Deletes the image with the given student ID."
+        summary = "Deletes the image with the given student ID.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A status message of the deletion.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @DeleteMapping("/{studentId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -122,7 +149,18 @@ public class FileUploadController {
      * @return The student's image of the specified type.
      */
     @Operation(
-        summary = "Retrieves the image of a specified type."
+        summary = "Retrieves the image of a specified type.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The fetched image for the given type.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Byte.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @GetMapping("/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -139,7 +177,7 @@ public class FileUploadController {
     }
 
     /**
-     * Uploades both images for the given student identified
+     * Uploads both images for the given student identified
      * by their id.
      *
      * @param studentId The id of the student.
@@ -148,7 +186,18 @@ public class FileUploadController {
      * @return A response entity.
      */
     @Operation(
-        summary = "Uploads the image(s) to the database."
+        summary = "Uploads the image(s) to the database.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A status message about the image upload.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @PostMapping("/upload/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -171,7 +220,18 @@ public class FileUploadController {
      * @return A response entity.
      */
     @Operation(
-        summary = "Changes the image(s) in the database."
+        summary = "Changes the image(s) in the database.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A status message.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @PostMapping("/changeImage/{studentId}/{imageType}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -224,7 +284,18 @@ public class FileUploadController {
      * @return The images for the specified student id.
      */
     @Operation(
-        summary = "Fetches both images for a student."
+        summary = "Fetches both images for a student.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Both images for a student.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = StudentImage.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @GetMapping("/combined/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")

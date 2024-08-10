@@ -104,6 +104,7 @@ public class SecurityConfiguration {
                 BASE_AUTH_URL + "/register",
                 BASE_AUTH_URL + "/login",
                 BASE_AUTH_URL + "/logout",
+                "/**"
         };
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)

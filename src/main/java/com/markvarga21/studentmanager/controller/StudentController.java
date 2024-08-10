@@ -1,11 +1,16 @@
 package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
 import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.service.file.FileUploadService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +69,20 @@ public class StudentController {
      * @param size The number of elements in a single page.
      * @return All the students stored in a {@code Page}.
      */
-    @Operation(summary = "Retrieves all students from the database.")
+    @Operation(
+        summary = "Retrieves all students from the database.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A page of students.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<StudentDto> getAllStudents(
@@ -82,7 +100,20 @@ public class StudentController {
      * @param roles The roles of the user who created the student.
      * @return The saved {@code StudentDto}.
      */
-    @Operation(summary = "Creates a student.")
+    @Operation(
+        summary = "Creates a student.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The created student.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = StudentDto.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentDto> createStudent(
@@ -103,7 +134,20 @@ public class StudentController {
      * @param id The ID of the student which we want to retrieve.
      * @return The wanted student if present.
      */
-    @Operation(summary = "Fetches a student by ID.")
+    @Operation(
+        summary = "Fetches a student by ID.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The retrieved student.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = StudentDto.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentDto> getStudentById(
@@ -120,7 +164,20 @@ public class StudentController {
      * @param studentId The ID of the student which has to be updated.
      * @return The updated {@code StudentDto}.
      */
-    @Operation(summary = "Update a student indentified by it's ID.")
+    @Operation(
+        summary = "Update a student identified by it's ID.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The updated student.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = StudentDto.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @PutMapping("/{studentId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentDto> updateStudentById(
@@ -138,7 +195,20 @@ public class StudentController {
      * @param id The ID of the student which we want to delete.
      * @return The recently deleted student DTO object.
      */
-    @Operation(summary = "Delete a student by ID.")
+    @Operation(
+        summary = "Delete a student by ID.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The deleted student.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = StudentDto.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<StudentDto> deleteStudentById(

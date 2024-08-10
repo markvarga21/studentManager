@@ -43,6 +43,7 @@ public class AppUser {
      * The username of the user.
      */
     @NotBlank(message = "Username cannot be null or empty!")
+    @Column(unique = true, nullable = false)
     private String username;
 
     /**

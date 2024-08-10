@@ -10,7 +10,13 @@ import com.markvarga21.studentmanager.util.LocalDateDeserializer;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
@@ -34,13 +40,6 @@ import java.util.Properties;
  */
 @Configuration
 @RequiredArgsConstructor
-@OpenAPIDefinition(
-        info = @io.swagger.v3.oas.annotations.info.Info(
-                title = "Student Manager API",
-                version = "1.0",
-                description = "API for managing students and their data."
-        )
-)
 @Generated
 public class ApplicationConfiguration {
     /**
@@ -197,5 +196,31 @@ public class ApplicationConfiguration {
         return JsonSchemaFactory
                 .getInstance(SpecVersion.VersionFlag.V7)
                 .getSchema(getClass().getResourceAsStream(JSON_SCHEMA_PATH));
+    }
+
+    private SecurityScheme createAPIKeyScheme() {
+        return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+                .bearerFormat("JWT")
+                .scheme("bearer");
+    }
+
+    /**
+     * This method is used to create an {@code OpenAPI} bean.
+     *
+     * @return The {@code OpenAPI} object.
+     */
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI().addSecurityItem(new SecurityRequirement().
+                    addList("Bearer Authentication"))
+            .components(new Components().addSecuritySchemes(
+                    "Bearer Authentication", createAPIKeyScheme())
+            )
+            .info(new Info().title("Student Manager API")
+                .description("A REST API for handling student related data. It enables automatic validation of their uploaded passports and facial validation")
+                .version("1.0").contact(new Contact().name("József Márk Varga")
+                        .email("vmark2145@gmail.com").url("https://www.markvarga.com"))
+                .license(new License().name("License of API")
+                        .url("https://github.com/markvarga21/studentManager/blob/master/LICENSE")));
     }
 }

@@ -2,9 +2,14 @@ package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.dto.ReportMessage;
 import com.markvarga21.studentmanager.entity.Report;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
 import com.markvarga21.studentmanager.service.report.ReportService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +52,18 @@ public class ReportingController {
      * @return A page containing the reports.
      */
     @Operation(
-        summary = "Retrieves all reports from the database."
+        summary = "Retrieves all reports from the database.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A page of reports.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -65,7 +81,18 @@ public class ReportingController {
      * @return An informational message.
      */
     @Operation(
-        summary = "Deltes a report with a given id."
+        summary = "Deletes a report with a given id.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A status message.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -85,7 +112,18 @@ public class ReportingController {
      * @return An informational message.
      */
     @Operation(
-        summary = "Submits a report to the system."
+        summary = "Submits a report to the system.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A status message.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")

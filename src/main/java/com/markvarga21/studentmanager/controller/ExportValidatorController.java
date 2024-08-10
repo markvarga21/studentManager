@@ -1,9 +1,14 @@
 package com.markvarga21.studentmanager.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
 import com.markvarga21.studentmanager.util.validation.JsonValidator;
 import com.markvarga21.studentmanager.util.validation.XmlValidator;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +56,20 @@ public class ExportValidatorController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/validate/xml")
-    @Operation(summary = "Validates an XML document.")
+    @Operation(
+        summary = "Validates an XML document.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The validity of the provided XML document.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+    }
+    )
     public ResponseEntity<Boolean> validateXmlExport(
             @RequestBody final String xml
     ) {
@@ -72,7 +90,20 @@ public class ExportValidatorController {
      * @return The validation result.
      */
     @PostMapping("/validate/json")
-    @Operation(summary = "Validates a JSON document.")
+    @Operation(
+        summary = "Validates a JSON document.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The validity of the provided JSON document.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Boolean> validateJsonExport(@RequestBody final JsonNode json) {
         try {

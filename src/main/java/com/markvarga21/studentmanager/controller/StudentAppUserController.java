@@ -1,9 +1,14 @@
 package com.markvarga21.studentmanager.controller;
 
 
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
 import com.markvarga21.studentmanager.repository.StudentAppUserRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +43,18 @@ public class StudentAppUserController {
      * @return The found student ID.
      */
     @Operation(
-        summary = "Retrieves the student id of a user identified by its username."
+        summary = "Retrieves the student id of a user identified by its username.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The fetched student id.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Long.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{username}")

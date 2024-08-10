@@ -1,5 +1,7 @@
 package com.markvarga21.studentmanager.exception.handler.security;
 
+import com.google.gson.Gson;
+import com.markvarga21.studentmanager.exception.util.AuthError;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,10 +36,12 @@ public class AppAccessDeniedHandler implements AccessDeniedHandler {
     }
 
     private String getErrorMessage(final String exceptionMessage) {
-        return String.format("""
-        {
-            "error": "Access denied",
-            "message": "%s"
-        }""", exceptionMessage);
+        Gson gson = new Gson();
+        AuthError authError = AuthError.builder()
+                .error("Access denied")
+                .message(exceptionMessage)
+                .status(HttpServletResponse.SC_FORBIDDEN)
+                .build();
+        return gson.toJson(authError);
     }
 }

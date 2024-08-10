@@ -1,8 +1,13 @@
 package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.dto.FaceApiResponse;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,7 +46,18 @@ public class FaceController {
      * @return The validity- and the percentage of the faces matching.
      */
     @Operation(
-        summary = "Compares the faces found on the passport and the selfie, and then sends it back to the client."
+        summary = "Compares the faces found on the passport and the selfie, and then sends it back to the client.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The facial validation data.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = FaceApiResponse.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @PostMapping("/validate")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

@@ -1,6 +1,7 @@
 package com.markvarga21.studentmanager.entity;
 
 import com.markvarga21.studentmanager.util.Generated;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.checkerframework.common.aliasing.qual.Unique;
 
 import java.time.LocalDate;
 
@@ -63,7 +63,7 @@ public class Student {
     /**
      * The student's passport number.
      */
-    @Unique
+    @Column(unique = true, nullable = false)
     private String passportNumber;
 
     /**

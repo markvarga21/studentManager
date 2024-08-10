@@ -1,8 +1,13 @@
 package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.entity.FacialValidationData;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,7 +49,18 @@ public class FacialValidationController {
      * @return A page storing facial validations.
      */
     @Operation(
-        summary = "Retrieves all the facial validation data."
+        summary = "Retrieves all the facial validation data.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A page of facial validation data.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -64,7 +80,18 @@ public class FacialValidationController {
      */
     @SuppressWarnings("checkstyle:LineLength")
     @Operation(
-        summary = "Retrieves the facial validation data for the given passport number."
+        summary = "Retrieves the facial validation data for the given passport number.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The fetched passport validation data.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = FacialValidationData.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @GetMapping("/{passportNumber}")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -87,7 +114,18 @@ public class FacialValidationController {
      * deletion was successful or not.
      */
     @Operation(
-        summary = "Deletes a facial validation data for the given passport number."
+        summary = "Deletes a facial validation data for the given passport number.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "An informational message of the deletion.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @DeleteMapping("/{passportNumber}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -107,7 +145,18 @@ public class FacialValidationController {
      * was successful or not.
      */
     @Operation(
-        summary = "Sets the facial validation data to valid."
+        summary = "Sets the facial validation data to valid.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A status message.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
     )
     @PostMapping("/setFacialValidationDataToValid")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

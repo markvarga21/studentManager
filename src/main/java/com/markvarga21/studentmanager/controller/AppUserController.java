@@ -3,10 +3,15 @@ package com.markvarga21.studentmanager.controller;
 import com.markvarga21.studentmanager.dto.UserLogin;
 import com.markvarga21.studentmanager.entity.AppUser;
 import com.markvarga21.studentmanager.exception.InvalidUserCredentialsException;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
 import com.markvarga21.studentmanager.service.auth.AppUserService;
 import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -93,7 +98,20 @@ public class AppUserController {
      * @return A page of the users.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Fetches all users from the database.")
+    @Operation(
+        summary = "Fetches all users from the database.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A page of users.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @GetMapping("/users")
     public Page<AppUser> fetchUsers(
             @RequestParam(defaultValue = "0") final Integer page,
@@ -109,7 +127,20 @@ public class AppUserController {
      * @return A descriptive message of the deletion.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Deletes a user from the database.")
+    @Operation(
+        summary = "Deletes a user from the database.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "An informational message", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @DeleteMapping("/users/{id}")
     public String deleteUser(@PathVariable final Long id) {
         return appUserService.deleteUserById(id);
@@ -121,7 +152,20 @@ public class AppUserController {
      * @param user The user object.
      * @return The registered user object.
      */
-    @Operation(summary = "Registers a user.")
+    @Operation(
+        summary = "Registers a user.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The registered user object.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AppUser.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @PostMapping("/register")
     public ResponseEntity<AppUser> registerUser(
             @RequestBody @Valid final AppUser user
@@ -141,7 +185,20 @@ public class AppUserController {
      * @param user The user object.
      * @return The created JWT token.
      */
-    @Operation(summary = "Logs in a user.")
+    @Operation(
+        summary = "Logs in a user.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The generated auth token of the user.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(
             @RequestBody @Valid final UserLogin user
@@ -172,7 +229,20 @@ public class AppUserController {
      * @throws IOException if an I/O error occurs.
      */
     @PreAuthorize("hasRole('ROLE_USER')")
-    @Operation(summary = "Logs out a user.")
+    @Operation(
+        summary = "Logs out a user.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "An informational status message.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @PostMapping("/logout")
     public ResponseEntity<String> logoutUser(
             final HttpServletRequest request,
@@ -197,7 +267,20 @@ public class AppUserController {
      * @return The user object.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Fetches a user using it's id.")
+    @Operation(
+        summary = "Fetches a user using it's id.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "The fetched user.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AppUser.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
     @GetMapping("/users/{id}")
     public ResponseEntity<AppUser> getUserById(@PathVariable final Long id) {
         return ResponseEntity.ok(appUserService.getUserById(id));

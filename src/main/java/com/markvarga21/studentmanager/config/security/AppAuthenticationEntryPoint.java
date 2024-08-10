@@ -1,5 +1,7 @@
 package com.markvarga21.studentmanager.config.security;
 
+import com.google.gson.Gson;
+import com.markvarga21.studentmanager.exception.util.AuthError;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
@@ -34,10 +36,12 @@ public class AppAuthenticationEntryPoint implements AuthenticationEntryPoint {
     }
 
     private String getErrorMessage(final String exceptionMessage) {
-        return String.format("""
-        {
-            "error": "Unauthorized",
-            "message": "%s"
-        }""", exceptionMessage);
+        Gson gson = new Gson();
+        AuthError authError = AuthError.builder()
+                .error("Unauthorized")
+                .message(exceptionMessage)
+                .status(HttpServletResponse.SC_UNAUTHORIZED)
+                .build();
+        return gson.toJson(authError);
     }
 }
