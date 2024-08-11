@@ -206,8 +206,6 @@ public class FileUploadController {
             @RequestParam("passport") final MultipartFile passport,
             @RequestParam("selfie") final MultipartFile selfie
     ) {
-        log.info("Passport: " + passport.getOriginalFilename());
-        log.info("Selfie: " + selfie.getOriginalFilename());
         String message = this.fileUploadService
                 .uploadFile(studentId, passport, selfie);
         return new ResponseEntity<>(message, HttpStatus.OK);

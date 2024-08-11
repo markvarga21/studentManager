@@ -112,20 +112,20 @@ public class StudentServiceImpl implements StudentService {
                 String studentLastName = studentToSave.getLastName();
                 Optional<AppUser> studentUser = this.userRepository
                         .findByFirstNameAndLastName(studentFirstName, studentLastName);
-                if (studentUser.isEmpty()) {
+                if (studentUser.isPresent()) {
+                    AppUser studentAppUser = studentUser.get();
+                    StudentAppUser studentAppUserEntity = new StudentAppUser();
+                    studentAppUserEntity.setStudentId(savedStudent.getId());
+                    studentAppUserEntity.setUsername(studentAppUser.getUsername());
+                    this.studentAppUserRepository.save(studentAppUserEntity);
+                } else {
                     String message = String.format(
-                            "Student user not found with first name: %s and last name: %s",
-                            studentFirstName,
-                            studentLastName
+                        "Student user not found with first name: %s and last name: %s%nPlease register a user for the student.",
+                        studentFirstName,
+                        studentLastName
                     );
                     log.error(message);
-                    throw new StudentNotFoundException(message, OperationType.CREATE);
                 }
-                AppUser studentAppUser = studentUser.get();
-                StudentAppUser studentAppUserEntity = new StudentAppUser();
-                studentAppUserEntity.setStudentId(savedStudent.getId());
-                studentAppUserEntity.setUsername(studentAppUser.getUsername());
-                this.studentAppUserRepository.save(studentAppUserEntity);
             }
         }
 

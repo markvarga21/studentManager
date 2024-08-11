@@ -210,7 +210,7 @@ public class StudentController {
         }
     )
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<StudentDto> deleteStudentById(
             @PathVariable final Long id
     ) {
