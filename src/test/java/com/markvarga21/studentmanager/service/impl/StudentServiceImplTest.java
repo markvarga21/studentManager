@@ -401,4 +401,38 @@ class StudentServiceImplTest {
         // Then
         assertEquals(expected, actual);
     }
+
+    @Test
+    void shouldFetchStudentByNameIfPresentTest() {
+        // Given
+        String firstName = STUDENT_DTO.getFirstName();
+        String lastName = STUDENT_DTO.getLastName();
+        Optional<StudentDto> expected = Optional.of(STUDENT_DTO);
+
+        // When
+        when(this.studentRepository.findStudentByFirstNameAndLastName(firstName, lastName))
+                .thenReturn(Optional.of(STUDENT));
+        when(this.studentMapper.mapStudentEntityToDto(STUDENT))
+                .thenReturn(STUDENT_DTO);
+        Optional<StudentDto> actual = this.studentService
+                .getStudentByFirstAndLastName(firstName, lastName);
+
+        // Then
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldReturnEmptyUponGetStudentByNameIfStudentIsNotPresentTest() {
+        // Given
+        String firstName = STUDENT_DTO.getFirstName();
+        String lastName = STUDENT_DTO.getLastName();
+
+        // When
+        when(this.studentRepository.findStudentByFirstNameAndLastName(firstName, lastName))
+                .thenReturn(Optional.empty());
+
+        // Then
+        assertEquals(Optional.empty(), this.studentService
+                .getStudentByFirstAndLastName(firstName, lastName));
+    }
 }

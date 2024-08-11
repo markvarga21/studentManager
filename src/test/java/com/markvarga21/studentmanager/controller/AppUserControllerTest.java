@@ -201,4 +201,29 @@ class AppUserControllerTest {
                 .andExpect(jsonPath("$.lastName").value(USER.getLastName()))
                 .andExpect(jsonPath("$.roles").value(Role.USER.name()));
     }
+
+    @WithMockUser(roles = "ADMIN")
+    @Test
+    void shouldGrantRolesTest() throws Exception {
+        // Given
+        String username = USER.getUsername();
+        String roles = "ROLE_ADMIN,ROLE_USER";
+        String message = String.format(
+                "Roles %s granted to user %s.",
+                roles,
+                username
+        );
+
+        // When
+        when(this.appUserService.grantRoles(username, roles))
+                .thenReturn(message);
+
+        // Then
+        this.mockMvc.perform(put(API_URL + "/users/grant")
+                        .param("username", username)
+                        .param("roles", roles)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(message));
+    }
 }

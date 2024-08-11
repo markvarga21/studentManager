@@ -147,4 +147,41 @@ public class AppUserServiceImpl implements AppUserService {
         }
         return userOptional.get();
     }
+
+    /**
+     * Method for granting roles to a user.
+     *
+     * @param username The username of the user.
+     * @param roles The roles to be granted separated by commas.
+     * @return A status message.
+     */
+    @Override
+    public String grantRoles(final String username, final String roles) {
+        Optional<AppUser> userOptional = this.appUserRepository
+                .findByUsername(username);
+        if (userOptional.isEmpty()) {
+            String message = "User with username " + username + " not found.";
+            log.error(message);
+            throw new UserNotFoundException(message);
+        }
+        Set<Role> userRoles = userOptional.get().getRoles();
+        if (roles.contains(",")) {
+            String[] roleArray = roles.split(",");
+            for (String role : roleArray) {
+                String roleValue = role.split("_")[1];
+                userRoles.add(Role.valueOf(roleValue));
+            }
+        } else {
+            userRoles.add(Role.valueOf(roles.split("_")[1]));
+        }
+        userOptional.get().setRoles(userRoles);
+        this.appUserRepository.save(userOptional.get());
+        String message = String.format(
+                "Roles %s granted to user %s.",
+                roles,
+                username
+        );
+        log.info(message);
+        return message;
+    }
 }

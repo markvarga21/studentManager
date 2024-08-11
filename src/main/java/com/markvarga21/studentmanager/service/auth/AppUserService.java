@@ -52,4 +52,14 @@ public interface AppUserService {
      * @return The {@code AppUser} object.
      */
     AppUser getUserById(Long id);
+
+
+    /**
+     * Method for granting roles to a user.
+     *
+     * @param username The username of the user.
+     * @param roles The roles to be granted separated by commas.
+     * @return A status message.
+     */
+    String grantRoles(String username, String roles);
 }

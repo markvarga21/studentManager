@@ -30,15 +30,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -284,5 +276,36 @@ public class AppUserController {
     @GetMapping("/users/{id}")
     public ResponseEntity<AppUser> getUserById(@PathVariable final Long id) {
         return ResponseEntity.ok(appUserService.getUserById(id));
+    }
+
+    /**
+     * Endpoint for granting admin roles to a user.
+     *
+     * @param username The username of the user.
+     * @param roles The roles to grant separated by commas.
+     * @return A descriptive message of the role granting.
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+        summary = "Grants roles to a user.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A status message about the role granting.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AppUser.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PutMapping("/users/grant")
+    public ResponseEntity<String> grantRoles(
+            @RequestParam final String username,
+            @RequestParam final String roles
+    ) {
+        return ResponseEntity
+                .ok(this.appUserService.grantRoles(username, roles));
     }
 }
