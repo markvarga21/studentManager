@@ -86,4 +86,13 @@ public interface StudentService {
      * @return The student's DTO.
      */
     Optional<StudentDto> getStudentByUsername(String username);
+
+    /**
+     * Retrieves a student by its first and last name.
+     *
+     * @param firstName The first name of the student.
+     * @param lastName The last name of the student.
+     * @return The student's DTO.
+     */
+    Optional<StudentDto> getStudentByFirstAndLastName(String firstName, String lastName);
 }

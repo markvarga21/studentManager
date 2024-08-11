@@ -18,4 +18,13 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
      * @return The found student.
      */
     Optional<Student> findStudentByPassportNumber(String passportNumber);
+
+    /**
+     * Fetches a student by the first name and last name.
+     *
+     * @param firstName The first name of the student.
+     * @param lastName The last name of the student.
+     * @return The found student.
+     */
+    Optional<Student> findStudentByFirstNameAndLastName(String firstName, String lastName);
 }

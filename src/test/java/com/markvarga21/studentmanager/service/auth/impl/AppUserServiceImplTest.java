@@ -5,11 +5,15 @@ import com.markvarga21.studentmanager.entity.AppUser;
 import com.markvarga21.studentmanager.exception.InvalidUserCredentialsException;
 import com.markvarga21.studentmanager.exception.UserNotFoundException;
 import com.markvarga21.studentmanager.repository.AppUserRepository;
+import com.markvarga21.studentmanager.repository.StudentAppUserRepository;
+import com.markvarga21.studentmanager.service.StudentService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +46,18 @@ class AppUserServiceImplTest {
      */
     @Spy
     private AppUserRepository repository;
+
+    /**
+     * The repository for the student application user.
+     */
+    @Mock
+    private StudentService studentService;
+
+    /**
+     * The repository for the student application user.
+     */
+    @Mock
+    private StudentAppUserRepository studentAppUserRepository;
 
     @Test
     void shouldGetUserByUsernameIfPresentTest() {

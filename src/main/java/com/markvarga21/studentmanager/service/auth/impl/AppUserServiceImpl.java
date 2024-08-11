@@ -1,10 +1,14 @@
 package com.markvarga21.studentmanager.service.auth.impl;
 
 import com.markvarga21.studentmanager.dto.Role;
+import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.AppUser;
+import com.markvarga21.studentmanager.entity.StudentAppUser;
 import com.markvarga21.studentmanager.exception.InvalidUserCredentialsException;
 import com.markvarga21.studentmanager.exception.UserNotFoundException;
 import com.markvarga21.studentmanager.repository.AppUserRepository;
+import com.markvarga21.studentmanager.repository.StudentAppUserRepository;
+import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.service.auth.AppUserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +33,17 @@ public class AppUserServiceImpl implements AppUserService {
     /**
      * The {@code AppUserRepository} object.
      */
-    private final AppUserRepository repository;
+    private final AppUserRepository appUserRepository;
+
+    /**
+     * The repository for the student application user.
+     */
+    private final StudentAppUserRepository studentAppUserRepository;
+
+    /**
+     * The {@code StudentService} object.
+     */
+    private final StudentService studentService;
 
     /**
      * This method is used to get the user by the username.
@@ -39,7 +53,7 @@ public class AppUserServiceImpl implements AppUserService {
      */
     @Override
     public Optional<AppUser> getUserByUsername(final String username) {
-        return this.repository.findByUsername(username);
+        return this.appUserRepository.findByUsername(username);
     }
 
     /**
@@ -51,7 +65,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public AppUser registerUser(final AppUser user) {
         log.info("Registering user: {}", user);
-        Optional<AppUser> userOptional = this.repository
+        Optional<AppUser> userOptional = this.appUserRepository
                 .findByUsername(user.getUsername());
         if (userOptional.isPresent()) {
             String message = "User with username " + user.getUsername() + " already exists.";
@@ -59,10 +73,24 @@ public class AppUserServiceImpl implements AppUserService {
             throw new InvalidUserCredentialsException(message);
         }
 
+        Optional<StudentAppUser> studentAppUser = this.studentAppUserRepository
+                .findByUsername(user.getUsername());
+        Optional<StudentDto> studentDto = this.studentService
+                .getStudentByFirstAndLastName(
+                        user.getFirstName(),
+                        user.getLastName()
+                );
+        if (studentAppUser.isEmpty() && studentDto.isPresent()) {
+            StudentAppUser newStudentAppUser = new StudentAppUser();
+            newStudentAppUser.setUsername(user.getUsername());
+            newStudentAppUser.setStudentId(studentDto.get().getId());
+            this.studentAppUserRepository.save(newStudentAppUser);
+        }
+
         Set<Role> userRole = new HashSet<>();
         userRole.add(Role.USER);
         user.setRoles(userRole);
-        return this.repository.save(user);
+        return this.appUserRepository.save(user);
     }
 
     /**
@@ -74,7 +102,7 @@ public class AppUserServiceImpl implements AppUserService {
      */
     @Override
     public Page<AppUser> getAllUsers(final Integer page, final Integer size) {
-        return this.repository.findAll(PageRequest.of(page, size));
+        return this.appUserRepository.findAll(PageRequest.of(page, size));
     }
 
     /**
@@ -85,7 +113,7 @@ public class AppUserServiceImpl implements AppUserService {
      */
     @Override
     public String deleteUserById(final Long id) {
-        Optional<AppUser> userOptional = this.repository.findById(id);
+        Optional<AppUser> userOptional = this.appUserRepository.findById(id);
         if (userOptional.isEmpty()) {
             String message = "User with id " + id + " not found.";
             log.error(message);
@@ -96,7 +124,7 @@ public class AppUserServiceImpl implements AppUserService {
             log.error(message);
             throw new InvalidUserCredentialsException(message);
         }
-        this.repository.deleteById(id);
+        this.appUserRepository.deleteById(id);
         return String.format(
                 "User with username '%s' has been deleted.",
                 userOptional.get().getUsername()
@@ -111,7 +139,7 @@ public class AppUserServiceImpl implements AppUserService {
      */
     @Override
     public AppUser getUserById(final Long id) {
-        Optional<AppUser> userOptional = this.repository.findById(id);
+        Optional<AppUser> userOptional = this.appUserRepository.findById(id);
         if (userOptional.isEmpty()) {
             String message = "User with id " + id + " not found.";
             log.error(message);

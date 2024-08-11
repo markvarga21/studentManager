@@ -318,4 +318,21 @@ public class StudentServiceImpl implements StudentService {
                 valid ? "valid" : "invalid"
         );
     }
+
+    /**
+     * Retrieves a student from the database using its first and last name.
+     *
+     * @param firstName The first name of the student.
+     * @param lastName The last name of the student.
+     * @return The found student.
+     */
+    @Override
+    public Optional<StudentDto> getStudentByFirstAndLastName(
+            final String firstName,
+            final String lastName
+    ) {
+        Optional<Student> studentOptional = this.studentRepository
+                .findStudentByFirstNameAndLastName(firstName, lastName);
+        return studentOptional.map(this.studentMapper::mapStudentEntityToDto);
+    }
 }
