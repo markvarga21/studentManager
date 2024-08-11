@@ -226,4 +226,29 @@ class AppUserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(message));
     }
+
+    @WithMockUser(roles = "ADMIN")
+    @Test
+    void shouldRevokeRolesTest() throws Exception {
+        // Given
+        String username = USER.getUsername();
+        String roles = "ROLE_ADMIN,ROLE_USER";
+        String message = String.format(
+                "Roles %s revoked from user %s.",
+                roles,
+                username
+        );
+
+        // When
+        when(this.appUserService.revokeRoles(username, roles))
+                .thenReturn(message);
+
+        // Then
+        this.mockMvc.perform(put(API_URL + "/users/revoke")
+                        .param("username", username)
+                        .param("roles", roles)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(message));
+    }
 }

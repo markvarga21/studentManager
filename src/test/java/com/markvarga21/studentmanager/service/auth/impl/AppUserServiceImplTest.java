@@ -241,4 +241,36 @@ class AppUserServiceImplTest {
                 () -> this.service.grantRoles(username, roles)
         );
     }
+
+    @Test
+    void shouldRevokeRolesIfUserIsPresentTest() {
+        // Given
+        String username = USER.getUsername();
+        String roles = "ROLE_ADMIN";
+
+        // When
+        when(this.repository.findByUsername(username))
+                .thenReturn(Optional.of(USER));
+        this.service.revokeRoles(username, roles);
+
+        // Then
+        assertFalse(USER.getRoles().contains(Role.ADMIN));
+    }
+
+    @Test
+    void shouldThrowExceptionUponRoleRevokingIfUserIsNotPresentTest() {
+        // Given
+        String username = USER.getUsername();
+        String roles = "ROLE_ADMIN";
+
+        // When
+        when(this.repository.findByUsername(username))
+                .thenReturn(Optional.empty());
+
+        // Then
+        assertThrows(
+                UserNotFoundException.class,
+                () -> this.service.revokeRoles(username, roles)
+        );
+    }
 }

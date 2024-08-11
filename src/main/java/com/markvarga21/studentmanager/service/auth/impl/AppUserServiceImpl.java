@@ -184,4 +184,45 @@ public class AppUserServiceImpl implements AppUserService {
         log.info(message);
         return message;
     }
+
+    /**
+     * Method for revoking roles from a user.
+     *
+     * @param username The username of the user.
+     * @param roles The roles to be revoked separated by commas.
+     * @return A status message.
+     */
+    @Override
+    public String revokeRoles(
+            final String username,
+            final String roles
+    ) {
+        Optional<AppUser> userOptional = this.appUserRepository
+                .findByUsername(username);
+        if (userOptional.isEmpty()) {
+            String message = "User with username " + username + " not found.";
+            log.error(message);
+            throw new UserNotFoundException(message);
+        }
+        if (roles.contains(",")) {
+            String[] roleArray = roles.split(",");
+            for (String role : roleArray) {
+                String roleValue = role.split("_")[1];
+                userOptional.get().getRoles().remove(Role.valueOf(roleValue));
+            }
+        } else {
+            userOptional
+                    .get()
+                    .getRoles()
+                    .remove(Role.valueOf(roles.split("_")[1]));
+        }
+        this.appUserRepository.save(userOptional.get());
+        String message = String.format(
+                "Roles %s revoked from user %s.",
+                roles,
+                username
+        );
+        log.info(message);
+        return message;
+    }
 }

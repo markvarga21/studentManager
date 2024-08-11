@@ -308,4 +308,35 @@ public class AppUserController {
         return ResponseEntity
                 .ok(this.appUserService.grantRoles(username, roles));
     }
+
+    /**
+     * Endpoint for revoking roles from a user.
+     *
+     * @param username The username of the user.
+     * @param roles The roles to revoke separated by commas.
+     * @return A descriptive message of the role revoking.
+     */
+    @Operation(
+        summary = "Revokes roles from a user.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A status message about the role revoking.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AppUser.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/users/revoke")
+    public ResponseEntity<String> revokeRoles(
+            @RequestParam final String username,
+            @RequestParam final String roles
+    ) {
+        return ResponseEntity
+                .ok(this.appUserService.revokeRoles(username, roles));
+    }
 }

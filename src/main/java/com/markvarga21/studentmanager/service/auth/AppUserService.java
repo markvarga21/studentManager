@@ -62,4 +62,13 @@ public interface AppUserService {
      * @return A status message.
      */
     String grantRoles(String username, String roles);
+
+    /**
+     * Method for revoking roles from a user.
+     *
+     * @param username The username of the user.
+     * @param roles The roles to be revoked separated by commas.
+     * @return A status message.
+     */
+    String revokeRoles(String username, String roles);
 }
