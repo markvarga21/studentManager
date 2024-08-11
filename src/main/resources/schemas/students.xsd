@@ -46,11 +46,11 @@
             <xs:element type="xs:string" name="countryOfCitizenship" />
             <xs:element type="gender" name="gender" />
             <xs:element type="xs:string" name="passportNumber" />
-            <xs:element type="date" name="dateOfIssue" />
-            <xs:element type="date" name="dateOfExpiry" />
+            <xs:element type="date" name="passportDateOfIssue" />
+            <xs:element type="date" name="passportDateOfExpiry" />
             <xs:element type="validity" name="status" />
         </xs:sequence>
-        <xs:attribute type="xs:byte" name="id" use="required" />
+        <xs:attribute type="xs:long" name="id" use="required" />
     </xs:complexType>
     <xs:element name="students">
         <xs:complexType>

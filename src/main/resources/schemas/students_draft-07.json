@@ -13,15 +13,13 @@
           "minimum": 1
         },
         "firstName": {
-          "type": "string",
-          "pattern": "^[A-Z][a-z]*$"
+          "type": "string"
         },
         "lastName": {
-          "type": "string",
-          "pattern": "^[A-Z][a-z]*$"
+          "type": "string"
         },
         "gender": {
-          "oneOf": [{ "type": "string", "enum": ["Male", "Female"] }]
+          "oneOf": [{ "type": "string", "enum": ["MALE", "FEMALE"] }]
         },
         "birthDate": {
           "type": "string",
@@ -30,11 +28,11 @@
         "countryOfCitizenship": {
           "type": "string"
         },
-        "dateOfExpiry": {
+        "passportDateOfExpiry": {
           "type": "string",
           "format": "date"
         },
-        "dateOfIssue": {
+        "passportDateOfIssue": {
           "type": "string",
           "format": "date"
         },
@@ -44,7 +42,7 @@
         "placeOfBirth": {
           "type": "string"
         },
-        "validity": {
+        "valid": {
           "type": "boolean"
         }
       },
@@ -55,11 +53,11 @@
         "gender",
         "birthDate",
         "countryOfCitizenship",
-        "dateOfExpiry",
-        "dateOfIssue",
+        "passportDateOfExpiry",
+        "passportDateOfIssue",
         "passportNumber",
         "placeOfBirth",
-        "validity"
+        "valid"
       ],
       "additionalItems": false
     }
