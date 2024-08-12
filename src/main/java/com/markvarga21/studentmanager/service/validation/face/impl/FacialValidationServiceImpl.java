@@ -1,7 +1,9 @@
 package com.markvarga21.studentmanager.service.validation.face.impl;
 
 import com.markvarga21.studentmanager.entity.FacialValidationData;
+import com.markvarga21.studentmanager.entity.Student;
 import com.markvarga21.studentmanager.repository.FacialValidationDataRepository;
+import com.markvarga21.studentmanager.repository.StudentRepository;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,11 @@ public class FacialValidationServiceImpl implements FacialValidationService {
      * validation data.
      */
     private final FacialValidationDataRepository repository;
+
+    /**
+     * A repository which is used to access student data.
+     */
+    private final StudentRepository studentRepository;
 
     /**
      * Saves the facial validation data in the database.
@@ -121,5 +128,34 @@ public class FacialValidationServiceImpl implements FacialValidationService {
         data.setPercentage(1.0);
         this.repository.save(data);
         return String.format("Facial validation data for passport number '%s' set to valid!", passportNumber);
+    }
+
+    /**
+     * Sets the facial validity by passport number to invalid.
+     *
+     * @param studentId The id of the student.
+     * @return A feedback message.
+     */
+    @Override
+    public String setFacialValidationToInvalid(final Long studentId) {
+        Optional<Student> student = this.studentRepository.findById(studentId);
+        if (student.isPresent()) {
+            String passportNumber = student.get().getPassportNumber();
+            FacialValidationData data =
+                    this.getFacialValidationDataByPassportNumber(passportNumber);
+            if (data != null) {
+                log.info("Setting facial validation data to invalid.");
+                data.setIsValid(false);
+                data.setPercentage(0.0);
+                this.repository.save(data);
+                return String.format("Facial validation data for passport number '%s' set to invalid!", passportNumber);
+            }
+            String message = String.format("Facial validation data not found for passport number '%s'", passportNumber);
+            log.error(message);
+            return message;
+        }
+        String message = String.format("Student not found for id '%s'", studentId);
+        log.error(message);
+        return message;
     }
 }

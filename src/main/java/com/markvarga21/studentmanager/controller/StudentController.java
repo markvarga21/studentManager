@@ -186,6 +186,8 @@ public class StudentController {
     ) {
         StudentDto updatedStudent = this.studentService
                 .modifyStudentById(student, studentId);
+        this.facialValidationService
+                .setFacialValidationToInvalid(studentId);
         return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
     }
 

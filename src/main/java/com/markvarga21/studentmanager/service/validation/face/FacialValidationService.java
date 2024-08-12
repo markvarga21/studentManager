@@ -48,6 +48,16 @@ public interface FacialValidationService {
     );
 
     /**
+     * Sets the facial validity by passport number to invalid.
+     *
+     * @param studentId The id of the student.
+     * @return A feedback message.
+     */
+    String setFacialValidationToInvalid(
+            Long studentId
+    );
+
+    /**
      * Fetches all facial validation data.
      *
      * @param page The page number.
