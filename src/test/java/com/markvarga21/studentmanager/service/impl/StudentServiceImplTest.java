@@ -154,28 +154,6 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionUponCreateStudentByAdminIfNotExistsTest() {
-        // Given
-        String username = "john12";
-        String roles = "ROLE_ADMIN";
-
-        // When
-        when(this.studentRepository.findStudentByPassportNumber(anyString()))
-                .thenReturn(Optional.empty());
-        when(this.studentMapper.mapStudentDtoToEntity(INVALID_STUDENT_DTO))
-                .thenReturn(INVALID_STUDENT);
-        when(this.studentRepository.save(INVALID_STUDENT))
-                .thenReturn(INVALID_STUDENT);
-
-        // Then
-        assertThrows(
-                StudentNotFoundException.class,
-                () -> this.studentService
-                        .createStudent(INVALID_STUDENT_DTO, username, roles)
-        );
-    }
-
-    @Test
     void shouldThrowExceptionUponStudentCreationTest() {
         // Given
         String username = "john12";

@@ -47,16 +47,16 @@ public final class TestingData {
             <countryOfCitizenship>American</countryOfCitizenship>
             <gender>female</gender>
             <passportNumber>US123456</passportNumber>
-            <dateOfIssue>
+            <passportDateOfIssue>
                 <year>2015</year>
                 <month>03</month>
                 <day>15</day>
-            </dateOfIssue>
-            <dateOfExpiry>
+            </passportDateOfIssue>
+            <passportDateOfExpiry>
                 <year>2025</year>
                 <month>03</month>
                 <day>15</day>
-            </dateOfExpiry>
+            </passportDateOfExpiry>
             <status>valid</status>
         </student>
     </students>
