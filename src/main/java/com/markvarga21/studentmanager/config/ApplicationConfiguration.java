@@ -30,6 +30,9 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -222,5 +225,21 @@ public class ApplicationConfiguration {
                         .email("vmark2145@gmail.com").url("https://www.markvarga.com"))
                 .license(new License().name("License of API")
                         .url("https://github.com/markvarga21/studentManager/blob/master/LICENSE")));
+    }
+
+    /**
+     * This method is used to create a {@code CorsFilter} bean.
+     *
+     * @return The {@code CorsFilter} object.
+     */
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", configuration);
+        return new CorsFilter(source);
     }
 }
