@@ -50,10 +50,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 @Slf4j
-@CrossOrigin(
-        origins = "https://localhost:3000",
-        allowedHeaders = "*"
-)
+@CrossOrigin
 @Tag(
     name = "User controller",
     description = "A controller used to manipulate users in the app."
