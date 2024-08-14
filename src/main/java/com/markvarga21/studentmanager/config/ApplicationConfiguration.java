@@ -226,20 +226,4 @@ public class ApplicationConfiguration {
                 .license(new License().name("License of API")
                         .url("https://github.com/markvarga21/studentManager/blob/master/LICENSE")));
     }
-
-    /**
-     * This method is used to create a {@code CorsFilter} bean.
-     *
-     * @return The {@code CorsFilter} object.
-     */
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", configuration);
-        return new CorsFilter(source);
-    }
 }
