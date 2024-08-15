@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppUserServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.service.auth.impl</a> &gt; <span class="el_source">AppUserServiceImpl.java</span></div><h1>AppUserServiceImpl.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.service.auth.impl;
 
 import com.markvarga21.studentmanager.dto.Role;
+import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.AppUser;
+import com.markvarga21.studentmanager.entity.StudentAppUser;
 import com.markvarga21.studentmanager.exception.InvalidUserCredentialsException;
 import com.markvarga21.studentmanager.exception.UserNotFoundException;
 import com.markvarga21.studentmanager.repository.AppUserRepository;
+import com.markvarga21.studentmanager.repository.StudentAppUserRepository;
+import com.markvarga21.studentmanager.service.StudentService;
 import com.markvarga21.studentmanager.service.auth.AppUserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +27,23 @@ import java.util.Set;
  */
 @RequiredArgsConstructor
 @Transactional
-<span class="fc" id="L26">@Slf4j</span>
+<span class="fc" id="L30">@Slf4j</span>
 @Service
 public class AppUserServiceImpl implements AppUserService {
     /**
      * The {@code AppUserRepository} object.
      */
-    private final AppUserRepository repository;
+    private final AppUserRepository appUserRepository;
+
+    /**
+     * The repository for the student application user.
+     */
+    private final StudentAppUserRepository studentAppUserRepository;
+
+    /**
+     * The {@code StudentService} object.
+     */
+    private final StudentService studentService;
 
     /**
      * This method is used to get the user by the username.
@@ -39,7 +53,7 @@ public class AppUserServiceImpl implements AppUserService {
      */
     @Override
     public Optional&lt;AppUser&gt; getUserByUsername(final String username) {
-<span class="fc" id="L42">        return this.repository.findByUsername(username);</span>
+<span class="fc" id="L56">        return this.appUserRepository.findByUsername(username);</span>
     }
 
     /**
@@ -50,19 +64,33 @@ public class AppUserServiceImpl implements AppUserService {
      */
     @Override
     public AppUser registerUser(final AppUser user) {
-<span class="fc" id="L53">        log.info(&quot;Registering user: {}&quot;, user);</span>
-<span class="fc" id="L54">        Optional&lt;AppUser&gt; userOptional = this.repository</span>
-<span class="fc" id="L55">                .findByUsername(user.getUsername());</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (userOptional.isPresent()) {</span>
-<span class="fc" id="L57">            String message = &quot;User with username &quot; + user.getUsername() + &quot; already exists.&quot;;</span>
-<span class="fc" id="L58">            log.error(message);</span>
-<span class="fc" id="L59">            throw new InvalidUserCredentialsException(message);</span>
+<span class="fc" id="L67">        log.info(&quot;Registering user: {}&quot;, user);</span>
+<span class="fc" id="L68">        Optional&lt;AppUser&gt; userOptional = this.appUserRepository</span>
+<span class="fc" id="L69">                .findByUsername(user.getUsername());</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (userOptional.isPresent()) {</span>
+<span class="fc" id="L71">            String message = &quot;User with username &quot; + user.getUsername() + &quot; already exists.&quot;;</span>
+<span class="fc" id="L72">            log.error(message);</span>
+<span class="fc" id="L73">            throw new InvalidUserCredentialsException(message);</span>
         }
 
-<span class="fc" id="L62">        Set&lt;Role&gt; userRole = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L63">        userRole.add(Role.USER);</span>
-<span class="fc" id="L64">        user.setRoles(userRole);</span>
-<span class="fc" id="L65">        return this.repository.save(user);</span>
+<span class="fc" id="L76">        Optional&lt;StudentAppUser&gt; studentAppUser = this.studentAppUserRepository</span>
+<span class="fc" id="L77">                .findByUsername(user.getUsername());</span>
+<span class="fc" id="L78">        Optional&lt;StudentDto&gt; studentDto = this.studentService</span>
+<span class="fc" id="L79">                .getStudentByFirstAndLastName(</span>
+<span class="fc" id="L80">                        user.getFirstName(),</span>
+<span class="fc" id="L81">                        user.getLastName()</span>
+                );
+<span class="pc bpc" id="L83" title="2 of 4 branches missed.">        if (studentAppUser.isEmpty() &amp;&amp; studentDto.isPresent()) {</span>
+<span class="nc" id="L84">            StudentAppUser newStudentAppUser = new StudentAppUser();</span>
+<span class="nc" id="L85">            newStudentAppUser.setUsername(user.getUsername());</span>
+<span class="nc" id="L86">            newStudentAppUser.setStudentId(studentDto.get().getId());</span>
+<span class="nc" id="L87">            this.studentAppUserRepository.save(newStudentAppUser);</span>
+        }
+
+<span class="fc" id="L90">        Set&lt;Role&gt; userRole = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L91">        userRole.add(Role.USER);</span>
+<span class="fc" id="L92">        user.setRoles(userRole);</span>
+<span class="fc" id="L93">        return this.appUserRepository.save(user);</span>
     }
 
     /**
@@ -74,7 +102,7 @@ public class AppUserServiceImpl implements AppUserService {
      */
     @Override
     public Page&lt;AppUser&gt; getAllUsers(final Integer page, final Integer size) {
-<span class="fc" id="L77">        return this.repository.findAll(PageRequest.of(page, size));</span>
+<span class="fc" id="L105">        return this.appUserRepository.findAll(PageRequest.of(page, size));</span>
     }
 
     /**
@@ -85,21 +113,21 @@ public class AppUserServiceImpl implements AppUserService {
      */
     @Override
     public String deleteUserById(final Long id) {
-<span class="fc" id="L88">        Optional&lt;AppUser&gt; userOptional = this.repository.findById(id);</span>
-<span class="fc bfc" id="L89" title="All 2 branches covered.">        if (userOptional.isEmpty()) {</span>
-<span class="fc" id="L90">            String message = &quot;User with id &quot; + id + &quot; not found.&quot;;</span>
-<span class="fc" id="L91">            log.error(message);</span>
-<span class="fc" id="L92">            throw new UserNotFoundException(message);</span>
+<span class="fc" id="L116">        Optional&lt;AppUser&gt; userOptional = this.appUserRepository.findById(id);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (userOptional.isEmpty()) {</span>
+<span class="fc" id="L118">            String message = &quot;User with id &quot; + id + &quot; not found.&quot;;</span>
+<span class="fc" id="L119">            log.error(message);</span>
+<span class="fc" id="L120">            throw new UserNotFoundException(message);</span>
         }
-<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (userOptional.get().getRoles().contains(Role.ADMIN)) {</span>
-<span class="fc" id="L95">            String message = &quot;Cannot delete an admin user.&quot;;</span>
-<span class="fc" id="L96">            log.error(message);</span>
-<span class="fc" id="L97">            throw new InvalidUserCredentialsException(message);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (userOptional.get().getRoles().contains(Role.ADMIN)) {</span>
+<span class="fc" id="L123">            String message = &quot;Cannot delete an admin user.&quot;;</span>
+<span class="fc" id="L124">            log.error(message);</span>
+<span class="fc" id="L125">            throw new InvalidUserCredentialsException(message);</span>
         }
-<span class="fc" id="L99">        this.repository.deleteById(id);</span>
-<span class="fc" id="L100">        return String.format(</span>
+<span class="fc" id="L127">        this.appUserRepository.deleteById(id);</span>
+<span class="fc" id="L128">        return String.format(</span>
                 &quot;User with username '%s' has been deleted.&quot;,
-<span class="fc" id="L102">                userOptional.get().getUsername()</span>
+<span class="fc" id="L130">                userOptional.get().getUsername()</span>
         );
     }
 
@@ -111,13 +139,91 @@ public class AppUserServiceImpl implements AppUserService {
      */
     @Override
     public AppUser getUserById(final Long id) {
-<span class="fc" id="L114">        Optional&lt;AppUser&gt; userOptional = this.repository.findById(id);</span>
-<span class="fc bfc" id="L115" title="All 2 branches covered.">        if (userOptional.isEmpty()) {</span>
-<span class="fc" id="L116">            String message = &quot;User with id &quot; + id + &quot; not found.&quot;;</span>
-<span class="fc" id="L117">            log.error(message);</span>
-<span class="fc" id="L118">            throw new UserNotFoundException(message);</span>
+<span class="fc" id="L142">        Optional&lt;AppUser&gt; userOptional = this.appUserRepository.findById(id);</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        if (userOptional.isEmpty()) {</span>
+<span class="fc" id="L144">            String message = &quot;User with id &quot; + id + &quot; not found.&quot;;</span>
+<span class="fc" id="L145">            log.error(message);</span>
+<span class="fc" id="L146">            throw new UserNotFoundException(message);</span>
         }
-<span class="fc" id="L120">        return userOptional.get();</span>
+<span class="fc" id="L148">        return userOptional.get();</span>
+    }
+
+    /**
+     * Method for granting roles to a user.
+     *
+     * @param username The username of the user.
+     * @param roles The roles to be granted separated by commas.
+     * @return A status message.
+     */
+    @Override
+    public String grantRoles(final String username, final String roles) {
+<span class="fc" id="L160">        Optional&lt;AppUser&gt; userOptional = this.appUserRepository</span>
+<span class="fc" id="L161">                .findByUsername(username);</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">        if (userOptional.isEmpty()) {</span>
+<span class="fc" id="L163">            String message = &quot;User with username &quot; + username + &quot; not found.&quot;;</span>
+<span class="fc" id="L164">            log.error(message);</span>
+<span class="fc" id="L165">            throw new UserNotFoundException(message);</span>
+        }
+<span class="fc" id="L167">        Set&lt;Role&gt; userRoles = userOptional.get().getRoles();</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">        if (roles.contains(&quot;,&quot;)) {</span>
+<span class="nc" id="L169">            String[] roleArray = roles.split(&quot;,&quot;);</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">            for (String role : roleArray) {</span>
+<span class="nc" id="L171">                String roleValue = role.split(&quot;_&quot;)[1];</span>
+<span class="nc" id="L172">                userRoles.add(Role.valueOf(roleValue));</span>
+            }
+<span class="nc" id="L174">        } else {</span>
+<span class="fc" id="L175">            userRoles.add(Role.valueOf(roles.split(&quot;_&quot;)[1]));</span>
+        }
+<span class="fc" id="L177">        userOptional.get().setRoles(userRoles);</span>
+<span class="fc" id="L178">        this.appUserRepository.save(userOptional.get());</span>
+<span class="fc" id="L179">        String message = String.format(</span>
+                &quot;Roles %s granted to user %s.&quot;,
+                roles,
+                username
+        );
+<span class="fc" id="L184">        log.info(message);</span>
+<span class="fc" id="L185">        return message;</span>
+    }
+
+    /**
+     * Method for revoking roles from a user.
+     *
+     * @param username The username of the user.
+     * @param roles The roles to be revoked separated by commas.
+     * @return A status message.
+     */
+    @Override
+    public String revokeRoles(
+            final String username,
+            final String roles
+    ) {
+<span class="fc" id="L200">        Optional&lt;AppUser&gt; userOptional = this.appUserRepository</span>
+<span class="fc" id="L201">                .findByUsername(username);</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">        if (userOptional.isEmpty()) {</span>
+<span class="fc" id="L203">            String message = &quot;User with username &quot; + username + &quot; not found.&quot;;</span>
+<span class="fc" id="L204">            log.error(message);</span>
+<span class="fc" id="L205">            throw new UserNotFoundException(message);</span>
+        }
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">        if (roles.contains(&quot;,&quot;)) {</span>
+<span class="nc" id="L208">            String[] roleArray = roles.split(&quot;,&quot;);</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">            for (String role : roleArray) {</span>
+<span class="nc" id="L210">                String roleValue = role.split(&quot;_&quot;)[1];</span>
+<span class="nc" id="L211">                userOptional.get().getRoles().remove(Role.valueOf(roleValue));</span>
+            }
+<span class="nc" id="L213">        } else {</span>
+<span class="fc" id="L214">            userOptional</span>
+<span class="fc" id="L215">                    .get()</span>
+<span class="fc" id="L216">                    .getRoles()</span>
+<span class="fc" id="L217">                    .remove(Role.valueOf(roles.split(&quot;_&quot;)[1]));</span>
+        }
+<span class="fc" id="L219">        this.appUserRepository.save(userOptional.get());</span>
+<span class="fc" id="L220">        String message = String.format(</span>
+                &quot;Roles %s revoked from user %s.&quot;,
+                roles,
+                username
+        );
+<span class="fc" id="L225">        log.info(message);</span>
+<span class="fc" id="L226">        return message;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

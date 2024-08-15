@@ -112,20 +112,20 @@ public class StudentServiceImpl implements StudentService {
 <span class="fc" id="L112">                String studentLastName = studentToSave.getLastName();</span>
 <span class="fc" id="L113">                Optional&lt;AppUser&gt; studentUser = this.userRepository</span>
 <span class="fc" id="L114">                        .findByFirstNameAndLastName(studentFirstName, studentLastName);</span>
-<span class="fc bfc" id="L115" title="All 2 branches covered.">                if (studentUser.isEmpty()) {</span>
-<span class="fc" id="L116">                    String message = String.format(</span>
-                            &quot;Student user not found with first name: %s and last name: %s&quot;,
-                            studentFirstName,
-                            studentLastName
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">                if (studentUser.isPresent()) {</span>
+<span class="fc" id="L116">                    AppUser studentAppUser = studentUser.get();</span>
+<span class="fc" id="L117">                    StudentAppUser studentAppUserEntity = new StudentAppUser();</span>
+<span class="fc" id="L118">                    studentAppUserEntity.setStudentId(savedStudent.getId());</span>
+<span class="fc" id="L119">                    studentAppUserEntity.setUsername(studentAppUser.getUsername());</span>
+<span class="fc" id="L120">                    this.studentAppUserRepository.save(studentAppUserEntity);</span>
+<span class="fc" id="L121">                } else {</span>
+<span class="nc" id="L122">                    String message = String.format(</span>
+                        &quot;Student user not found with first name: %s and last name: %s%nPlease register a user for the student.&quot;,
+                        studentFirstName,
+                        studentLastName
                     );
-<span class="fc" id="L121">                    log.error(message);</span>
-<span class="fc" id="L122">                    throw new StudentNotFoundException(message, OperationType.CREATE);</span>
+<span class="nc" id="L127">                    log.error(message);</span>
                 }
-<span class="fc" id="L124">                AppUser studentAppUser = studentUser.get();</span>
-<span class="fc" id="L125">                StudentAppUser studentAppUserEntity = new StudentAppUser();</span>
-<span class="fc" id="L126">                studentAppUserEntity.setStudentId(savedStudent.getId());</span>
-<span class="fc" id="L127">                studentAppUserEntity.setUsername(studentAppUser.getUsername());</span>
-<span class="fc" id="L128">                this.studentAppUserRepository.save(studentAppUserEntity);</span>
             }
         }
 
@@ -317,6 +317,23 @@ public class StudentServiceImpl implements StudentService {
                 studentId,
 <span class="fc bfc" id="L318" title="All 2 branches covered.">                valid ? &quot;valid&quot; : &quot;invalid&quot;</span>
         );
+    }
+
+    /**
+     * Retrieves a student from the database using its first and last name.
+     *
+     * @param firstName The first name of the student.
+     * @param lastName The last name of the student.
+     * @return The found student.
+     */
+    @Override
+    public Optional&lt;StudentDto&gt; getStudentByFirstAndLastName(
+            final String firstName,
+            final String lastName
+    ) {
+<span class="fc" id="L334">        Optional&lt;Student&gt; studentOptional = this.studentRepository</span>
+<span class="fc" id="L335">                .findStudentByFirstNameAndLastName(firstName, lastName);</span>
+<span class="fc" id="L336">        return studentOptional.map(this.studentMapper::mapStudentEntityToDto);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

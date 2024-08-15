@@ -59,7 +59,7 @@ public class FormRecognizerController {
         }
     )
     @PostMapping(&quot;/extractData&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     public ResponseEntity&lt;StudentDto&gt; getDataFromPassport(
             @RequestParam(&quot;passport&quot;) final MultipartFile passport
     ) {

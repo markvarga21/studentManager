@@ -37,6 +37,7 @@ class AppUserDetailsServiceTest {
         // Given
         String username = "john12";
         AppUser appUser = USER;
+        appUser.setRoles(Set.of(Role.USER));
 
         // When
         when(this.appUserService.getUserByUsername(username))

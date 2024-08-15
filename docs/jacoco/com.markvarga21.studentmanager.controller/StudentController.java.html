@@ -186,7 +186,9 @@ public class StudentController {
     ) {
 <span class="fc" id="L187">        StudentDto updatedStudent = this.studentService</span>
 <span class="fc" id="L188">                .modifyStudentById(student, studentId);</span>
-<span class="fc" id="L189">        return new ResponseEntity&lt;&gt;(updatedStudent, HttpStatus.OK);</span>
+<span class="fc" id="L189">        this.facialValidationService</span>
+<span class="fc" id="L190">                .setFacialValidationToInvalid(studentId);</span>
+<span class="fc" id="L191">        return new ResponseEntity&lt;&gt;(updatedStudent, HttpStatus.OK);</span>
     }
 
     /**
@@ -210,22 +212,22 @@ public class StudentController {
         }
     )
     @DeleteMapping(&quot;/{id}&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     public ResponseEntity&lt;StudentDto&gt; deleteStudentById(
             @PathVariable final Long id
     ) {
-<span class="fc" id="L217">        StudentDto deletedStudent = this.studentService.deleteStudentById(id);</span>
-<span class="fc" id="L218">        String passportNumber = deletedStudent.getPassportNumber();</span>
+<span class="fc" id="L219">        StudentDto deletedStudent = this.studentService.deleteStudentById(id);</span>
+<span class="fc" id="L220">        String passportNumber = deletedStudent.getPassportNumber();</span>
 
-<span class="fc" id="L220">        this.fileUploadService.deleteImage(id);</span>
-<span class="fc" id="L221">        this.formRecognizerService.deletePassportValidationByPassportNumber(</span>
+<span class="fc" id="L222">        this.fileUploadService.deleteImage(id);</span>
+<span class="fc" id="L223">        this.formRecognizerService.deletePassportValidationByPassportNumber(</span>
                 passportNumber
         );
-<span class="fc" id="L224">        this.facialValidationService.deleteFacialValidationDataByPassportNumber(</span>
+<span class="fc" id="L226">        this.facialValidationService.deleteFacialValidationDataByPassportNumber(</span>
                 passportNumber
         );
 
-<span class="fc" id="L228">        return new ResponseEntity&lt;&gt;(deletedStudent, HttpStatus.OK);</span>
+<span class="fc" id="L230">        return new ResponseEntity&lt;&gt;(deletedStudent, HttpStatus.OK);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
