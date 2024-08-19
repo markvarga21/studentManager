@@ -8,7 +8,7 @@
   <p align="center">
     This application lets authorized users to register students into a database.
     <br />
-    <a href="https://github.com/markvarga21/studentManager"><strong>Explore the docs »</strong></a>
+    <a href="https://markvarga21.github.io/studentManager/javadoc"><strong>Explore the docs »</strong></a>
     <br />
     <a href="https://github.com/markvarga21/studentManager/issues">Report Bug</a>
     ·
@@ -48,13 +48,15 @@
 
 This Spring Boot application lets you to manage students. It can store their name, birthdate, birthplace, gender, country of citizenship, passport number and the dates of expiry and issue of the passport.
 
-It also provides accurate validation on the entered data. It allows authorized users to upload a passport and also a selfie. The application uses <a href="https://azure.microsoft.com/en-gb/products/form-recognizer">Azure's Form Recognizer</a> service to validate the entered data against the data found on the passport.
+It also provides accurate validation on the entered data. It allows authorized users to upload a passport and also a selfie. The application uses <a href="https://azure.microsoft.com/en-us/products/ai-services/ai-document-intelligence">Azure's Document Intelligence</a> service to validate the entered data against the data found on the passport.
 
-In addition, it validates the photo on the passport against the uploaded selfie taken by the student. For this, it uses [Azure's Face API](https://azure.microsoft.com/en-gb/products/ai-services/ai-vision).
+In addition, it validates the photo on the passport against the uploaded selfie taken by the student. For this, it uses [Azure's AI Vision](https://azure.microsoft.com/en-gb/products/ai-services/ai-vision).
 
-On the persistence part, the application uses a MySQL database which is being hosted locally.
+On the persistence part, the application uses a PostgreSQL database which is being hosted locally.
 
 Also, the application follows the code-styling rules listed in the `checkstyle.xml` file, thus resulting a more readable and extendable codebase. Some parts of the main service class was also tested using Mockito.
+
+For the CI/CD pipeline, the application uses GitHub Actions. The pipeline is triggered on every push to the main branch. There are several pipelines involved in the process. The first one is for checking the code quality, the second one for testing the application and the last one for building the application using a custom made Dockerfile and pushing it to the Docker Hub.
 
 Finally, the whole application is fully containerized and can be found in <a href="https://hub.docker.com/r/markvarga21/studentmanager">this</a> Docker repository (more on this later).
 
@@ -68,7 +70,7 @@ This connects the applications backend with the user. It was built using React J
 
 The frontend also has the ability to inform the user about an error or exception in a custom error panel.
 
-Finally, there is a minimal authentication service which is provided by <a href="https://firebase.google.com/docs/auth">Firebase</a>. For accessing the application please reach out to me, for granting you access to the application, because its strictly restricted to the previously added users by me.
+Also, the frontend is designed to be responsive, so it can be used on almost any modern device.
 
 The frontend is also containerized using Docker, and can be found on this repository: <a href="https://hub.docker.com/r/markvarga21/studentmanagerfrontend">link</a>.
 
@@ -78,14 +80,14 @@ The frontend is also containerized using Docker, and can be found on this reposi
 
 ### Built With
 
-**API**
+**Backend**
 
 - [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 - [Spring Boot](https://spring.io/projects/spring-boot)
 - [Maven](https://maven.apache.org/)
-- [Azure Form Recognizer](https://azure.microsoft.com/en-gb/products/form-recognizer)
-- [Azure Face API](https://azure.microsoft.com/en-gb/products/ai-services/ai-vision)
-- [Azure Database for MySQL](https://azure.microsoft.com/en-us/products/mysql)
+- [Azure Document Intelligence](https://azure.microsoft.com/en-gb/products/ai-services/ai-document-intelligence/)
+- [Azure AI Vision](https://azure.microsoft.com/en-us/products/ai-services/ai-vision)
+- [PostgreSQL](https://www.postgresql.org/)
 - [Mockito](https://site.mockito.org/)
 - [Docker](https://www.docker.com/)
 
@@ -93,7 +95,6 @@ The frontend is also containerized using Docker, and can be found on this reposi
 
 - [React JS](https://react.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Firebase](https://firebase.google.com/)
 - [Docker](https://www.docker.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -141,6 +142,7 @@ Here you can find the only, but the most important one, prerequisity to run the 
    ```
    http://localhost:3000/
    ```
+   If you are planning to use the application in a production environment, feel free to request the kickstart script from me or from an admin.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -159,10 +161,7 @@ Here you can find the only, but the most important one, prerequisity to run the 
 As any application, this contains some bugs and some sensitive parts too which are:
 
 - The application is only tested for romanian and hungarian passports due to privacy reasons. This means, that there is no legitimate way to test the application with other passports.
-- When refreshing the page, the login page comes in for a slight second then dissapears if the user is logged in.
-- If the user does not log out from the app, he/she will be remained logged in.
-- The backend is not fully tested.
-- Lack of registration option and authorization services.
+- The application (backend + frontend) is not fully tested yet.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -173,7 +172,7 @@ József Márk Varga - vmark2145@gmail.com
 ## License
 
 <div id="license"></div>
-Copyright (c) 2024 Department of Informatics, University of Debrecen.
+Copyright (c) 2024 Department of Informatics, University of Debrecen
 
 All rights reserved.
 
