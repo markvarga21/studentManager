@@ -33,7 +33,7 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#flowchart">Flowchart</a></li>
+    <li><a href="#flowcharts">Flowcharts</a></li>
     <li><a href="#known-bugs">Known bugs</a></li>
     <li><a href="#contact">Contact</a></li>
 <li><a href="#license">License</a></li>
@@ -104,16 +104,16 @@ The frontend is also containerized using Docker, and can be found on this reposi
 ## Screenshots
 
 The main page of the application showing the students in a table:
-![mainPage](./static/mainPage.jpg)
+![mainPage](./static/mainPage.png)
 
 The student addition page:
-![studentAdditionPage](./static/addNewStudentPage.jpg)
+![studentAdditionPage](./static/addNewStudent.png)
 
 Edit student page:
-![editStudentPage](./static/editStudentPage.jpg)
+![editPage](./static/editStudentPage.png)
 
-Login page:
-![loginPage](./static/loginPage.jpg)
+User data page:
+![userData](./static/myDataPage.png)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -148,11 +148,19 @@ Here you can find the only, but the most important one, prerequisity to run the 
 
 <div id="known-bugs"></div>
 
-<div id="flowchart"></div>
+<div id="flowcharts"></div>
 
-## Flowchart
+## Flowcharts
 
-![flowChart](./static/studentManagerFlowchart.png)
+![auth](./static/auth.png)
+![addStudent](./static/studentAdd.png)
+![editStudent](./static/editStudent.png)
+![validateStudent](./static/validate.png)
+![studentData](./static/myData.png)
+![filterData](./static/filter.png)
+![themeChange](./static/themeChange.png)
+![report](./static/reporting.png)
+![export](./static/export.png)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
