@@ -115,6 +115,27 @@ Edit student page:
 User data page:
 ![userData](./static/myDataPage.png)
 
+Student list in dark mode:
+![studentListDark](./static/studentDataDarkMode.png)
+
+Reporting page:
+![reporting](./static/reportPage.png)
+
+Home page when no user is logged in:
+![homeWNoUserPage](./static/login-noUser.PNG)
+
+Login page:
+![loginPage](./static/login-wUser.png)
+
+Home page after login:
+![homePage](./static/homePage.png)
+
+Register page:
+![registerPage](./static/register.png)
+
+Menubar:
+![menubar](./static/menubar.png)
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Getting Started
