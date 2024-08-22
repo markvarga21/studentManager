@@ -132,6 +132,32 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     /**
+     * Method for deleting a user from the database by its username.
+     *
+     * @param username The username of the user.
+     * @return An informative message.
+     */
+    @Override
+    public String deleteUserByUsername(final String username) {
+        Optional<AppUser> userOptional = this.appUserRepository.findByUsername(username);
+        if (userOptional.isEmpty()) {
+            String message = "User with username " + username + " not found.";
+            log.error(message);
+            throw new UserNotFoundException(message);
+        }
+        if (userOptional.get().getRoles().contains(Role.ADMIN)) {
+            String message = "Cannot delete an admin user.";
+            log.error(message);
+            throw new InvalidUserCredentialsException(message);
+        }
+        this.appUserRepository.deleteById(userOptional.get().getId());
+        return String.format(
+                "User with username '%s' has been deleted.",
+                username
+        );
+    }
+
+    /**
      * Method for fetching a user by its id.
      *
      * @param id the id of the user.

@@ -46,6 +46,14 @@ public interface AppUserService {
     String deleteUserById(Long id);
 
     /**
+     * Method for deleting a user from the database by its username.
+     *
+     * @param username The username of the user.
+     * @return An informative message.
+     */
+    String deleteUserByUsername(String username);
+
+    /**
      * Method for fetching a user by its id.
      *
      * @param id the id of the user.

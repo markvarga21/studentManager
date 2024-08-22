@@ -147,6 +147,32 @@ public class AppUserController {
         return appUserService.deleteUserById(id);
     }
 
+     /**
+     * Endpoint for deleting a user identified by its username.
+     *
+     * @param username The username of the user.
+     * @return A descriptive message of the deletion.
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+        summary = "Deletes a user from the database identified by its username.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "An informational message", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "User is not authorized.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @DeleteMapping("/users/username/{username}")
+    public ResponseEntity<String> deleteUserByUsername(@PathVariable final String username) {
+        return ResponseEntity.ok(this.appUserService.deleteUserByUsername(username));
+    }
+
     /**
      * Endpoint for registering a user.
      *
@@ -177,7 +203,7 @@ public class AppUserController {
             throw new InvalidUserCredentialsException(message);
         }
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        return ResponseEntity.ok(appUserService.registerUser(user));
+        return ResponseEntity.ok(this.appUserService.registerUser(user));
     }
 
     /**
