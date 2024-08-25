@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.markvarga21.studentmanager.entity.StudentAppUser;
 import com.markvarga21.studentmanager.repository.StudentAppUserRepository;
-import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 
 @WebMvcTest(StudentAppUserController.class)
@@ -38,12 +37,6 @@ public class StudentAppUserControllerTest {
      */
     @MockBean
     private JwtService jwtService;
-
-    /**
-     * The {@code TokenManagementService} for mocking the token management.
-     */
-    @MockBean
-    private TokenManagementService tokenManagementService;
 
     /**
      * The API URL for the report endpoints.

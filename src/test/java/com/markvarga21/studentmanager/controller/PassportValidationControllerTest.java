@@ -1,10 +1,7 @@
 package com.markvarga21.studentmanager.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.markvarga21.studentmanager.dto.StudentDto;
-import com.markvarga21.studentmanager.entity.Gender;
 import com.markvarga21.studentmanager.entity.PassportValidationData;
-import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import com.markvarga21.studentmanager.service.validation.passport.PassportValidationService;
@@ -17,9 +14,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 
 import static com.markvarga21.studentmanager.data.TestingData.*;
@@ -60,12 +54,6 @@ class PassportValidationControllerTest {
      */
     @MockBean
     private JwtService jwtService;
-
-    /**
-     * The {@code TokenManagementService} for mocking the token management.
-     */
-    @MockBean
-    private TokenManagementService tokenManagementService;
 
     /**
      * The URL used for testing the API.

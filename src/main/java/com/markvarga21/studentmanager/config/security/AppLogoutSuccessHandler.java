@@ -1,6 +1,5 @@
 package com.markvarga21.studentmanager.config.security;
 
-import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,11 +17,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AppLogoutSuccessHandler implements LogoutSuccessHandler {
     /**
-     * The service for managing tokens.
-     */
-    private final TokenManagementService tokenManagementService;
-
-    /**
      * Handles a successful logout.
      *
      * @param request the request.
@@ -37,10 +31,6 @@ public class AppLogoutSuccessHandler implements LogoutSuccessHandler {
             final HttpServletResponse response,
             final Authentication authentication
     ) throws IOException, ServletException {
-        String token = request
-                .getHeader("Authorization")
-                .split(" ")[1];
-        this.tokenManagementService.blacklistToken(token);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }

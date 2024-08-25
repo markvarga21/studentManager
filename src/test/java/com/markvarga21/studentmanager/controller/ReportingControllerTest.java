@@ -3,7 +3,6 @@ package com.markvarga21.studentmanager.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markvarga21.studentmanager.dto.ReportMessage;
 import com.markvarga21.studentmanager.entity.Report;
-import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.report.ReportService;
 import org.junit.jupiter.api.Test;
@@ -44,12 +43,6 @@ class ReportingControllerTest {
      */
     @MockBean
     private JwtService jwtService;
-
-    /**
-     * The {@code TokenManagementService} for mocking the token management.
-     */
-    @MockBean
-    private TokenManagementService tokenManagementService;
 
     /**
      * The {@code ObjectMapper} used for mapping students to JSON strings.

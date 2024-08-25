@@ -1,7 +1,6 @@
 package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.entity.FacialValidationData;
-import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.validation.face.FacialValidationService;
 import org.junit.jupiter.api.Test;
@@ -47,12 +46,6 @@ class FacialValidationControllerTest {
      */
     @MockBean
     private JwtService jwtService;
-
-    /**
-     * The {@code TokenManagementService} for mocking the token management.
-     */
-    @MockBean
-    private TokenManagementService tokenManagementService;
 
     /**
      * The URL used for testing the API.

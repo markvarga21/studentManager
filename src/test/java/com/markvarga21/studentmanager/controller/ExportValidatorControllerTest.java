@@ -2,7 +2,6 @@ package com.markvarga21.studentmanager.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.util.validation.JsonValidator;
 import com.markvarga21.studentmanager.util.validation.XmlValidator;
@@ -51,12 +50,6 @@ class ExportValidatorControllerTest {
      */
     @Autowired
     private ObjectMapper objectMapper;
-
-    /**
-     * The {@code TokenManagementService} for mocking the token management.
-     */
-    @MockBean
-    private TokenManagementService tokenManagementService;
 
     @WithMockUser(roles = "ADMIN")
     @Test

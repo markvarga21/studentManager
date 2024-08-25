@@ -1,6 +1,5 @@
 package com.markvarga21.studentmanager.controller;
 
-import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.faceapi.FaceApiService;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,12 +45,6 @@ class FaceControllerTest {
      */
     @MockBean
     private JwtService jwtService;
-
-    /**
-     * The {@code TokenManagementService} for mocking the token management.
-     */
-    @MockBean
-    private TokenManagementService tokenManagementService;
 
     /**
      * A simple mock image.

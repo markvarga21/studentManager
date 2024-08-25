@@ -1,6 +1,5 @@
 package com.markvarga21.studentmanager.config.security;
 
-import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,11 +34,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
 
     /**
-     * The service for managing tokens.
-     */
-    private final TokenManagementService tokenManagementService;
-
-    /**
      * The index where the token starts in the Authorization
      * header value.
      */
@@ -66,13 +60,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         String token = header.substring(TOKEN_START_INDEX);
-        if (this.tokenManagementService.isBlacklisted(token)) {
-            response.sendError(
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "Token has been blacklisted."
-            );
-            return;
-        }
         String username = this.jwtService.getUsername(token);
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService

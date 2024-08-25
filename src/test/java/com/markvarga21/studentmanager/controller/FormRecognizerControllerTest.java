@@ -2,7 +2,6 @@ package com.markvarga21.studentmanager.controller;
 
 import com.markvarga21.studentmanager.dto.StudentDto;
 import com.markvarga21.studentmanager.entity.Gender;
-import com.markvarga21.studentmanager.service.auth.TokenManagementService;
 import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
 import com.markvarga21.studentmanager.service.form.FormRecognizerService;
 import org.junit.jupiter.api.Test;
@@ -41,12 +40,6 @@ class FormRecognizerControllerTest {
      */
     @MockBean
     private JwtService jwtService;
-
-    /**
-     * The {@code TokenManagementService} for mocking the token management.
-     */
-    @MockBean
-    private TokenManagementService tokenManagementService;
 
     @WithMockUser(roles = "ADMIN")
     @Test
