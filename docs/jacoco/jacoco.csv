@@ -22,5 +22,4 @@ Student manager,com.markvarga21.studentmanager.service.file.impl,FileUploadServi
 Student manager,com.markvarga21.studentmanager.service.auth.security,AppUserDetailsService,0,52,0,2,0,18,0,4,0,3
 Student manager,com.markvarga21.studentmanager.service.validation.passport.impl,PassportValidationServiceImpl,0,117,0,6,0,33,0,9,0,6
 Student manager,com.markvarga21.studentmanager.service.report.impl,ReportServiceImpl,0,78,0,2,0,24,0,5,0,4
-Student manager,com.markvarga21.studentmanager.service.auth.impl,TokenManagementServiceImpl,0,95,1,3,0,33,1,7,0,6
 Student manager,com.markvarga21.studentmanager.service.auth.impl,AppUserServiceImpl,138,282,12,16,25,68,9,14,1,8
