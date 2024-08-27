@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.config.security</a> &gt; <span class="el_source">SecurityConfiguration.java</span></div><h1>SecurityConfiguration.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.config.security;
+
+import com.markvarga21.studentmanager.exception.handler.security.AppAccessDeniedHandler;
+import com.markvarga21.studentmanager.service.auth.security.AppUserDetailsService;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+/**
+ * Configuration class for setting up the security related
+ * configurations.
+ */
+@RequiredArgsConstructor
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class SecurityConfiguration {
+    /**
+     * The base URL for authentication services.
+     */
+    static final String BASE_AUTH_URL = &quot;/api/v1/auth&quot;;
+
+    /**
+     * The {@code AppUserDetailsService} object.
+     */
+    private final AppUserDetailsService appUserDetailsService;
+
+    /**
+     * The {@code AppAccessDeniedHandler} object.
+     */
+    private final AppAccessDeniedHandler appAccessDeniedHandler;
+
+    /**
+     * The entrypoint of the application.
+     */
+    private final AppAuthenticationEntryPoint entryPoint;
+
+    /**
+     * The application context.
+     */
+    private final ApplicationContext applicationContext;
+
+    /**
+     * The URL for the frontend.
+     */
+    @Value(&quot;${frontend.url}&quot;)
+    private String frontendUrl;
+
+    /**
+     * This method is used to configure the CORS configuration source.
+     *
+     * @return The built {@code CorsConfigurationSource} object.
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+<span class="nc" id="L81">        CorsConfiguration corsConfiguration = new CorsConfiguration();</span>
+<span class="nc" id="L82">        corsConfiguration.setAllowedOrigins(List.of(this.frontendUrl));</span>
+<span class="nc" id="L83">        corsConfiguration.setAllowedMethods(Arrays.asList(&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;OPTIONS&quot;));</span>
+<span class="nc" id="L84">        corsConfiguration.setAllowedHeaders(Arrays.asList(&quot;Authorization&quot;, &quot;Content-Type&quot;, &quot;Access-Control-Allow-Origin&quot;));</span>
+<span class="nc" id="L85">        corsConfiguration.setAllowCredentials(true);</span>
+<span class="nc" id="L86">        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();</span>
+<span class="nc" id="L87">        source</span>
+<span class="nc" id="L88">                .registerCorsConfiguration(&quot;/**&quot;, corsConfiguration);</span>
+<span class="nc" id="L89">        return source;</span>
+    }
+
+    /**
+     * This method is used to configure the security filter chain.
+     *
+     * @param httpSecurity The {@code HttpSecurity} object to configure the security filter chain.
+     * @return The {@code SecurityFilterChain} object.
+     */
+    @Bean
+    public SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
+<span class="nc" id="L100">        JwtAuthFilter jwtAuthFilter = this.applicationContext</span>
+<span class="nc" id="L101">                .getBean(JwtAuthFilter.class);</span>
+
+<span class="nc" id="L103">        String[] permittedEndpoints = {</span>
+                BASE_AUTH_URL + &quot;/register&quot;,
+                BASE_AUTH_URL + &quot;/login&quot;,
+                BASE_AUTH_URL + &quot;/logout&quot;,
+                &quot;/**&quot;
+        };
+<span class="nc" id="L109">        return httpSecurity</span>
+<span class="nc" id="L110">                .csrf(AbstractHttpConfigurer::disable)</span>
+<span class="nc" id="L111">                .cors(cors -&gt; cors.configurationSource(corsConfigurationSource()))</span>
+<span class="nc" id="L112">                .authorizeHttpRequests(registry -&gt; registry</span>
+<span class="nc" id="L113">                    .requestMatchers(permittedEndpoints).permitAll()</span>
+<span class="nc" id="L114">                    .anyRequest().authenticated()</span>
+                )
+<span class="nc" id="L116">                .exceptionHandling(exceptionHandling -&gt; exceptionHandling</span>
+<span class="nc" id="L117">                    .authenticationEntryPoint(this.entryPoint)</span>
+<span class="nc" id="L118">                    .accessDeniedHandler(this.appAccessDeniedHandler))</span>
+<span class="nc" id="L119">                .sessionManagement(sessionManagement -&gt; sessionManagement</span>
+<span class="nc" id="L120">                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)</span>
+                )
+<span class="nc" id="L122">                .addFilterBefore(</span>
+                        jwtAuthFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+<span class="nc" id="L126">                .headers(headers -&gt; headers</span>
+<span class="nc" id="L127">                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)</span>
+                )
+<span class="nc" id="L129">                .build();</span>
+    }
+
+    /**
+     * This method is used to create an {@code AuthenticationManager} bean.
+     *
+     * @return the created {@code AuthenticationManager} bean.
+     */
+    @Bean
+    public AuthenticationManager authenticationManager() {
+<span class="nc" id="L139">        return new ProviderManager(this.authenticationProvider());</span>
+    }
+
+    /**
+     * This method is used to create a {@code UserDetailsService} bean.
+     *
+     * @return The {@code UserDetailsService} object.
+     */
+    @Bean
+    public UserDetailsService userDetailsService() {
+<span class="nc" id="L149">        return this.appUserDetailsService;</span>
+    }
+
+    /**
+     * This method is used to create an {@code AuthenticationProvider} bean.
+     *
+     * @return The {@code AuthenticationProvider} object.
+     */
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+<span class="nc" id="L159">        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();</span>
+<span class="nc" id="L160">        provider.setUserDetailsService(this.userDetailsService());</span>
+<span class="nc" id="L161">        provider.setPasswordEncoder(this.passwordEncoder());</span>
+<span class="nc" id="L162">        return provider;</span>
+    }
+
+    /**
+     * The password encoder bean.
+     *
+     * @return a {@code BCryptPasswordEncoder} object.
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+<span class="nc" id="L172">        return new BCryptPasswordEncoder();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

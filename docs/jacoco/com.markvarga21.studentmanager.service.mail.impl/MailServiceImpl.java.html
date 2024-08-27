@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MailServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.service.mail.impl</a> &gt; <span class="el_source">MailServiceImpl.java</span></div><h1>MailServiceImpl.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.service.mail.impl;
+
+import com.markvarga21.studentmanager.entity.Report;
+import com.markvarga21.studentmanager.service.mail.MailService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+
+import java.time.format.DateTimeFormatter;
+
+/**
+ * A service used for sending emails.
+ */
+@Service
+@RequiredArgsConstructor
+@Getter
+public class MailServiceImpl implements MailService {
+    /**
+     * The {@code JavaMailSender} object used to send emails.
+     */
+    private final JavaMailSender mailSender;
+
+    /**
+     * The address to send the email to.
+     */
+    @Value(&quot;${mail.to}&quot;)
+    private String mailTo;
+
+    /**
+     * The address to send the email from.
+     */
+    @Value(&quot;${mail.from}&quot;)
+    private String mailFrom;
+
+    /**
+     * The HTML body of the email.
+     */
+    public static final String HTML_BODY = &quot;&quot;&quot;
+        &lt;!DOCTYPE html&gt;
+        &lt;html&gt;
+          &lt;body style=&quot;font-family: 'Tahoma'&quot;&gt;
+            &lt;table style=&quot;width: 30svw&quot;&gt;
+              &lt;tr&gt;
+                &lt;span style=&quot;font-weight: 800; font-size: xx-large&quot;&gt;%s&lt;/span&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td style=&quot;color: rgb(139, 139, 139); font-weight: 200&quot;&gt;@%s • %s&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td style=&quot;padding-top: 1rem&quot;&gt;&quot;%s&quot;&lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/table&gt;
+          &lt;/body&gt;
+        &lt;/html&gt;
+        &quot;&quot;&quot;;
+
+    /**
+     * The date and time formatter.
+     */
+<span class="nc" id="L65">    static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span>
+
+    /**
+     * The method responsible for sending an email.
+     *
+     * @param report The report to send.
+     * @return An informational message.
+     */
+    @Override
+    public String sendMail(final Report report) throws MessagingException {
+<span class="nc" id="L75">        MimeMessage mimeMessage = this.mailSender.createMimeMessage();</span>
+<span class="nc" id="L76">        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L77">        String formattedTimeStamp = DATE_TIME_FORMATTER.format(report.getTimestamp());</span>
+<span class="nc" id="L78">        String filledHtmlContent = String.format(</span>
+                HTML_BODY,
+<span class="nc" id="L80">                report.getSubject(),</span>
+<span class="nc" id="L81">                report.getIssuerUsername(),</span>
+                formattedTimeStamp,
+<span class="nc" id="L83">                report.getDescription()</span>
+        );
+<span class="nc" id="L85">        helper.setText(filledHtmlContent, true);</span>
+<span class="nc" id="L86">        helper.setTo(this.mailTo);</span>
+<span class="nc" id="L87">        helper.setSubject(report.getSubject());</span>
+<span class="nc" id="L88">        helper.setFrom(this.mailFrom);</span>
+<span class="nc" id="L89">        this.mailSender.send(mimeMessage);</span>
+<span class="nc" id="L90">        return &quot;The report has been sent to the email address.&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

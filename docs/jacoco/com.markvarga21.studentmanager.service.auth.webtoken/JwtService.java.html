@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.service.auth.webtoken</a> &gt; <span class="el_source">JwtService.java</span></div><h1>JwtService.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.service.auth.webtoken;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.time.Instant;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * A service class for handling JWT tokens.
+ */
+@Service
+@Setter
+public final class JwtService {
+    private JwtService() {
+    }
+
+    /**
+     * The secret key used for signing the JWT token.
+     */
+    @Value(&quot;${jwt.secret.key}&quot;)
+    private String secretKey;
+
+    /**
+     * The expiration time for the JWT token
+     * measured in milliseconds.
+     */
+    @Value(&quot;${jwt.expiration.time.minutes}&quot;)
+    private Long expirationTimeInMinutes;
+
+    /**
+     * The issuer of the JWT token.
+     */
+    @Value(&quot;${jwt.token.issuer}&quot;)
+    private String jwtTokenIssuer;
+
+    /**
+     * The audience of the JWT token.
+     */
+    @Value(&quot;${jwt.token.audience}&quot;)
+    private String jwtTokenAudience;
+
+    /**
+     * A method for generating a JWT token.
+     *
+     * @param userDetails The user details.
+     * @return The generated JWT token.
+     */
+    public String generateJwtToken(final UserDetails userDetails) {
+<span class="nc" id="L60">        Map&lt;String, String&gt; claims = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L61">        claims.put(&quot;iss&quot;, this.jwtTokenIssuer);</span>
+<span class="nc" id="L62">        claims.put(&quot;aud&quot;, this.jwtTokenAudience);</span>
+<span class="nc" id="L63">        claims.put(&quot;sub&quot;, userDetails.getUsername());</span>
+<span class="nc" id="L64">        claims.put(&quot;iat&quot;, String.valueOf(</span>
+<span class="nc" id="L65">                TimeUnit.MILLISECONDS.toMillis(System.currentTimeMillis()))</span>
+        );
+<span class="nc" id="L67">        claims.put(&quot;exp&quot;, String.valueOf(</span>
+                TimeUnit.MILLISECONDS
+<span class="nc" id="L69">                        .toMillis(this.getExpirationTime().getTime()))</span>
+        );
+<span class="nc" id="L71">        claims.put(&quot;roles&quot;, userDetails.getAuthorities().toString());</span>
+
+<span class="nc" id="L73">        return Jwts.builder()</span>
+<span class="nc" id="L74">                .claims(claims)</span>
+<span class="nc" id="L75">                .subject(userDetails.getUsername())</span>
+<span class="nc" id="L76">                .issuedAt(Date.from(Instant.now()))</span>
+<span class="nc" id="L77">                .expiration(this.getExpirationTime())</span>
+<span class="nc" id="L78">                .signWith(this.generateSecretKey())</span>
+<span class="nc" id="L79">                .compact();</span>
+    }
+
+    /**
+     * A method for generating the secret key object.
+     *
+     * @return The secret key object.
+     */
+    private SecretKey generateSecretKey() {
+<span class="nc" id="L88">        byte[] decodedKey = Base64.getDecoder().decode(this.secretKey);</span>
+<span class="nc" id="L89">        return Keys.hmacShaKeyFor(decodedKey);</span>
+    }
+
+    /**
+     * Converts the millisecond expiration time to a {@link Date} object.
+     *
+     * @return The expiration time as a {@link Date} object.
+     */
+    private Date getExpirationTime() {
+<span class="nc" id="L98">        return Date.from(Instant</span>
+<span class="nc" id="L99">                .now()</span>
+<span class="nc" id="L100">                .plusMillis(TimeUnit.MINUTES.toMillis(this.expirationTimeInMinutes))</span>
+        );
+    }
+
+    /**
+     * A method for retrieving the username from a JWT token.
+     *
+     * @param token The JWT token.
+     * @return The username extracted from the token.
+     */
+    public String getUsername(final String token) {
+<span class="nc" id="L111">        Claims claims = extractClaims(token);</span>
+<span class="nc" id="L112">        return claims.getSubject();</span>
+    }
+
+    private Claims extractClaims(final String token) {
+<span class="nc" id="L116">        return Jwts.parser()</span>
+<span class="nc" id="L117">                .verifyWith(this.generateSecretKey())</span>
+<span class="nc" id="L118">                .build()</span>
+<span class="nc" id="L119">                .parseSignedClaims(token)</span>
+<span class="nc" id="L120">                .getPayload();</span>
+    }
+
+    /**
+     * A method for checking if a JWT token is valid or not.
+     *
+     * @param token The JWT token.
+     * @return A boolean indicating if the token is valid or not.
+     */
+    public boolean isValidToken(final String token) {
+<span class="nc" id="L130">        Claims claims = extractClaims(token);</span>
+<span class="nc" id="L131">        return claims.getExpiration().after(Date.from(Instant.now()));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

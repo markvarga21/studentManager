@@ -12,6 +12,7 @@
 				<role>developer</role>
 				<role>admin</role>
 			</roles>
+			<url>www.markvarga.com</url>
 		</developer>
 	</developers>
 	<modelVersion>4.0.0</modelVersion>
@@ -198,16 +199,9 @@
 				<version>0.8.10</version>
 				<configuration>
 					<excludes>
-						<exclude>com/markvarga21/studentmanager/service/faceapi/**/*</exclude>
-						<exclude>com/markvarga21/studentmanager/config/**/*</exclude>
-						<exclude>com/markvarga21/studentmanager/service/auth/webtoken/*</exclude>
 						<exclude>com/markvarga21/studentmanager/exception/**/*</exclude>
-						<exclude>com/markvarga21/studentmanager/service/mail/**/*</exclude>
 						<exclude>com/markvarga21/studentmanager/entity/*</exclude>
 						<exclude>com/google/**/*</exclude>
-						<exclude>com/markvarga21/studentmanager/controller/AppUserController.class</exclude>
-						<exclude>com/markvarga21/studentmanager/util/TokenDeleter.class</exclude>
-						<exclude>com/markvarga21/studentmanager/util/LocalDateDeserializer.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>

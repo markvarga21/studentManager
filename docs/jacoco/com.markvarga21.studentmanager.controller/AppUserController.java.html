@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppUserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Student manager</a> &gt; <a href="index.source.html" class="el_package">com.markvarga21.studentmanager.controller</a> &gt; <span class="el_source">AppUserController.java</span></div><h1>AppUserController.java</h1><pre class="source lang-java linenums">package com.markvarga21.studentmanager.controller;
+
+import com.markvarga21.studentmanager.dto.UserLogin;
+import com.markvarga21.studentmanager.entity.AppUser;
+import com.markvarga21.studentmanager.exception.InvalidUserCredentialsException;
+import com.markvarga21.studentmanager.exception.util.ApiError;
+import com.markvarga21.studentmanager.exception.util.AuthError;
+import com.markvarga21.studentmanager.service.auth.AppUserService;
+import com.markvarga21.studentmanager.service.auth.webtoken.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+
+/**
+ * The controller for the user authentication.
+ */
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(&quot;/api/v1/auth&quot;)
+<span class="fc" id="L51">@Slf4j</span>
+@CrossOrigin
+@Tag(
+    name = &quot;User controller&quot;,
+    description = &quot;A controller used to manipulate users in the app.&quot;
+)
+public class AppUserController {
+    /**
+     * The user service.
+     */
+    private final AppUserService appUserService;
+
+    /**
+     * The {@code PasswordEncoder} object.
+     */
+    private final PasswordEncoder passwordEncoder;
+
+    /**
+     * The {@code AuthenticationManager} object.
+     */
+    private final AuthenticationManager authenticationManager;
+
+    /**
+     * The {@code JwtService} object for creating JWT tokens.
+     */
+    private final JwtService jwtService;
+
+    /**
+     * The {@code UserDetailsService} object.
+     */
+    private final UserDetailsService userDetailsService;
+
+    /**
+     * The {@code LogoutSuccessHandler} object.
+     */
+    private final LogoutSuccessHandler logoutSuccessHandler;
+
+    /**
+     * Endpoint for fetching all users.
+     *
+     * @param page The page number.
+     * @param size The size of elements inside a single page.
+     * @return A page of the users.
+     */
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @Operation(
+        summary = &quot;Fetches all users from the database.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;A page of users.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = Page.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @GetMapping(&quot;/users&quot;)
+    public Page&lt;AppUser&gt; fetchUsers(
+            @RequestParam(defaultValue = &quot;0&quot;) final Integer page,
+            @RequestParam(defaultValue = &quot;10&quot;) final Integer size
+    ) {
+<span class="fc" id="L115">        return appUserService.getAllUsers(page, size);</span>
+    }
+
+    /**
+     * Endpoint for deleting a user.
+     *
+     * @param id The id of the user.
+     * @return A descriptive message of the deletion.
+     */
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @Operation(
+        summary = &quot;Deletes a user from the database.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;An informational message&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @DeleteMapping(&quot;/users/{id}&quot;)
+    public String deleteUser(@PathVariable final Long id) {
+<span class="fc" id="L141">        return appUserService.deleteUserById(id);</span>
+    }
+
+     /**
+     * Endpoint for deleting a user identified by its username.
+     *
+     * @param username The username of the user.
+     * @return A descriptive message of the deletion.
+     */
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @Operation(
+        summary = &quot;Deletes a user from the database identified by its username.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;An informational message&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @DeleteMapping(&quot;/users/username/{username}&quot;)
+    public ResponseEntity&lt;String&gt; deleteUserByUsername(@PathVariable final String username) {
+<span class="nc" id="L167">        return ResponseEntity.ok(this.appUserService.deleteUserByUsername(username));</span>
+    }
+
+    /**
+     * Endpoint for registering a user.
+     *
+     * @param user The user object.
+     * @return The registered user object.
+     */
+    @Operation(
+        summary = &quot;Registers a user.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;The registered user object.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AppUser.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PostMapping(&quot;/register&quot;)
+    public ResponseEntity&lt;AppUser&gt; registerUser(
+            @RequestBody @Valid final AppUser user
+    ) {
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (user.getRoles() != null) {</span>
+<span class="nc" id="L195">            String message = &quot;Roles cannot be set during registration.&quot;;</span>
+<span class="nc" id="L196">            log.error(message);</span>
+<span class="nc" id="L197">            throw new InvalidUserCredentialsException(message);</span>
+        }
+<span class="nc" id="L199">        user.setPassword(this.passwordEncoder.encode(user.getPassword()));</span>
+<span class="nc" id="L200">        return ResponseEntity.ok(this.appUserService.registerUser(user));</span>
+    }
+
+    /**
+     * Endpoint for logging in a user.
+     *
+     * @param user The user object.
+     * @return The created JWT token.
+     */
+    @Operation(
+        summary = &quot;Logs in a user.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;The generated auth token of the user.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PostMapping(&quot;/login&quot;)
+    public ResponseEntity&lt;String&gt; loginUser(
+            @RequestBody @Valid final UserLogin user
+    ) {
+<span class="nc" id="L227">        Authentication auth = this.authenticationManager.authenticate(</span>
+                new UsernamePasswordAuthenticationToken(
+<span class="nc" id="L229">                        user.getUsername(),</span>
+<span class="nc" id="L230">                        user.getPassword()</span>
+                ));
+<span class="nc bnc" id="L232" title="All 2 branches missed.">        if (!auth.isAuthenticated()) {</span>
+<span class="nc" id="L233">            log.error(&quot;Invalid user credentials.&quot;);</span>
+<span class="nc" id="L234">            throw new InvalidUserCredentialsException(&quot;Invalid user credentials.&quot;);</span>
+        }
+<span class="nc" id="L236">        String token = this.jwtService.generateJwtToken(</span>
+<span class="nc" id="L237">                this.userDetailsService.loadUserByUsername(user.getUsername())</span>
+        );
+<span class="nc" id="L239">        return ResponseEntity.ok(token);</span>
+    }
+
+    /**
+     * Endpoint for logging out a user.
+     *
+     * @param request The request.
+     * @param response The response.
+     * @return A descriptive message of the logout.
+     * @throws ServletException if a servlet error occurs.
+     * @throws IOException if an I/O error occurs.
+     */
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    @Operation(
+        summary = &quot;Logs out a user.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;An informational status message.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PostMapping(&quot;/logout&quot;)
+    public ResponseEntity&lt;String&gt; logoutUser(
+            final HttpServletRequest request,
+            final HttpServletResponse response
+    ) throws ServletException, IOException {
+        Authentication authentication = SecurityContextHolder
+<span class="nc" id="L272">                .getContext()</span>
+<span class="nc" id="L273">                .getAuthentication();</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        if (authentication != null) {</span>
+<span class="nc" id="L275">            new SecurityContextLogoutHandler()</span>
+<span class="nc" id="L276">                    .logout(request, response, authentication);</span>
+<span class="nc" id="L277">            this.logoutSuccessHandler</span>
+<span class="nc" id="L278">                    .onLogoutSuccess(request, response, authentication);</span>
+        }
+<span class="nc" id="L280">        return ResponseEntity.ok(&quot;User logged out successfully.&quot;);</span>
+    }
+
+    /**
+     * Endpoint for fetching a user by its id.
+     *
+     * @param id The id of the user.
+     * @return The user object.
+     */
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @Operation(
+        summary = &quot;Fetches a user using it's id.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;The fetched user.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AppUser.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @GetMapping(&quot;/users/{id}&quot;)
+    public ResponseEntity&lt;AppUser&gt; getUserById(@PathVariable final Long id) {
+<span class="fc" id="L306">        return ResponseEntity.ok(appUserService.getUserById(id));</span>
+    }
+
+    /**
+     * Endpoint for granting admin roles to a user.
+     *
+     * @param username The username of the user.
+     * @param roles The roles to grant separated by commas.
+     * @return A descriptive message of the role granting.
+     */
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @Operation(
+        summary = &quot;Grants roles to a user.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;A status message about the role granting.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AppUser.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PutMapping(&quot;/users/grant&quot;)
+    public ResponseEntity&lt;String&gt; grantRoles(
+            @RequestParam final String username,
+            @RequestParam final String roles
+    ) {
+<span class="fc" id="L336">        return ResponseEntity</span>
+<span class="fc" id="L337">                .ok(this.appUserService.grantRoles(username, roles));</span>
+    }
+
+    /**
+     * Endpoint for revoking roles from a user.
+     *
+     * @param username The username of the user.
+     * @param roles The roles to revoke separated by commas.
+     * @return A descriptive message of the role revoking.
+     */
+    @Operation(
+        summary = &quot;Revokes roles from a user.&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;A status message about the role revoking.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AppUser.class))
+            }),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;User is not authorized.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthError.class))
+            }),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error.&quot;, content = {
+                    @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ApiError.class))
+            })
+        }
+    )
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PutMapping(&quot;/users/revoke&quot;)
+    public ResponseEntity&lt;String&gt; revokeRoles(
+            @RequestParam final String username,
+            @RequestParam final String roles
+    ) {
+<span class="fc" id="L367">        return ResponseEntity</span>
+<span class="fc" id="L368">                .ok(this.appUserService.revokeRoles(username, roles));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
