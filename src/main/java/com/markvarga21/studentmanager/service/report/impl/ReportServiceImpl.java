@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -62,6 +63,7 @@ public class ReportServiceImpl implements ReportService {
                     .issuerUsername(reportMessage.getUsername())
                     .subject(reportMessage.getSubject())
                     .description(reportMessage.getDescription())
+                    .timestamp(LocalDateTime.now())
                     .build();
             this.repository
                     .save(report);

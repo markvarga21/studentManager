@@ -55,13 +55,4 @@ public class Report {
      * The maximum length of the description.
      */
     static final int MAX_DESCRIPTION_LENGTH_IN_CHARACTERS = 1000;
-
-    /**
-     * Util method for automatically generating the timestamp
-     * field for the report.
-     */
-    @PrePersist
-    protected void prePersist() {
-        this.timestamp = LocalDateTime.now();
-    }
 }
