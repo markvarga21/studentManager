@@ -118,6 +118,12 @@ User data page:
 Student list in dark mode:
 ![studentListDark](./static/studentDataDarkMode.png)
 
+Student list in hungarian:
+![studentListHungarian](./static/studentDataDarkModeHU.png)
+
+Filter panel:
+![filterPanel](./static/filterStudentsPage.png)
+
 Reporting page:
 ![reporting](./static/reportPage.png)
 
