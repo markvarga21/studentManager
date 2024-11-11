@@ -23,7 +23,7 @@ public class XmlValidator {
     /**
      * The path to the XML schema.
      */
-    private static final String XML_SCHEMA_PATH = "/schemas/students.xsd";
+    private static final String XML_SCHEMA_PATH = "/app/schemas/students.xsd";
 
     /**
      * Validates the XML content.

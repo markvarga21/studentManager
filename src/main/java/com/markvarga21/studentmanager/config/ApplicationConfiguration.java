@@ -100,7 +100,7 @@ public class ApplicationConfiguration {
     /**
      * The path to the JSON schema.
      */
-    private static final String JSON_SCHEMA_PATH = "/schemas/students_draft-07.json";
+    private static final String JSON_SCHEMA_PATH = "/app/schemas/students_draft-07.json";
 
 
     /**
