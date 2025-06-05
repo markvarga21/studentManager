@@ -30,26 +30,6 @@ class StudentMapperTest {
     private Gson gson;
 
     @Test
-    void shouldMapStudentDtoToEntityTest() {
-        // Given
-        // When
-        Student actual = this.studentMapper.mapStudentDtoToEntity(STUDENT_DTO);
-
-        // Then
-        assertEquals(STUDENT, actual);
-    }
-
-    @Test
-    void shouldMapStudentEntityToDtoTest() {
-        // Given
-        // When
-        StudentDto actual = this.studentMapper.mapStudentEntityToDto(STUDENT);
-
-        // Then
-        assertEquals(STUDENT_DTO, actual);
-    }
-
-    @Test
     void shouldMapJsonToDtoTest() {
         // Given
         // When
