@@ -65,8 +65,6 @@ public class SecurityConfiguration {
      */
     private final ApplicationContext applicationContext;
 
-    private static final long PREFLIGHT_MAX_AGE = 3600L;
-
     /**
      * The URL for the frontend.
      */
@@ -81,13 +79,13 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedOrigins(List.of(this.frontendUrl));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Access-Control-Allow-Origin", "X-Requested-With"));
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setMaxAge(PREFLIGHT_MAX_AGE);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
+        source
+                .registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
 
