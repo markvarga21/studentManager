@@ -15,7 +15,9 @@ jobs:
         with:
           java-version: "17"
           distribution: "adopt"
-          cache: maven
+          cache: 'maven'
+          check-latest: true
+        continue-on-error: true
       - name: Maven build
         run: |
           mvn clean install
